@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaChevronDown, FaChevronUp } from 'react-icons/fa'; // Using react-icons for arrow
+import { FaChevronUp } from 'react-icons/fa'; // Simplified to only FaChevronUp since direction handles collapse
 import Title from './Title';
 import { motion } from 'framer-motion';
 
@@ -34,31 +34,34 @@ const FAQs = () => {
   ];
 
   return (
-    <div id='faqs' className="w-full py-12 bg-white text-gray-900">
-      <Title 
-        head={'Frequently Asked Questions'} 
-        subHead={'Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus qui eaque illum!'}
-        />
-
+    <section id="faqs" className="w-full py-12 bg-white text-gray-900">
+      <Title
+        head="Frequently Asked Questions"
+        subHead="Find answers to common questions about our services and financial literacy."
+      />
       <div className="flex flex-col p-4 items-center">
         {questions.map((qs) => (
           <motion.div
-            initial={{y: 100, opacity: 0}}
-            whileInView={{y: 0, opacity: 1}}
-            transition={{
-                duration: 0.8,
-                delay: 0
-              }}
+            initial={{ y: 100, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0 }}
+            viewport={{ once: true }} // Ensures animation runs only once
             key={qs.key}
             onClick={() => setActiveQuestion(activeQuestion === qs.key ? 0 : qs.key)}
             className="w-full md:w-3/4 my-2 border border-yellowGreen rounded-lg cursor-pointer"
+            role="button"
+            aria-expanded={activeQuestion === qs.key}
+            tabIndex={0} // Makes it keyboard-focusable
+            onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setActiveQuestion(activeQuestion === qs.key ? 0 : qs.key)}
           >
             <div className="flex justify-between w-full p-4 items-center">
-              <h2 className="text-lg text-center w-full font-semibold text-appleGreen">{qs.question}</h2>
-              <FaChevronUp className={`text-appleGreen transition-all duration-200 ${activeQuestion === qs.key ? '-rotate-180': null}`} />
+              <h2 className="text-lg font-semibold text-appleGreen">{qs.question}</h2>
+              <FaChevronUp
+                className={`text-appleGreen transition-all duration-200 ${activeQuestion === qs.key ? 'rotate-180' : ''}`}
+              />
             </div>
             <p
-              className={` text-gray-700 bg-fadeBrown text-sm font-semibold text-center transition-all duration-200 overflow-hidden ${
+              className={`text-gray-700 bg-fadeBrown text-sm font-semibold text-center transition-all duration-200 overflow-hidden ${
                 activeQuestion === qs.key ? 'max-h-full p-2' : 'max-h-0'
               }`}
             >
@@ -67,7 +70,7 @@ const FAQs = () => {
           </motion.div>
         ))}
       </div>
-    </div>
+    </section>
   );
 };
 
