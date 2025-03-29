@@ -3,13 +3,12 @@ import { assets } from '../assets/assets'
 
 const Footer = () => {
   return (
-    <div id='footer' class="text-center border-t-2 border-gray-500 mx-5 flex items-center justify-center flex-col p-2 ">
+    <div id='footer' class="text-center border-t-2 border-gray-500 mx-5 flex items-center justify-center flex-col p-2 py-7">
       <a href="#" class="flex items-center gap-2 justify-center mb-5 text-2xl font-bold text-brown">
-        <img src={assets.logo} className='h-12 w-fit' alt="" />
-        Making <span className='text-appleGreen'>| Sents</span>
+        <img src={assets.logo2} className='h-fit w-40' alt="" />
       </a>
 
-      <span class="block text-sm text-center text-gray-500">© 2024 Making | Sents™. All Rights Reserved. Built By 
+      <span class="block text-sm text-center text-gray-500">© 2025 Content Creator Insurance™. All Rights Reserved. Built By 
           <a href="https://muchiri-mwangi-com.vercel.app/" class="text-yellowGreen hover:underline"> Muchiri Mwangi</a>.
       </span>
 

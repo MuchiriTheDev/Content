@@ -23,49 +23,47 @@ const Navbar = () => {
     <nav className={`fixed top-0 left-0 w-full z-30 h-fit p-6 md:px-8 flex justify-between items-center ${scrolling ? 'bg-white' : 'bg-transparent'} transition-all duration-300`}>
       {/* Logo */}
       <div className="flex justify-center items-center gap-3 md:w-1/4 px-4">
-        <img className="h-16 w-fit" src={assets.logo} alt="Making Sents Logo" />
-        <h1 className={`lg:text-2xl text-nowrap text-base font-bold ${scrolling ? 'text-brown' : 'text-white'}`}>
-          Making <span className="text-appleGreen">| Sents</span>
-        </h1>
+        <img className="h-fit w-40" src={scrolling ? assets.logo2 : assets.logo1} alt="Making Sents Logo" />
+        
       </div>
 
       {/* Nav items (Desktop) */}
       <div className="w-2/3 p-3 hidden md:flex justify-center items-center gap-2 lg:gap-6">
         <ScrollLink
-          className={`w-32 mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-brown`}
+          className={`w-32 mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-yellowGreen cursor-pointer `}
           to="home" smooth={true} duration={500} offset={-100}
         >
           Home
         </ScrollLink>
         <ScrollLink
-          className={`w-32 mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-brown`}
+          className={`w-32 mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-yellowGreen  cursor-pointer`}
           to="about" smooth={true} duration={500} offset={-100}
         >
           About Us
         </ScrollLink>
         <ScrollLink
-          className={`w-32 mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-brown`}
+          className={`w-32 mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-yellowGreen cursor-pointer `}
           to="services" smooth={true} duration={500} offset={-100}
         >
           Services
         </ScrollLink>
         <ScrollLink
-          className={`w-32 mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-brown`}
+          className={`w-32 mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-yellowGreen cursor-pointer `}
           to="testimonials" smooth={true} duration={500} offset={-100}
         >
           Testimonials
         </ScrollLink>
         <ScrollLink
-          className={`w-32 mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-brown`}
+          className={`w-32 mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-yellowGreen cursor-pointer `}
           to="faqs" smooth={true} duration={500} offset={-100}
         >
           FAQs
         </ScrollLink>
         <ScrollLink
-          className="text-white font-semibold lg:text-sm text-xs py-3 px-2 w-44 bg-appleGreen text-center"
+          className="text-white font-semibold lg:text-sm text-xs py-3 px-2 w-44 bg-appleGreen text-center cursor-pointer"
           to="contact" smooth={true} duration={500} offset={-100}
         >
-          Contact Us
+          Contact Us 
         </ScrollLink>
       </div>
 

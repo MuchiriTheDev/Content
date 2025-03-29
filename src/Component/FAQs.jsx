@@ -5,34 +5,36 @@ import { motion } from 'framer-motion';
 
 const FAQs = () => {
   const [activeQuestion, setActiveQuestion] = useState(1);
-
   const questions = [
     {
       key: 1,
-      question: 'What is financial literacy and why is it important?',
+      category: 'Coverage',
+      question: 'What risks does Content Creators Insurance (C.C.I) protect against?',
       answer:
-        'Financial literacy is the ability to understand and effectively use various financial skills, including personal financial management, budgeting, and investing. It’s important for making informed decisions.',
+        'C.C.I provides financial protection against common risks faced by content creators, including account bans, demonetization, and suspensions on platforms like YouTube, Instagram, and TikTok. Our goal is to restore your financial position to pre-incident levels, ensuring you can continue your work without prolonged strain.',
     },
     {
       key: 2,
-      question: 'What services does Making Sents offer?',
+      category: 'Claims',
+      question: 'How quickly can I receive payouts with C.C.I?',
       answer:
-        'We offer financial education, consultation services, and tools to help manage your personal finances. Learn more on our Services page.',
+        'C.C.I offers rapid claims processing, with claims verified and paid within 48 hours. This swift payout mechanism provides immediate financial relief, a feature that sets us apart from traditional insurance products.',
     },
     {
       key: 3,
-      question: 'How can I improve my credit score?',
+      category: 'App Features',
+      question: 'How does the C.C.I app help me manage my insurance?',
       answer:
-        'Improving your credit score involves paying bills on time, keeping balances low, and managing debt responsibly. Visit our Products page for tools that can help.',
+        'Our user-friendly app allows you to monitor your account status in real-time, file claims seamlessly, and access preventive tools. Designed with Kenya’s high mobile penetration in mind, the app ensures accessibility and efficiency with minimal infrastructure.',
     },
     {
       key: 4,
-      question: 'Do you offer budget planning services?',
+      category: 'Prevention',
+      question: 'What preventive services does C.C.I offer to reduce risks?',
       answer:
-        'Yes! We provide personalized budgeting services to help you manage your income and expenses. Get started by contacting us today.',
+        'C.C.I provides optional preventive services like content review, training on platform guidelines, and AI-powered content analysis to flag potential issues before posting. These services help reduce the risk of bans or demonetization, potentially lowering your premiums over time.',
     },
   ];
-
   return (
     <section id="faqs" className="w-full py-12 bg-white text-gray-900">
       <Title

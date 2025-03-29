@@ -41,10 +41,10 @@ const Contact = () => {
               <FaMailBulk className="w-fit h-full" />
             </div>
             <a
-              href="mailto:info@makingsent.com"
+              href="mailto:info.content.creator@insurance.com"
               className="h-full flex justify-start items-start flex-col p-2 w-[90%]"
             >
-              <h2 className="font-semibold text-appleGreen text-lg">info@makingsent.com</h2>
+              <h2 className="font-semibold text-appleGreen text-lg">info.content.creator@insurance.com</h2>
               <p>Click here to send us an email</p>
             </a>
           </motion.div>

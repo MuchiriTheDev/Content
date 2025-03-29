@@ -3,6 +3,7 @@ import { assets } from '../assets/assets';
 import { MdArrowRight } from 'react-icons/md';
 import { motion } from 'framer-motion';
 import { Link as ScrollLink } from 'react-scroll';
+import { FaExclamation } from 'react-icons/fa';
 
 const Hero = () => {
   return (
@@ -16,7 +17,7 @@ const Hero = () => {
       className="w-full h-screen relative"
       id="home"
     >
-      <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-b from-[#4f391a9a] to-transparent backdrop-blur-sm">
+    <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-b from-[#4f391a9a] to-transparent backdrop-blur-lg">
         <div className="md:w-1/2 h-fit text-center px-4 md:px-0">
           <motion.h1
             initial={{ y: 50, opacity: 0 }}
@@ -28,7 +29,19 @@ const Hero = () => {
             viewport={{ once: true }} // Ensures animation runs only once
             className="text-2xl md:text-4xl lg:text-6xl font-bold text-white mb-4"
           >
-            Making <span className="text-yellowGreen">| Sents</span>
+            Content Creator
+          </motion.h1>
+          <motion.h1
+            initial={{ y: 50, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            transition={{
+              duration: 0.5,
+              delay: 0.6,
+            }}
+            viewport={{ once: true }} // Ensures animation runs only once
+            className="text-xl md:text-3xl lg:text-5xl font-bold text-yellowGreen mb-4"
+          >
+            Insurance
           </motion.h1>
           <motion.p
             initial={{ y: 50, opacity: 0 }}
@@ -39,8 +52,8 @@ const Hero = () => {
             }}
             viewport={{ once: true }} // Ensures animation runs only once
             className="text-sm md:text-lg font-medium text-slate-200 mb-6"
-          >
-            Empowering your financial future with affordable, tailored resources, practical tools, and accessible learning for all entrepreneurs.
+            >
+              Empowering creators with unparalleled protection against account bans, demonetization, and suspensions, ensuring you can focus on creating fearlessly and with confidence.
           </motion.p>
           <motion.div
             initial={{ y: 50, opacity: 0 }}
@@ -59,8 +72,8 @@ const Hero = () => {
               duration={500}
               offset={-100}
             >
-              <p>Explore Our Services</p>
-              <MdArrowRight className="text-xl h-full" />
+              <p>Apply Now</p>
+              <FaExclamation className="text-xl h-full" />
             </ScrollLink>
           </motion.div>
         </div>

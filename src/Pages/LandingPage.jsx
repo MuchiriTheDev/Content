@@ -12,7 +12,7 @@ import FAQs from '../Component/FAQs'
 
 const LandingPage = () => {
   return (
-    <div>
+    <div className='h-fit'>
         <Navbar/>
         <Hero/>
         <About/>

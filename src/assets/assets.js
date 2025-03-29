@@ -8,6 +8,8 @@ import teams from './teams.jpg'
 import work from './work.jpg'
 import about from './about.jpg'
 import user from './user.png'
+import logo1 from './Logo_1.png'
+import logo2 from './Logo_2.png'
 
 export const assets = {
     logo,
@@ -20,4 +22,6 @@ export const assets = {
     work,
     saving,
     user,
+    logo1,
+    logo2
 }
