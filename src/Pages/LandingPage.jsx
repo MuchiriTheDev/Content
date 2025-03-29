@@ -12,7 +12,7 @@ import FAQs from '../Component/FAQs'
 
 const LandingPage = () => {
   return (
-    <div className='h-fit'>
+    <div className='h-fit max-w-screen'>
         <Navbar/>
         <Hero/>
         <About/>

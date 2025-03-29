@@ -27,7 +27,7 @@ const Hero = () => {
               delay: 0.6,
             }}
             viewport={{ once: true }} // Ensures animation runs only once
-            className="text-2xl md:text-4xl lg:text-6xl font-bold text-white mb-4"
+            className="text-4xl lg:text-6xl font-bold text-white mb-4"
           >
             Content Creator
           </motion.h1>
@@ -39,7 +39,7 @@ const Hero = () => {
               delay: 0.6,
             }}
             viewport={{ once: true }} // Ensures animation runs only once
-            className="text-xl md:text-3xl lg:text-5xl font-bold text-yellowGreen mb-4"
+            className="text-3xl lg:text-5xl font-bold text-yellowGreen mb-4"
           >
             Insurance
           </motion.h1>

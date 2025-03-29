@@ -28,27 +28,29 @@ const Services = () => {
   ];
 
   return (
-    <div id="services" className="w-full min-h-[160vh] h-fit py-10 ">
+    <div id="services" className="w-full min-h-[170vh] h-fit py-10 bg-gray-50">
       <Title head={'Our Services'} subHead={'What we offer as an organization'} />
       <div className="relative flex justify-center items-center mt-10">
         {/* Vertical Line */}
-        <div className="hidden md:block w-2 bg-gradient-to-b from-appleGreen to-white min-h-[110vh] top-0 absolute left-1/2 transform -translate-x-1/2"></div>
+        <div
+          className="w-2 bg-gradient-to-b from-appleGreen to-white min-h-[150vh] md:min-h-[120vh] top-0 absolute left-4 md:left-1/2 md:transform md:-translate-x-1/2"
+        ></div>
 
         {/* Services Cards */}
         <div className="relative w-full">
           {services.map((service, index) => {
-            const isLeft = index % 2 === 0; // Alternate sides
+            const isLeft = index % 2 === 0; // Alternate sides for medium screens and above
             const topPosition = `${index * 150}px`; // Stagger the cards vertically
 
             return (
               <div
                 key={service.id}
-                className="relative w-full flex justify-center"
+                className="relative w-full flex justify-start md:justify-center"
                 style={{ marginTop: index === 0 ? '0' : '100px' }}
               >
                 {/* Dot on the timeline */}
                 <div
-                  className="hidden md:block absolute w-6 h-6 bg-yellowGreen rounded-full left-1/2 transform -translate-x-1/2 z-10"
+                  className="absolute w-6 h-6 bg-yellowGreen rounded-full left-2 md:left-1/2 md:transform md:-translate-x-1/2 z-10"
                   style={{ top: topPosition }}
                 ></div>
 
@@ -58,13 +60,13 @@ const Services = () => {
                   whileInView={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.8, delay: 0 }}
                   viewport={{ once: true }}
-                  className={`bg-white shadow-lg p-6 rounded-lg w-3/4 md:w-1/3 absolute border border-yellowGreen hover:shadow-xl transition-shadow duration-300 ${
-                    isLeft ? 'md:left-10 md:mr-auto' : 'md:right-10 md:ml-auto'
+                  className={`bg-white shadow-lg p-6 rounded-lg w-[calc(100%-6rem)] md:w-1/3 absolute border border-yellowGreen hover:shadow-xl transition-shadow duration-300  ${
+                    isLeft ? 'left-8 md:left-10 md:mr-auto' : 'left-8 md:right-10 md:ml-auto'
                   }`}
                   style={{ top: topPosition }}
                 >
                   <h3 className="text-sm font-semibold text-appleGreen">{service.category}</h3>
-                  <h4 className="text-lg font-semibold text-brown mt-1">{service.title}</h4>
+                  <h4 className="text-lg font-semibold text-gray-800 mt-1">{service.title}</h4>
                   <p className="text-sm text-gray-700 mt-2">{service.description}</p>
                 </motion.div>
               </div>
