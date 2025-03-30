@@ -14,7 +14,7 @@ const Hero = () => {
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
       }}
-      className="w-full h-screen relative"
+      className="w-full min-h-screen h-fit relative"
       id="home"
     >
     <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-b from-[#4f391a9a] to-transparent backdrop-blur-lg">

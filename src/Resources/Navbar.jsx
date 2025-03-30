@@ -39,7 +39,7 @@ const Navbar = () => {
           className={`w-32 mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-yellowGreen  cursor-pointer`}
           to="about" smooth={true} duration={500} offset={-100}
         >
-          solutions
+          Solution
         </ScrollLink>
         <ScrollLink
           className={`w-32 mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-yellowGreen cursor-pointer `}
