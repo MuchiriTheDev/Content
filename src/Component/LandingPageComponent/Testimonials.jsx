@@ -55,14 +55,14 @@ const Testimonials = () => {
     <section className="testimonials mx-auto py-20 relative bg-fadeBrown" id="testimonials">
       <Title head="Testimonials" subHead="Hear what people say about us" />
       <button
-        className="next-btn absolute top-2/3 right-4 transform -translate-y-1/2 text-4xl text-appleGreen cursor-pointer z-10"
+        className="next-btn absolute top-2/3 right-1 transform -translate-y-1/2 text-4xl text-appleGreen cursor-pointer z-10"
         onClick={slideForward}
         aria-label="Next testimonial"
       >
         <FaChevronRight />
       </button>
       <button
-        className="back-btn absolute top-2/3 left-4 transform -translate-y-1/2 text-4xl text-appleGreen cursor-pointer z-10"
+        className="back-btn absolute top-2/3 left-1 transform -translate-y-1/2 text-4xl text-appleGreen cursor-pointer z-10"
         onClick={slideBackward}
         aria-label="Previous testimonial"
       >
