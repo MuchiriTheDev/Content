@@ -1,13 +1,13 @@
 import React from 'react'
-import Navbar from '../Component/Navbar'
-import Footer from '../Component/Footer'
-import Hero from '../Component/Hero'
-import About from '../Component/About'
-import WhyUs from '../Component/WhyUs'
-import Testimonials from '../Component/Testimonials'
-import Services from '../Component/Services'
-import Contact from '../Component/Contact'
-import FAQs from '../Component/FAQs'
+import Navbar from '../Resources/Navbar'
+import Footer from '../Component/LandingPageComponent/Footer'
+import Hero from '../Component/LandingPageComponent/Hero'
+import About from '../Component/LandingPageComponent/About'
+import WhyUs from '../Component/LandingPageComponent/WhyUs'
+import Testimonials from '../Component/LandingPageComponent/Testimonials'
+import Services from '../Component/LandingPageComponent/Services'
+import Contact from '../Resources/Contact'
+import FAQs from '../Component/LandingPageComponent/FAQs'
 
 
 const LandingPage = () => {

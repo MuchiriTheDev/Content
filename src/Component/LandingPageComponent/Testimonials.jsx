@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { FaChevronRight, FaChevronLeft } from 'react-icons/fa';
-import { assets } from '../assets/assets';
-import Title from './Title';
+import { assets } from '../../assets/assets';
+import Title from '../../Resources/Title';
 import { motion } from 'framer-motion';
 
 const testimonialsData = [

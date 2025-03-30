@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FaChevronUp } from 'react-icons/fa'; // Simplified to only FaChevronUp since direction handles collapse
-import Title from './Title';
+import Title from '../../Resources/Title';
 import { motion } from 'framer-motion';
 
 const FAQs = () => {

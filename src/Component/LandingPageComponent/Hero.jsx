@@ -1,5 +1,5 @@
 import React from 'react';
-import { assets } from '../assets/assets';
+import { assets } from '../../assets/assets';
 import { MdArrowRight } from 'react-icons/md';
 import { motion } from 'framer-motion';
 import { Link as ScrollLink } from 'react-scroll';

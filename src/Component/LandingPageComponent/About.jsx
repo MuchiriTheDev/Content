@@ -1,6 +1,6 @@
 import React from 'react';
-import Title from './Title';
-import { assets } from '../assets/assets';
+import Title from '../../Resources/Title';
+import { assets } from '../../assets/assets';
 import { motion } from 'framer-motion';
 
 const About = () => {

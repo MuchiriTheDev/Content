@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaMoneyCheckAlt, FaTools, FaChalkboardTeacher } from 'react-icons/fa';
-import Title from './Title';
+import Title from '../../Resources/Title';
 import { GiDuration } from 'react-icons/gi';
 import {motion} from 'framer-motion'
 
