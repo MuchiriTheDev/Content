@@ -33,7 +33,7 @@ const Services = () => {
       <div className="relative flex justify-center items-center mt-10">
         {/* Vertical Line */}
         <div
-          className="w-2 bg-gradient-to-b from-appleGreen to-white min-h-[150vh] md:min-h-[120vh] top-0 absolute left-4 md:left-1/2 md:transform md:-translate-x-1/2"
+          className="w-2 bg-gradient-to-b from-appleGreen to-white min-h-[100vh] md:min-h-[120vh] top-0 absolute left-4 md:left-1/2 md:transform md:-translate-x-1/2"
         ></div>
 
         {/* Services Cards */}
