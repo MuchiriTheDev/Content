@@ -17,7 +17,7 @@ const Hero = () => {
       className="w-full min-h-screen h-fit relative"
       id="home"
     >
-      <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-b from-[#4f391a9a] to-transparent backdrop-blur-lg">
+      <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-b from-[#4f391a9a] to-transparent backdrop-blur-sm">
         <div className="md:w-1/2 h-fit text-center px-4 md:px-0">
           <motion.h1
             initial={{ y: 50, opacity: 0 }}
