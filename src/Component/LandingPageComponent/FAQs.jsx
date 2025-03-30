@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaChevronUp } from 'react-icons/fa'; // Simplified to only FaChevronUp since direction handles collapse
+import { FaChevronUp } from 'react-icons/fa';
 import Title from '../../Resources/Title';
 import { motion } from 'framer-motion';
 
@@ -9,37 +9,38 @@ const FAQs = () => {
     {
       key: 1,
       category: 'Coverage',
-      question: 'What risks does Content Creators Insurance (C.C.I) protect against?',
+      question: 'What risks does Content Creators Insurance (CCI) protect against?',
       answer:
-        'C.C.I provides financial protection against common risks faced by content creators, including account bans, demonetization, and suspensions on platforms like YouTube, Instagram, and TikTok. Our goal is to restore your financial position to pre-incident levels, ensuring you can continue your work without prolonged strain.',
+        'CCI safeguards your income against platform-induced disruptions like demonetization, suspensions, and bans on platforms such as YouTube, TikTok, and Instagram. Our lump-sum payouts, based on your lost earnings and recovery costs, aim to restore your financial stability swiftly.',
     },
     {
       key: 2,
       category: 'Claims',
-      question: 'How quickly can I receive payouts with C.C.I?',
+      question: 'How quickly can I receive payouts with CCI?',
       answer:
-        'C.C.I offers rapid claims processing, with claims verified and paid within 48 hours. This swift payout mechanism provides immediate financial relief, a feature that sets us apart from traditional insurance products.',
+        'CCI delivers rapid financial relief with payouts processed within 72 hours of claim verification. This industry-leading speed ensures you recover from platform setbacks without delay, starting with creators in Kenya and expanding globally.',
     },
     {
       key: 3,
       category: 'App Features',
-      question: 'How does the C.C.I app help me manage my insurance?',
+      question: 'How does the CCI web-app simplify insurance management?',
       answer:
-        'Our user-friendly app allows you to monitor your account status in real-time, file claims seamlessly, and access preventive tools. Designed with Kenya’s high mobile penetration in mind, the app ensures accessibility and efficiency with minimal infrastructure.',
+        'Our web-app platform, built for Kenya’s 90%+ mobile penetration, lets you apply, file claims, and access preventive tools effortlessly. With AI-driven efficiency and cloud-based operations, it’s a lean, scalable solution for creators worldwide.',
     },
     {
       key: 4,
       category: 'Prevention',
-      question: 'What preventive services does C.C.I offer to reduce risks?',
+      question: 'How does CCI help reduce platform violations?',
       answer:
-        'C.C.I provides optional preventive services like content review, training on platform guidelines, and AI-powered content analysis to flag potential issues before posting. These services help reduce the risk of bans or demonetization, potentially lowering your premiums over time.',
+        'CCI offers optional preventive tools—platform guideline training and AI-powered content review—to cut violation risks by up to 20%. These services not only protect your income but can also qualify you for premium discounts, aligning safety with savings.',
     },
   ];
+
   return (
     <section id="faqs" className="w-full py-12 bg-white text-gray-900">
       <Title
         head="Frequently Asked Questions"
-        subHead="Find answers to common questions about our services and financial literacy."
+        subHead="Your Guide to CCI’s Services and Benefits"
       />
       <div className="flex flex-col p-4 items-center">
         {questions.map((qs) => (
@@ -47,13 +48,13 @@ const FAQs = () => {
             initial={{ y: 100, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0 }}
-            viewport={{ once: true }} // Ensures animation runs only once
+            viewport={{ once: true }}
             key={qs.key}
             onClick={() => setActiveQuestion(activeQuestion === qs.key ? 0 : qs.key)}
             className="w-full md:w-3/4 my-2 border border-yellowGreen rounded-lg cursor-pointer"
             role="button"
             aria-expanded={activeQuestion === qs.key}
-            tabIndex={0} // Makes it keyboard-focusable
+            tabIndex={0}
             onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setActiveQuestion(activeQuestion === qs.key ? 0 : qs.key)}
           >
             <div className="flex justify-between w-full p-4 items-center">

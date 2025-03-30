@@ -1,8 +1,7 @@
 import React from 'react';
-import { FaMoneyCheckAlt, FaTools, FaChalkboardTeacher } from 'react-icons/fa';
+import { FaMoneyCheckAlt, FaTools, FaClock } from 'react-icons/fa'; // Swapped FaChalkboardTeacher for FaClock
 import Title from '../../Resources/Title';
-import { GiDuration } from 'react-icons/gi';
-import {motion} from 'framer-motion'
+import { motion } from 'framer-motion';
 
 const WhyUs = () => {
   return (
@@ -15,7 +14,7 @@ const WhyUs = () => {
         viewport={{ once: true }}
         className="text-center mb-12"
       >
-        <Title head="Why Choose Us" subHead="Explore the Unique Benefits We Offer to Creators" />
+        <Title head="Why Choose CCI" subHead="Unmatched Benefits for Creators Worldwide" />
       </motion.div>
 
       {/* Grid for Cards */}
@@ -36,7 +35,7 @@ const WhyUs = () => {
             viewport={{ once: true }}
             className="text-xl font-bold text-brown mb-2"
           >
-            Cost-Effective Plans
+            Rapid Financial Relief
           </motion.h3>
           <motion.p
             initial={{ y: 100, opacity: 0 }}
@@ -45,7 +44,7 @@ const WhyUs = () => {
             viewport={{ once: true }}
             className="text-gray-600 text-xs lg:text-sm lg:text-center w-full"
           >
-            Enjoy tailored plans that fit your needs and budget. We provide flexible payment options to ensure affordability without compromising on quality.
+            Get lump-sum payouts within 72 hours to cover lost earnings and recovery costs from demonetization, suspensions, or bans—faster than anyone else.
           </motion.p>
         </motion.div>
 
@@ -65,7 +64,7 @@ const WhyUs = () => {
             viewport={{ once: true }}
             className="text-xl font-bold text-brown mb-2"
           >
-            Advanced Preventive Tools
+            AI-Powered Prevention
           </motion.h3>
           <motion.p
             initial={{ y: 100, opacity: 0 }}
@@ -74,7 +73,7 @@ const WhyUs = () => {
             viewport={{ once: true }}
             className="text-gray-600 text-xs lg:text-sm lg:text-center w-full"
           >
-            Access cutting-edge tools designed to proactively address potential challenges. Stay secure and ahead with our comprehensive support and resources.
+            Reduce platform violations by 20% with our optional tools—guideline training and content review—powered by lightweight AI for smarter, safer creating.
           </motion.p>
         </motion.div>
 
@@ -86,15 +85,15 @@ const WhyUs = () => {
           viewport={{ once: true }}
           className="bg-white p-6 rounded-lg shadow-lg text-center"
         >
-          <FaChalkboardTeacher className="text-5xl text-appleGreen mx-auto mb-4" />
+          <FaClock className="text-5xl text-appleGreen mx-auto mb-4" />
           <motion.h3
             initial={{ y: 100, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 1, delay: 0.8 }}
             viewport={{ once: true }}
-            className="text-xl font-semibold text-brown mb-2"
+            className="text-xl font-bold text-brown mb-2"
           >
-            Comprehensive Training
+            Personalized Protection
           </motion.h3>
           <motion.p
             initial={{ y: 100, opacity: 0 }}
@@ -103,7 +102,7 @@ const WhyUs = () => {
             viewport={{ once: true }}
             className="text-gray-600 text-xs lg:text-sm lg:text-center w-full"
           >
-            Gain in-depth knowledge of platform guidelines with our expert-led training sessions. Navigate the platform confidently with our dedicated resources and support.
+            Enjoy premiums tailored to your earnings, content type, and risk profile, calculated by AI to keep costs fair and coverage comprehensive.
           </motion.p>
         </motion.div>
       </div>

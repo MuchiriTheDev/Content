@@ -22,7 +22,7 @@ const Navbar = () => {
   return (
     <nav className={`fixed top-0 left-0 max-w-[100vw] w-full z-30 h-fit p-6 md:px-8 flex justify-between items-center ${scrolling ? 'bg-white' : 'bg-transparent'} transition-all duration-300`}>
       {/* Logo */}
-      <div className="flex justify-center items-center gap-3 md:w-1/4 px-4">
+      <div className="flex justify-center items-center md:w-1/4 px-4">
         <img className="h-fit w-40" src={scrolling ? assets.logo2 : assets.logo1} alt="Making Sents Logo" />
         
       </div>
@@ -30,37 +30,37 @@ const Navbar = () => {
       {/* Nav items (Desktop) */}
       <div className="w-2/3 p-3 hidden md:flex justify-center items-center gap-2 lg:gap-6">
         <ScrollLink
-          className={`w-32 mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-yellowGreen cursor-pointer `}
+          className={`lg:w-32 w-25 mx-1 md:mx-2 lg:mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-yellowGreen cursor-pointer `}
           to="home" smooth={true} duration={500} offset={-100}
         >
           Home
         </ScrollLink>
         <ScrollLink
-          className={`w-32 mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-yellowGreen  cursor-pointer`}
+          className={`lg:w-32 w-25 mx-1 md:mx-2 lg:mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-yellowGreen  cursor-pointer`}
           to="about" smooth={true} duration={500} offset={-100}
         >
           Solution
         </ScrollLink>
         <ScrollLink
-          className={`w-32 mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-yellowGreen cursor-pointer `}
+          className={`lg:w-32 w-25 mx-1 md:mx-2 lg:mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-yellowGreen cursor-pointer `}
           to="services" smooth={true} duration={500} offset={-100}
         >
           Services
         </ScrollLink>
         <ScrollLink
-          className={`w-32 mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-yellowGreen cursor-pointer `}
+          className={`lg:w-32 w-25 mx-1 md:mx-2 lg:mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-yellowGreen cursor-pointer `}
           to="testimonials" smooth={true} duration={500} offset={-100}
         >
           Testimonials
         </ScrollLink>
         <ScrollLink
-          className={`w-32 mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-yellowGreen cursor-pointer `}
+          className={`lg:w-32 w-25 mx-1 md:mx-2 lg:mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-yellowGreen cursor-pointer `}
           to="faqs" smooth={true} duration={500} offset={-100}
         >
           FAQs
         </ScrollLink>
         <ScrollLink
-          className="text-white font-semibold lg:text-sm text-xs py-3 px-2 w-44 bg-appleGreen text-center cursor-pointer"
+          className="text-white font-semibold lg:text-sm text-xs py-3 px-2 w-54 rounded-lg shadow-md text-nowrap bg-appleGreen text-center cursor-pointer"
           to="contact" smooth={true} duration={500} offset={-100}
         >
           Contact Us 

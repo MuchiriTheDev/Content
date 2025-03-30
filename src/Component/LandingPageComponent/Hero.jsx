@@ -1,5 +1,5 @@
 import React from 'react';
-import { assets } from '../../assets/assets';
+import { assets } from '../../assets/assets'; // Ensure this points to a relevant CCI-themed image
 import { MdArrowRight } from 'react-icons/md';
 import { motion } from 'framer-motion';
 import { Link as ScrollLink } from 'react-scroll';
@@ -9,7 +9,7 @@ const Hero = () => {
   return (
     <section
       style={{
-        background: `url(${assets.hero})`,
+        background: `url(${assets.hero})`, // Use an image of a creator or Kenyan digital scene
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
@@ -17,53 +17,41 @@ const Hero = () => {
       className="w-full min-h-screen h-fit relative"
       id="home"
     >
-    <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-b from-[#4f391a9a] to-transparent backdrop-blur-lg">
+      <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-b from-[#4f391a9a] to-transparent backdrop-blur-lg">
         <div className="md:w-1/2 h-fit text-center px-4 md:px-0">
           <motion.h1
             initial={{ y: 50, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
-            transition={{
-              duration: 0.5,
-              delay: 0.6,
-            }}
-            viewport={{ once: true }} // Ensures animation runs only once
-            className="text-4xl lg:text-6xl font-bold text-white mb-4"
+            transition={{ duration: 0.5, delay: 0.6 }}
+            viewport={{ once: true }}
+            className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4"
           >
-            Content Creator
+            Content Creators
           </motion.h1>
           <motion.h1
             initial={{ y: 50, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
-            transition={{
-              duration: 0.5,
-              delay: 0.6,
-            }}
-            viewport={{ once: true }} // Ensures animation runs only once
-            className="text-3xl lg:text-5xl font-bold text-yellowGreen mb-4"
+            transition={{ duration: 0.5, delay: 0.6 }}
+            viewport={{ once: true }}
+            className="text-3xl md:text-4xl lg:text-5xl font-bold text-yellowGreen mb-4"
           >
-            Insurance
+            Insurance (CCI)
           </motion.h1>
           <motion.p
             initial={{ y: 50, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
-            transition={{
-              duration: 0.5,
-              delay: 0.8,
-            }}
-            viewport={{ once: true }} // Ensures animation runs only once
-            className="text-sm md:text-lg font-medium text-slate-200 mb-6"
-            >
-              Empowering creators with unparalleled protection against account bans, demonetization, and suspensions, ensuring you can focus on creating fearlessly and with confidence.
+            transition={{ duration: 0.5, delay: 0.8 }}
+            viewport={{ once: true }}
+            className="text-sm md:text-base lg:text-lg font-medium text-slate-200 mb-6"
+          >
+            Protect your income from platform risks—demonetization, suspensions, or bans—with rapid relief in 72 hours. Launching in Kenya, scaling globally for creators like you.
           </motion.p>
           <motion.div
             initial={{ y: 50, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
-            transition={{
-              duration: 0.8,
-              delay: 1,
-            }}
-            viewport={{ once: true }} // Ensures animation runs only once
-            className="w-full flex justify-center items-center"
+            transition={{ duration: 0.8, delay: 1 }}
+            viewport={{ once: true }}
+            className="w-full flex justify-center items-center gap-4"
           >
             <ScrollLink
               className="h-14 w-fit px-6 py-4 rounded-md shadow-md font-bold bg-appleGreen flex justify-center items-center gap-2 text-base text-white cursor-pointer"
@@ -74,6 +62,16 @@ const Hero = () => {
             >
               <p>Apply Now</p>
               <FaExclamation className="text-xl h-full" />
+            </ScrollLink>
+            <ScrollLink
+              className="h-14 w-fit px-6 py-4 rounded-md shadow-md font-bold bg-transparent border-2 border-appleGreen flex justify-center items-center gap-2 text-base text-white cursor-pointer hover:bg-appleGreen hover:text-white transition-all"
+              to="about"
+              smooth={true}
+              duration={500}
+              offset={-100}
+            >
+              <p>Learn More</p>
+              <MdArrowRight className="text-xl h-full" />
             </ScrollLink>
           </motion.div>
         </div>

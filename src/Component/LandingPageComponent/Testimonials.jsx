@@ -6,32 +6,32 @@ import { motion } from 'framer-motion';
 
 const testimonialsData = [
   {
-    name: 'Muchiri Mwangi',
-    location: 'Nakuru, Kenya',
-    text: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sequi animi veniam consectetur, labore deserunt ipsum ad assumenda. Inventore optio molestiae rerum, recusandae ab consectetur ipsum aspernatur ea repellat, illum architecto?',
-  },
-  {
-    name: 'Brian Mwangi',
+    name: 'Azziad Nasenya',
     location: 'Nairobi, Kenya',
-    text: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sequi animi veniam consectetur, labore deserunt ipsum ad assumenda. Inventore optio molestiae rerum, recusandae ab consectetur ipsum aspernatur ea repellat, illum architecto?',
+    text: 'When TikTok demonetized my account overnight, CCI saved me. I got a payout in just 72 hours, covering my lost earnings and keeping my team paid. It’s a game-changer for creators like me in Kenya!',
   },
   {
-    name: 'Bernard Huston',
-    location: 'California, USA',
-    text: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sequi animi veniam consectetur, labore deserunt ipsum ad assumenda. Inventore optio molestiae rerum, recusandae ab consectetur ipsum aspernatur ea repellat, illum architecto?',
+    name: 'James Otieno',
+    location: 'Kisumu, Kenya',
+    text: 'CCI’s content review tools helped me avoid a YouTube suspension. The AI caught risky edits before I posted, and their training made me confident about platform rules. I’m creating worry-free now.',
   },
   {
-    name: 'Ibrahim Zlatan',
-    location: 'Moscow, Russia',
-    text: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sequi animi veniam consectetur, labore deserunt ipsum ad assumenda. Inventore optio molestiae rerum, recusandae ab consectetur ipsum aspernatur ea repellat, illum architecto?',
+    name: 'Priya Patel',
+    location: 'Mumbai, India',
+    text: 'As an Instagram influencer, I love how CCI tailored my premium to my earnings and audience size. When I faced a temporary ban, their fast support got me back on track without breaking the bank.',
+  },
+  {
+    name: 'Michael Brooks',
+    location: 'Los Angeles, USA',
+    text: 'CCI’s global vision is real. After a YouTube ban cost me sponsorships, their payout came through in three days flat. It’s the safety net every creator needs in this unpredictable digital world.',
   },
 ];
 
 const Testimonials = () => {
   const slider = useRef();
-  const [tx, setTx] = React.useState(0); // Use state for better React integration
+  const [tx, setTx] = React.useState(0);
 
-  const itemsPerView = 2; // 1 on mobile, 2 on md+ (adjust based on w-full vs md:w-1/2)
+  const itemsPerView = 2; // 1 on mobile, 2 on md+ (based on w-full vs md:w-1/2)
   const totalItems = testimonialsData.length;
   const maxTx = -((totalItems - itemsPerView) * 100); // Max translation based on visible items
 
@@ -53,7 +53,7 @@ const Testimonials = () => {
 
   return (
     <section className="testimonials mx-auto py-20 relative bg-fadeBrown" id="testimonials">
-      <Title head="Testimonials" subHead="Hear what people say about us" />
+      <Title head="Testimonials" subHead="What Creators Say About CCI" />
       <button
         className="next-btn absolute top-2/3 right-1 transform -translate-y-1/2 text-4xl text-appleGreen cursor-pointer z-10"
         onClick={slideForward}
@@ -75,14 +75,14 @@ const Testimonials = () => {
               initial={{ y: 100, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               transition={{ duration: 1, delay: index / 10 }}
-              viewport={{ once: true }} // Ensures animation runs only once
+              viewport={{ once: true }}
               key={index}
               className="testimonial-item flex-shrink-0 w-full md:w-1/2 p-6"
             >
               <div className="slide shadow-lg p-6 rounded-lg bg-white">
                 <div className="user-info flex items-center mb-4">
                   <img
-                    src={assets.user}
+                    src={assets.user} // Replace with creator-specific placeholder if available
                     alt={`${testimonial.name}'s profile`}
                     className="w-16 h-16 rounded-full border-4 border-appleGreen mr-4"
                   />

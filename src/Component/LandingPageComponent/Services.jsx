@@ -7,29 +7,29 @@ const Services = () => {
     {
       id: 1,
       category: 'Protection',
-      title: 'Comprehensive Financial Protection',
+      title: 'Rapid Income Protection',
       description:
-        'Our service ensures you are financially safeguarded in the event of account bans, suspensions, or demonetization. We provide tailored solutions to help you recover lost revenue and maintain financial stability during challenging times.',
+        'CCI shields your earnings with lump-sum payouts within 72 hours if you face demonetization, suspensions, or bans. Tailored to your lost revenue and recovery costs, we keep you financially secure—starting in Kenya, scaling globally.',
     },
     {
       id: 2,
       category: 'Prevention',
-      title: 'Advanced Preventive Tools',
+      title: 'AI-Driven Risk Reduction',
       description:
-        'We offer cutting-edge preventive tools, including in-depth content review services, to proactively identify and mitigate risks that could lead to account penalties. Our tools are designed to keep your accounts compliant and secure.',
+        'Leverage our lightweight AI tools—content review and platform guideline insights—to cut violation risks by 20%. Stay ahead of platform policies and protect your income with proactive, data-driven support.',
     },
     {
       id: 3,
-      category: 'Education',
-      title: 'Expert Training on Platform Guidelines',
+      category: 'Personalization',
+      title: 'Tailored Premiums & Coverage',
       description:
-        'Our specialized training programs provide a thorough understanding of social media platform guidelines. We equip you with the knowledge and best practices needed to avoid violations, ensuring long-term success and compliance.',
+        'Get insurance that fits you perfectly. Our AI assesses your earnings, content type, and risk history to deliver personalized premiums and comprehensive coverage, ensuring affordability and peace of mind.',
     },
   ];
 
   return (
     <div id="services" className="w-full max-w-[100vw] min-h-[100vh] md:min-h-[150vh] h-fit py-10 bg-gray-50">
-      <Title head={'Our Services'} subHead={'What we offer as an organization'} />
+      <Title head={'Our Services'} subHead={'How CCI Empowers Creators'} />
       <div className="relative flex justify-center items-center mt-10">
         {/* Vertical Line */}
         <div
@@ -60,7 +60,7 @@ const Services = () => {
                   whileInView={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.8, delay: 0 }}
                   viewport={{ once: true }}
-                  className={`bg-white shadow-lg p-6 rounded-lg w-[calc(100%-6rem)] md:w-1/3 absolute border border-yellowGreen hover:shadow-xl transition-shadow duration-300  ${
+                  className={`bg-white shadow-lg p-6 rounded-lg w-[calc(100%-6rem)] md:w-1/3 absolute border border-yellowGreen hover:shadow-xl transition-shadow duration-300 ${
                     isLeft ? 'left-8 md:left-10 md:mr-auto' : 'left-8 md:right-10 md:ml-auto'
                   }`}
                   style={{ top: topPosition }}
