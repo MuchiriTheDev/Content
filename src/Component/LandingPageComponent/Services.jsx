@@ -28,7 +28,7 @@ const Services = () => {
   ];
 
   return (
-    <div id="services" className="w-full min-h-[170vh] h-fit py-10 bg-gray-50">
+    <div id="services" className="w-full max-w-[100vw] min-h-[150vh] h-fit py-10 bg-gray-50">
       <Title head={'Our Services'} subHead={'What we offer as an organization'} />
       <div className="relative flex justify-center items-center mt-10">
         {/* Vertical Line */}
