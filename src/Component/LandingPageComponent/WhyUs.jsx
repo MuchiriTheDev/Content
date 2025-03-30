@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaMoneyCheckAlt, FaTools, FaClock } from 'react-icons/fa'; // Swapped FaChalkboardTeacher for FaClock
+import { FaMoneyCheckAlt, FaTools, FaClock } from 'react-icons/fa';
 import Title from '../../Resources/Title';
 import { motion } from 'framer-motion';
 
@@ -14,7 +14,7 @@ const WhyUs = () => {
         viewport={{ once: true }}
         className="text-center mb-12"
       >
-        <Title head="Why Choose CCI" subHead="Unmatched Benefits for Creators Worldwide" />
+        <Title head="Why CCI Rocks" subHead="Your Creator Edge Starts Here" />
       </motion.div>
 
       {/* Grid for Cards */}
@@ -35,7 +35,7 @@ const WhyUs = () => {
             viewport={{ once: true }}
             className="text-xl font-bold text-brown mb-2"
           >
-            Rapid Financial Relief
+            Cash When You Crash
           </motion.h3>
           <motion.p
             initial={{ y: 100, opacity: 0 }}
@@ -44,7 +44,7 @@ const WhyUs = () => {
             viewport={{ once: true }}
             className="text-gray-600 text-xs lg:text-sm lg:text-center w-full"
           >
-            Get lump-sum payouts within 72 hours to cover lost earnings and recovery costs from demonetization, suspensions, or bans—faster than anyone else.
+            Platform glitch? Ban blues? CCI’s got your back with quick cash to bounce back fast. No waiting, just creating.
           </motion.p>
         </motion.div>
 
@@ -64,7 +64,7 @@ const WhyUs = () => {
             viewport={{ once: true }}
             className="text-xl font-bold text-brown mb-2"
           >
-            AI-Powered Prevention
+            Dodge the Drama
           </motion.h3>
           <motion.p
             initial={{ y: 100, opacity: 0 }}
@@ -73,7 +73,7 @@ const WhyUs = () => {
             viewport={{ once: true }}
             className="text-gray-600 text-xs lg:text-sm lg:text-center w-full"
           >
-            Reduce platform violations by 20% with our optional tools—guideline training and content review—powered by lightweight AI for smarter, safer creating.
+            Our clever tools spot trouble before it strikes—think content checks and guideline hacks. Stay safe, keep the vibe.
           </motion.p>
         </motion.div>
 
@@ -93,7 +93,7 @@ const WhyUs = () => {
             viewport={{ once: true }}
             className="text-xl font-bold text-brown mb-2"
           >
-            Personalized Protection
+            Built Just for You
           </motion.h3>
           <motion.p
             initial={{ y: 100, opacity: 0 }}
@@ -102,7 +102,7 @@ const WhyUs = () => {
             viewport={{ once: true }}
             className="text-gray-600 text-xs lg:text-sm lg:text-center w-full"
           >
-            Enjoy premiums tailored to your earnings, content type, and risk profile, calculated by AI to keep costs fair and coverage comprehensive.
+            Coverage that fits your hustle—your earnings, your style. CCI crafts it smart so you shine, not stress.
           </motion.p>
         </motion.div>
       </div>

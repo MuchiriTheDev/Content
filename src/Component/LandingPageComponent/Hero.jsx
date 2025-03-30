@@ -1,5 +1,5 @@
 import React from 'react';
-import { assets } from '../../assets/assets'; // Ensure this points to a relevant CCI-themed image
+import { assets } from '../../assets/assets'; // Image of a creator in action (filming, editing)
 import { MdArrowRight } from 'react-icons/md';
 import { motion } from 'framer-motion';
 import { Link as ScrollLink } from 'react-scroll';
@@ -9,7 +9,7 @@ const Hero = () => {
   return (
     <section
       style={{
-        background: `url(${assets.hero})`, // Use an image of a creator or Kenyan digital scene
+        background: `url(${assets.hero})`, // Vibrant creator scene
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
@@ -35,7 +35,7 @@ const Hero = () => {
             viewport={{ once: true }}
             className="text-3xl md:text-4xl lg:text-5xl font-bold text-yellowGreen mb-4"
           >
-            Insurance (CCI)
+            Create without Fear
           </motion.h1>
           <motion.p
             initial={{ y: 50, opacity: 0 }}
@@ -44,7 +44,7 @@ const Hero = () => {
             viewport={{ once: true }}
             className="text-sm md:text-base lg:text-lg font-medium text-slate-200 mb-6"
           >
-            Protect your income from platform risks—demonetization, suspensions, or bans—with rapid relief in 72 hours. Launching in Kenya, scaling globally for creators like you.
+            With <span className='text-yellowGreen font-semibold'>CCI</span>, we empower you to focus on your passion, while we handle the risks. Our AI-driven insurance solutions ensure you can create freely, without the fear of losing your income or content.
           </motion.p>
           <motion.div
             initial={{ y: 50, opacity: 0 }}

@@ -7,29 +7,29 @@ const Services = () => {
     {
       id: 1,
       category: 'Protection',
-      title: 'Rapid Income Protection',
+      title: 'Your Income Lifeline',
       description:
-        'CCI shields your earnings with lump-sum payouts within 72 hours if you face demonetization, suspensions, or bans. Tailored to your lost revenue and recovery costs, we keep you financially secure—starting in Kenya, scaling globally.',
+        'CCI catches you when platforms drop the ball—think bans or cash flow stalls. Quick payouts keep your dreams on track, no matter where you’re at.',
     },
     {
       id: 2,
       category: 'Prevention',
-      title: 'AI-Driven Risk Reduction',
+      title: 'Risk-Busting Tools',
       description:
-        'Leverage our lightweight AI tools—content review and platform guideline insights—to cut violation risks by 20%. Stay ahead of platform policies and protect your income with proactive, data-driven support.',
+        'Stay in the game with CCI’s clever kit—content checks and platform tips. Dodge the flags and keep your spark blazing bright.',
     },
     {
       id: 3,
       category: 'Personalization',
-      title: 'Tailored Premiums & Coverage',
+      title: 'Coverage Your Way',
       description:
-        'Get insurance that fits you perfectly. Our AI assesses your earnings, content type, and risk history to deliver personalized premiums and comprehensive coverage, ensuring affordability and peace of mind.',
+        'CCI gets you. We shape your plan around your hustle—your vibe, your earnings. Smart, simple protection that’s all about you.',
     },
   ];
 
   return (
     <div id="services" className="w-full max-w-[100vw] min-h-[100vh] md:min-h-[150vh] h-fit py-10 bg-gray-50">
-      <Title head={'Our Services'} subHead={'How CCI Empowers Creators'} />
+      <Title head={'What CCI Brings You'} subHead={'Your Creative Superpowers'} />
       <div className="relative flex justify-center items-center mt-10">
         {/* Vertical Line */}
         <div

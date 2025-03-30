@@ -6,24 +6,24 @@ import { motion } from 'framer-motion';
 
 const testimonialsData = [
   {
-    name: 'Azziad Nasenya',
+    name: 'Wanjiku Kariuki',
     location: 'Nairobi, Kenya',
-    text: 'When TikTok demonetized my account overnight, CCI saved me. I got a payout in just 72 hours, covering my lost earnings and keeping my team paid. It’s a game-changer for creators like me in Kenya!',
+    text: 'CCI pulled me out of a TikTok ban mess—cash hit my account fast, and I was back creating in no time. It’s like having a crew that’s got your back!',
   },
   {
-    name: 'James Otieno',
-    location: 'Kisumu, Kenya',
-    text: 'CCI’s content review tools helped me avoid a YouTube suspension. The AI caught risky edits before I posted, and their training made me confident about platform rules. I’m creating worry-free now.',
+    name: 'Kofi Mensah',
+    location: 'Accra, Ghana',
+    text: 'The tools CCI gave me stopped a YouTube flag before it wrecked my channel. Now I post with confidence—total game-changer for my hustle.',
   },
   {
-    name: 'Priya Patel',
+    name: 'Priya Sharma',
     location: 'Mumbai, India',
-    text: 'As an Instagram influencer, I love how CCI tailored my premium to my earnings and audience size. When I faced a temporary ban, their fast support got me back on track without breaking the bank.',
+    text: 'CCI gets my vibe. They shaped a plan that fits my Insta gigs perfectly—affordable and solid. I’m hooked, no stress, just growth!',
   },
   {
-    name: 'Michael Brooks',
-    location: 'Los Angeles, USA',
-    text: 'CCI’s global vision is real. After a YouTube ban cost me sponsorships, their payout came through in three days flat. It’s the safety net every creator needs in this unpredictable digital world.',
+    name: 'Liam Carter',
+    location: 'London, UK',
+    text: 'When a sponsor bailed after a platform glitch, CCI stepped up quick. It’s the safety net every creator needs—join this squad, trust me!',
   },
 ];
 
@@ -53,7 +53,7 @@ const Testimonials = () => {
 
   return (
     <section className="testimonials mx-auto py-20 relative bg-fadeBrown" id="testimonials">
-      <Title head="Testimonials" subHead="What Creators Say About CCI" />
+      <Title head="Creators Speak" subHead="Why They Love CCI" />
       <button
         className="next-btn absolute top-2/3 right-1 transform -translate-y-1/2 text-4xl text-appleGreen cursor-pointer z-10"
         onClick={slideForward}
@@ -82,7 +82,7 @@ const Testimonials = () => {
               <div className="slide shadow-lg p-6 rounded-lg bg-white">
                 <div className="user-info flex items-center mb-4">
                   <img
-                    src={assets.user} // Replace with creator-specific placeholder if available
+                    src={assets.user} // Replace with creator-specific avatars later
                     alt={`${testimonial.name}'s profile`}
                     className="w-16 h-16 rounded-full border-4 border-appleGreen mr-4"
                   />

@@ -9,39 +9,50 @@ const FAQs = () => {
     {
       key: 1,
       category: 'Coverage',
-      question: 'What risks does Content Creators Insurance (CCI) protect against?',
+      question: 'What messes does CCI save me from?',
       answer:
-        'CCI safeguards your income against platform-induced disruptions like demonetization, suspensions, and bans on platforms such as YouTube, TikTok, and Instagram. Our lump-sum payouts, based on your lost earnings and recovery costs, aim to restore your financial stability swiftly.',
+        'CCI’s got you covered when platforms throw curveballs—demonetization, suspensions, or bans on spots like YouTube, TikTok, or Insta. We swoop in with cash to keep your creative flow steady, no matter the hiccup.',
     },
     {
       key: 2,
       category: 'Claims',
-      question: 'How quickly can I receive payouts with CCI?',
+      question: 'How fast does CCI come through?',
       answer:
-        'CCI delivers rapid financial relief with payouts processed within 72 hours of claim verification. This industry-leading speed ensures you recover from platform setbacks without delay, starting with creators in Kenya and expanding globally.',
+        'When disaster strikes, CCI’s on it—fast. We get cash in your hands quick after a claim, so you’re back to creating without missing a beat. Speed’s our thing!',
     },
     {
       key: 3,
       category: 'App Features',
-      question: 'How does the CCI web-app simplify insurance management?',
+      question: 'How does CCI’s web-app make my life easier?',
       answer:
-        'Our web-app platform, built for Kenya’s 90%+ mobile penetration, lets you apply, file claims, and access preventive tools effortlessly. With AI-driven efficiency and cloud-based operations, it’s a lean, scalable solution for creators worldwide.',
+        'Our web-app’s your creative sidekick—apply, claim, and dodge risks right from your phone. It’s smooth, smart, and built for creators on the move, wherever you’re vibing.',
     },
     {
       key: 4,
       category: 'Prevention',
-      question: 'How does CCI help reduce platform violations?',
+      question: 'Can CCI keep me out of trouble?',
       answer:
-        'CCI offers optional preventive tools—platform guideline training and AI-powered content review—to cut violation risks by up to 20%. These services not only protect your income but can also qualify you for premium discounts, aligning safety with savings.',
+        'Yep, CCI’s got tools to spot drama before it hits—content checks and platform know-how. Stay safe, keep posting, and maybe even snag a sweeter deal on your plan.',
+    },
+    {
+      key: 5,
+      category: 'Eligibility',
+      question: 'What if my channel’s small—can I still join CCI?',
+      answer:
+        'Size doesn’t matter to us! Whether you’re just starting or already popping off, CCI’s here for every creator. We tailor your coverage to fit your hustle, big or small—join the squad!',
+    },
+    {
+      key: 6,
+      category: 'Costs',
+      question: 'Will CCI cost me more if I mess up a lot?',
+      answer:
+        'No stress here—CCI keeps it fair. We look at your vibe, not just your slip-ups, to craft a plan that won’t break the bank. Plus, our tools help you dodge repeat chaos, keeping costs chill.',
     },
   ];
 
   return (
     <section id="faqs" className="w-full py-12 bg-white text-gray-900">
-      <Title
-        head="Frequently Asked Questions"
-        subHead="Your Guide to CCI’s Services and Benefits"
-      />
+      <Title head="Got Questions?" subHead="CCI’s Answers for Creators" />
       <div className="flex flex-col p-4 items-center">
         {questions.map((qs) => (
           <motion.div
