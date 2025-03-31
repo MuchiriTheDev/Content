@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { assets } from '../assets/assets';
 import { MdArrowLeft, MdClose, MdMenu } from 'react-icons/md';
-import { FaHome, FaPhoneAlt, FaQuestion, FaRegUser } from 'react-icons/fa';
+import { FaHome, FaPhoneAlt, FaQuestion, FaRegUser, FaUser } from 'react-icons/fa';
 import { GrServices } from 'react-icons/gr';
 import { RiHotelLine } from 'react-icons/ri';
 import { Link as ScrollLink } from 'react-scroll';
@@ -39,51 +39,45 @@ const Navbar = () => {
           className={`lg:w-32 w-25 mx-1 md:mx-2 lg:mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-yellowGreen  cursor-pointer`}
           to="about" smooth={true} duration={500} offset={-100}
         >
-          Solution
+          Our Solutions
         </ScrollLink>
         <ScrollLink
           className={`lg:w-32 w-25 mx-1 md:mx-2 lg:mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-yellowGreen cursor-pointer `}
           to="services" smooth={true} duration={500} offset={-100}
         >
-          Services
+         Services
         </ScrollLink>
-        <ScrollLink
-          className={`lg:w-32 w-25 mx-1 md:mx-2 lg:mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-yellowGreen cursor-pointer `}
-          to="testimonials" smooth={true} duration={500} offset={-100}
-        >
-          Testimonials
-        </ScrollLink>
-        <ScrollLink
-          className={`lg:w-32 w-25 mx-1 md:mx-2 lg:mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-yellowGreen cursor-pointer `}
-          to="faqs" smooth={true} duration={500} offset={-100}
-        >
-          FAQs
-        </ScrollLink>
-        <ScrollLink
-          className="text-white font-semibold lg:text-sm text-xs py-3 px-2 w-54 rounded-lg shadow-md text-nowrap bg-appleGreen text-center cursor-pointer"
-          to="contact" smooth={true} duration={500} offset={-100}
-        >
-          Contact Us 
-        </ScrollLink>
+       
       </div>
 
-      {/* Sidebar Toggle (Mobile) */}
-      <button
-        onClick={() => showSidebar(!sidebar)}
-        className="md:hidden z-10 p-1"
-        aria-label={sidebar ? 'Close menu' : 'Open menu'}
-        aria-expanded={sidebar}
-      >
-        {sidebar ? (
-          <MdClose className={`w-10 h-10 ${scrolling ? 'text-brown' : 'text-white'}`} />
-        ) : (
-          <MdMenu className={`w-10 h-10 ${scrolling ? 'text-brown' : 'text-white'}`} />
-        )}
-      </button>
+      <div className='w-1/4 flex justify-center items-center gap-4'>
+        <ScrollLink
+          className="text-white font-semibold lg:text-sm text-xs py-3 px-2 w-54 rounded-lg shadow-md text-nowrap bg-appleGreen text-center cursor-pointer flex items-center gap-2 hover:bg-yellowGreen transition-all duration-150"
+          to="contact" smooth={true} duration={500} offset={-100}
+        >
+          <FaUser />
+          Sign up
+        </ScrollLink>
+        {/* Sidebar Toggle (Mobile) */}
+        <button
+          onClick={() => showSidebar(!sidebar)}
+          className="md:hidden z-10 p-1"
+          aria-label={sidebar ? 'Close menu' : 'Open menu'}
+          aria-expanded={sidebar}
+        >
+          {sidebar ? (
+            <MdClose className={`w-10 h-10 ${scrolling ? 'text-brown' : 'text-white'}`} />
+          ) : (
+            <MdMenu className={`w-10 h-10 ${scrolling ? 'text-brown' : 'text-white'}`} />
+          )}
+        </button>
+      </div>
+
+     
 
       {/* Mobile Menu */}
       <div
-        className={`fixed top-0 ${sidebar ? 'right-0' : '-right-64'} md:hidden p-5 transition-all duration-300 w-64 bg-gradient-to-b from-[#4f391a9a] to-transparent backdrop-blur-md h-full`}
+        className={`fixed top-0 ${sidebar ? 'right-0' : '-right-64'} md:hidden p-5 transition-all duration-300 w-64 bg-gradient-to-b from-yellowGreen to-transparent backdrop-blur-md h-full`}
       >
         <ScrollLink
           onClick={() => showSidebar(false)}
@@ -108,7 +102,7 @@ const Navbar = () => {
             to="about" smooth={true} duration={500} offset={-100}
           >
             <RiHotelLine />
-            <p>About Us</p>
+            <p>Our Solutions</p>
           </ScrollLink>
           <ScrollLink
             onClick={() => showSidebar(false)}
@@ -118,29 +112,14 @@ const Navbar = () => {
             <GrServices />
             <p>Services</p>
           </ScrollLink>
-          <ScrollLink
-            onClick={() => showSidebar(false)}
-            className="text-white flex items-center gap-2 w-full h-10 mb-6 py-3 font-bold text-lg hover:text-appleGreen"
-            to="testimonials" smooth={true} duration={500} offset={-100}
-          >
-            <FaRegUser />
-            <p>Testimonials</p>
-          </ScrollLink>
-          <ScrollLink
-            onClick={() => showSidebar(false)}
-            className="text-white flex items-center gap-2 w-full h-10 mb-6 py-3 font-bold text-lg hover:text-appleGreen"
-            to="faqs" smooth={true} duration={500} offset={-100}
-          >
-            <FaQuestion />
-            <p>FAQs</p>
-          </ScrollLink>
+          
           <ScrollLink
             onClick={() => showSidebar(false)}
             className="text-white flex items-center gap-2 w-full h-10 mb-6 py-3 font-bold text-lg hover:text-appleGreen"
             to="contact" smooth={true} duration={500} offset={-100}
           >
-            <FaPhoneAlt />
-            <p>Contact Us</p>
+            <FaUser/>
+            <p>Sign up</p>
           </ScrollLink>
         </div>
       </div>
