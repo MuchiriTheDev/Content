@@ -5,6 +5,7 @@ import { FaHome, FaPhoneAlt, FaQuestion, FaRegUser, FaUser } from 'react-icons/f
 import { GrServices } from 'react-icons/gr';
 import { RiHotelLine } from 'react-icons/ri';
 import { Link as ScrollLink } from 'react-scroll';
+import { Link as RouterLink } from 'react-router-dom';
 
 const Navbar = () => {
   const [sidebar, showSidebar] = useState(false);
@@ -31,9 +32,9 @@ const Navbar = () => {
       <div className="w-2/3 p-3 hidden md:flex justify-center items-center gap-2 lg:gap-6">
         <ScrollLink
           className={`lg:w-32 w-25 mx-1 md:mx-2 lg:mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-yellowGreen cursor-pointer `}
-          to="home" smooth={true} duration={500} offset={-100}
+          to="how-to-apply" smooth={true} duration={500} offset={-100}
         >
-          Home
+          Application
         </ScrollLink>
         <ScrollLink
           className={`lg:w-32 w-25 mx-1 md:mx-2 lg:mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-yellowGreen  cursor-pointer`}
@@ -45,19 +46,19 @@ const Navbar = () => {
           className={`lg:w-32 w-25 mx-1 md:mx-2 lg:mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-yellowGreen cursor-pointer `}
           to="services" smooth={true} duration={500} offset={-100}
         >
-         Services
+         our Services
         </ScrollLink>
        
       </div>
 
       <div className='w-1/4 flex justify-center items-center gap-4'>
-        <ScrollLink
+        <RouterLink
           className="text-white font-semibold lg:text-sm text-xs py-3 px-2 w-54 rounded-lg shadow-md text-nowrap bg-appleGreen text-center cursor-pointer flex items-center gap-2 hover:bg-yellowGreen transition-all duration-150"
-          to="contact" smooth={true} duration={500} offset={-100}
+          to="/signup" smooth={true} duration={500} offset={-100}
         >
           <FaUser />
           Sign up
-        </ScrollLink>
+        </RouterLink>
         {/* Sidebar Toggle (Mobile) */}
         <button
           onClick={() => showSidebar(!sidebar)}
@@ -91,10 +92,10 @@ const Navbar = () => {
           <ScrollLink
             onClick={() => showSidebar(false)}
             className="text-white flex items-center gap-2 w-full h-10 mb-6 py-3 font-bold text-lg hover:text-appleGreen"
-            to="home" smooth={true} duration={500} offset={-100}
+            to="how-to-apply" smooth={true} duration={500} offset={-100}
           >
             <FaHome />
-            <p>Home</p>
+            <p>Application</p>
           </ScrollLink>
           <ScrollLink
             onClick={() => showSidebar(false)}
@@ -113,14 +114,14 @@ const Navbar = () => {
             <p>Services</p>
           </ScrollLink>
           
-          <ScrollLink
+          <RouterLink
+            to={'/signup'}
             onClick={() => showSidebar(false)}
             className="text-white flex items-center gap-2 w-full h-10 mb-6 py-3 font-bold text-lg hover:text-appleGreen"
-            to="contact" smooth={true} duration={500} offset={-100}
           >
             <FaUser/>
             <p>Sign up</p>
-          </ScrollLink>
+          </RouterLink>
         </div>
       </div>
     </nav>

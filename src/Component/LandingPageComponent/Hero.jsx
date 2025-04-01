@@ -4,6 +4,7 @@ import { MdArrowRight } from 'react-icons/md';
 import { motion } from 'framer-motion';
 import { Link as ScrollLink } from 'react-scroll';
 import { FaExclamation } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 const Hero = () => {
   return (
@@ -53,16 +54,13 @@ const Hero = () => {
             viewport={{ once: true }}
             className="w-full flex justify-center items-center gap-4"
           >
-            <ScrollLink
+            <Link
               className="h-14 w-fit px-6 py-4 rounded-md shadow-md font-bold bg-appleGreen flex justify-center items-center gap-2 text-base text-white cursor-pointer"
-              to="services"
-              smooth={true}
-              duration={500}
-              offset={-100}
+              to="/application"
             >
               <p>Apply Now</p>
               <FaExclamation className="text-xl h-full" />
-            </ScrollLink>
+            </Link>
             <ScrollLink
               className="h-14 w-fit px-6 py-4 rounded-md shadow-md font-bold bg-transparent border-2 border-appleGreen flex justify-center items-center gap-2 text-base text-white cursor-pointer hover:bg-appleGreen hover:text-white transition-all"
               to="about"

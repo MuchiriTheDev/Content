@@ -1,9 +1,10 @@
 import React from 'react';
 import Title from '../../Resources/Title';
+import { Link } from 'react-router-dom';
 
 const HowToApply = () => {
   return (
-    <div className="w-full min-h-screen bg-fadeBrown text-white overflow-hidden relative">
+    <div id='how-to-apply' className="w-full min-h-screen bg-fadeBrown text-white overflow-hidden relative">
       {/* Futuristic Background Effects */}
         <div className="absolute inset-0 bg-grid-pattern bg-blue-800 opacity-10 pointer-events-none"></div>
         <div className="absolute top-0 left-0 w-full h-full animate-pulse bg-yellow-700 opacity-5"></div>
@@ -51,10 +52,10 @@ const HowToApply = () => {
 
           {/* Apply Now Button */}
         <div className="mt-16 text-center">
-          <button className="relative px-10 py-4 bg-yellowGreen text-white font-semibold rounded-lg shadow-lg hover:shadow-neon transition-all duration-300 transform hover:scale-105">
+          <Link to='/application' className="relative px-10 py-4 bg-yellowGreen text-white font-semibold rounded-lg shadow-lg hover:shadow-neon transition-all duration-300 transform hover:scale-105">
             <span className="relative z-10">Apply Now</span>
             <div className="absolute inset-0 bg-white opacity-0 hover:opacity-20 rounded-full transition-opacity duration-300"></div>
-          </button>
+          </Link>
         </div>
       </div>
     </div>

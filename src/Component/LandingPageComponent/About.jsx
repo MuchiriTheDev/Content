@@ -3,6 +3,7 @@ import Title from '../../Resources/Title';
 import { assets } from '../../assets/assets';
 import { motion } from 'framer-motion';
 import { Link as ScrollLink } from 'react-scroll';
+import { Link } from 'react-router-dom';
 
 const About = () => {
   return (
@@ -60,15 +61,12 @@ const About = () => {
             viewport={{ once: true }}
             className="w-full flex justify-start"
           >
-            <ScrollLink
+            <Link
               className="h-12 w-fit px-6 py-3 rounded-md shadow-md font-bold bg-appleGreen flex justify-center items-center gap-2 text-base text-white cursor-pointer hover:bg-opacity-90 transition-all"
-              to="services" // Could link to a dedicated apply section later
-              smooth={true}
-              duration={500}
-              offset={-100}
+              to="/application" // Could link to a dedicated apply section later
             >
               <p>Apply Now</p>
-            </ScrollLink>
+            </Link>
           </motion.div>
         </div>
       </div>

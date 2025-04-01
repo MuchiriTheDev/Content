@@ -1,9 +1,127 @@
-import React from 'react'
+import React from 'react';
+import { FaLock, FaMailBulk } from 'react-icons/fa';
+import { motion } from 'framer-motion';
+import { MdArrowBack } from 'react-icons/md';
+import { Link } from 'react-router-dom';
+import { FcGoogle } from 'react-icons/fc';
 
 const Login = () => {
   return (
-    <div>Login</div>
-  )
-}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1 }}
+      className="w-full min-h-screen bg-appleGreen text-fadeBrown flex items-center justify-center relative overflow-hidden"
+    >
+      {/* Login Form Container */}
+      <motion.div
+        initial={{ y: 50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 1, delay: 0.3 }}
+        className="relative z-10 max-w-2xl w-full md:h-fit h-screen p-8 bg-white backdrop-blur-md rounded-none md:rounded-xl shadow-2xl border border-appleGreen"
+      >
+        <Link to="/" className="py-2">
+          <MdArrowBack size={20} className="mb-4 text-brown" />
+        </Link>
+        <h2 className="text-3xl font-extrabold text-brown mb-3">
+          Welcome Back
+        </h2>
+        <p className="text-yellowGreen text-sm mb-8">
+          Log in to continue your journey as a Content Creator and manage your account!
+        </p>
 
-export default Login
+        {/* Form */}
+        <motion.form
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 0.5 }}
+          className="space-y-4"
+        >
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-brown mb-1"
+            >
+              Email
+            </label>
+            <motion.div
+              initial={{ y: 100, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              transition={{ duration: 1, delay: 0.4 }}
+              viewport={{ once: true }}
+              className="w-full h-12 border-2 border-appleGreen rounded-lg flex gap-3 items-center mb-3"
+            >
+              <FaMailBulk className="w-fit p-2 h-full text-appleGreen" />
+              <input
+                className="border-none placeholder:text-gray-600 text-brown bg-transparent outline-none w-3/4 h-full"
+                type="text"
+                name="email"
+                required
+                placeholder="Ex: janemwangi@gmail.com"
+              />
+            </motion.div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-brown mb-1"
+            >
+              Password
+            </label>
+            <motion.div
+              initial={{ y: 100, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              transition={{ duration: 1, delay: 0.6 }}
+              viewport={{ once: true }}
+              className="w-full h-12 border-2 border-appleGreen rounded-lg flex gap-3 items-center mb-3"
+            >
+              <FaLock className="w-fit p-2 h-full text-appleGreen" />
+              <input
+                className="border-none placeholder:text-gray-600 text-brown bg-transparent outline-none w-3/4 h-full"
+                type="password"
+                name="password"
+                required
+                placeholder="*********"
+              />
+            </motion.div>
+          </div>
+
+          {/* Login Button */}
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            type="submit"
+            className="w-full py-3 bg-gradient-to-r from-yellowGreen to-appleGreen rounded-lg font-semibold text-brown shadow-lg hover:shadow-yellowGreen/50 transition-all duration-300 transform"
+          >
+            Log In
+          </motion.button>
+
+          {/* Continue with Google Button */}
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            type="button"
+            className="w-full py-3 bg-white border-2 border-appleGreen rounded-lg font-semibold text-brown shadow-lg hover:shadow-appleGreen/50 transition-all duration-300 transform flex items-center justify-center gap-2 mt-4"
+          >
+            <FcGoogle size={20} />
+            Continue with Google
+          </motion.button>
+        </motion.form>
+
+        {/* Additional Link */}
+        <p className="mt-4 text-center text-sm text-brown">
+          Don't have an Account?{' '}
+          <a
+            href="/signup"
+            className="text-yellowGreen hover:text-appleGreen transition-colors duration-200"
+          >
+            Sign Up
+          </a>
+        </p>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+export default Login;
