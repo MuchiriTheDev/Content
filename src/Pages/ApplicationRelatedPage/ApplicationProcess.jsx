@@ -1,8 +1,11 @@
 import React from 'react'
+import PersonalDetails from '../../Component/ApplicationComponents/PersonalDetails'
 
 const ApplicationProcess = () => {
   return (
-    <div>ApplicationProcess</div>
+    <div>
+      <PersonalDetails />
+    </div>
   )
 }
 
