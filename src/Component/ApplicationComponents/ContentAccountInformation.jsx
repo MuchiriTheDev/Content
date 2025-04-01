@@ -27,7 +27,7 @@ const ContentAccountInformation = ({ onNext, onBack, formData }) => {
           <Link to="/" className="py-2" onClick={onBack}>
             <MdArrowBack size={25} className="text-brown" />
           </Link>
-          <h2 className="text-3xl font-extrabold text-brown">
+          <h2 className="text-2xl font-extrabold text-brown">
             Content Account Information
           </h2>
         </div>
@@ -320,7 +320,7 @@ const ContentAccountInformation = ({ onNext, onBack, formData }) => {
                 className="border-none p-2 placeholder:text-gray-600 text-brown bg-transparent outline-none w-full h-full"
                 type="text"
                 {...register("penaltyDetails")}
-                placeholder={`1: Suspended on YouTube, Jan 2023, copyright issue.\n2: Shadowbanned on TikTok, Feb 2023, spammy content.\n3: Account disabled on Instagram, Mar 2023, policy violation.\n`}
+                placeholder={`1: Suspended on YouTube, Jan 2023, copyright issue.\n2: Shadowbanned on . . . . . .`}
               />
             </motion.div>
           </div>
