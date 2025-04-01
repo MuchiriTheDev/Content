@@ -11,22 +11,24 @@ const SignUp = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
-      className="w-full min-h-screen bg-appleGreen text-fadeBrown flex items-center justify-center relative overflow-hidden"
+      className="w-full min-h-screen bg-white md:bg-appleGreen text-fadeBrown flex items-center justify-center relative overflow-hidden"
     >
       {/* Sign-Up Form Container */}
       <motion.div
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 1, delay: 0.3 }}
-        className="relative z-10 max-w-2xl w-full md:h-fit h-screen flex items-center justify-center p-8 bg-white backdrop-blur-md rounded-none md:rounded-xl shadow-2xl border border-appleGreen"
+        className="relative z-10 max-w-2xl w-full md:h-fit h-full flex items-center justify-center p-8 bg-white backdrop-blur-md rounded-none md:rounded-xl shadow-none md:shadow-2xl border-nonde md:border border-appleGreen"
       >
         <div className="">
-          <Link to="/" className="py-2">
-            <MdArrowBack size={20} className="mb-4 text-brown" />
-          </Link>
-          <h2 className="text-3xl font-extrabold text-brown mb-3">
-            Create Your Account
-          </h2>
+          <div className="flex gap-3 items-center mb-4">
+            <Link to="/" className="py-2">
+              <MdArrowBack size={25} className="text-brown" />
+            </Link>
+            <h2 className="text-3xl font-extrabold text-brown">
+              Create Your Account
+            </h2>
+          </div>
           <p className="text-yellowGreen text-sm mb-8">
             Become part of our community today. Sign up now to start your journey as a Content Creator and unlock financial security!
           </p>
