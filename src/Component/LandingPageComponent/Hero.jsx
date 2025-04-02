@@ -63,7 +63,7 @@ const Hero = () => {
             </Link>
             <Link
               className="h-14 w-fit px-6 py-4 rounded-md shadow-md font-bold bg-transparent border-2 border-appleGreen flex justify-center items-center gap-2 text-base text-white cursor-pointer hover:bg-appleGreen hover:text-white transition-all"
-              to="/claim"
+              to="/dashboard"
             >
               <p>Claim Now</p>
               <MdArrowRight className="text-xl h-full" />

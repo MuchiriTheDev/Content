@@ -5,6 +5,7 @@ import ApplicationProcess from './Pages/ApplicationRelatedPage/ApplicationProces
 import SignUp from './Pages/AuthRelatedPage/SignUp'
 import Login from './Pages/AuthRelatedPage/Login'
 import ClaimProcess from './Pages/ClaimsRelatedPage.jsx/ClaimProcess'
+import Dashboard from './Pages/DashboardRelated/Dashboard'
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         <Route path='/signup' element={<SignUp/>}/>
         <Route path='/login' element={<Login />}/>
         <Route path='/claim' element={<ClaimProcess/>}/>
+        <Route path='/dashboard' element={<Dashboard/>}/>
       </Routes>
     </div>
   )
