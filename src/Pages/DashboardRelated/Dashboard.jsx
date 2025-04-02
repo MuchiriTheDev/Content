@@ -92,17 +92,17 @@ const Dashboard = () => {
               <BarChart data={earningsData}>
                 <XAxis
                   dataKey="month"
-                  stroke="#5A3E1E"
-                  tick={{ fill: '#5A3E1E', fontSize: 14 }}
-                  tickLine={{ stroke: '#5A3E1E' }}
+                  stroke="#4F391A"
+                  tick={{ fill: '#4F391A', fontSize: 14 }}
+                  tickLine={{ stroke: '#4F391A' }}
                 />
                 <YAxis
-                  stroke="#5A3E1E"
-                  tick={{ fill: '#5A3E1E', fontSize: 14 }}
-                  tickLine={{ stroke: '#5A3E1E' }}
+                  stroke="#4F391A"
+                  tick={{ fill: '#4F391A', fontSize: 14 }}
+                  tickLine={{ stroke: '#4F391A' }}
                 />
                 <Tooltip content={<CustomTooltip />} />
-                <Legend wrapperStyle={{ color: '#5A3E1E', fontSize: 14 }} />
+                <Legend wrapperStyle={{ color: '#4F391A', fontSize: 14 }} />
                 <Bar
                   dataKey="earnings"
                   fill="url(#barGradient)"
@@ -116,8 +116,8 @@ const Dashboard = () => {
                 </Bar>
                 <defs>
                   <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#A8D5A2" />
-                    <stop offset="100%" stopColor="#D9E8A2" />
+                    <stop offset="0%" stopColor="#AAC624" />
+                    <stop offset="100%" stopColor="#abfa50" />
                   </linearGradient>
                 </defs>
               </BarChart>
@@ -136,30 +136,30 @@ const Dashboard = () => {
               <LineChart data={audienceData}>
                 <XAxis
                   dataKey="month"
-                  stroke="#5A3E1E"
-                  tick={{ fill: '#5A3E1E', fontSize: 14 }}
-                  tickLine={{ stroke: '#5A3E1E' }}
+                  stroke="#4F391A"
+                  tick={{ fill: '#4F391A', fontSize: 14 }}
+                  tickLine={{ stroke: '#4F391A' }}
                 />
                 <YAxis
-                  stroke="#5A3E1E"
-                  tick={{ fill: '#5A3E1E', fontSize: 14 }}
-                  tickLine={{ stroke: '#5A3E1E' }}
+                  stroke="#4F391A"
+                  tick={{ fill: '#4F391A', fontSize: 14 }}
+                  tickLine={{ stroke: '#4F391A' }}
                 />
                 <Tooltip content={<CustomTooltip />} />
-                <Legend wrapperStyle={{ color: '#5A3E1E', fontSize: 14 }} />
+                <Legend wrapperStyle={{ color: '#4F391A', fontSize: 14 }} />
                 <Line
                   type="monotone"
                   dataKey="followers"
                   stroke="url(#lineGradient)"
                   strokeWidth={4}
-                  dot={{ r: 6, fill: '#A8D5A2', stroke: '#5A3E1E', strokeWidth: 2 }}
-                  activeDot={{ r: 8, fill: '#D9E8A2', stroke: '#5A3E1E', strokeWidth: 2 }}
+                  dot={{ r: 6, fill: '#AAC624', stroke: '#4F391A', strokeWidth: 2 }}
+                  activeDot={{ r: 8, fill: '#abfa50', stroke: '#4F391A', strokeWidth: 2 }}
                   animationDuration={1500}
                 />
                 <defs>
                   <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stopColor="#A8D5A2" />
-                    <stop offset="100%" stopColor="#D9E8A2" />
+                    <stop offset="0%" stopColor="#AAC624" />
+                    <stop offset="100%" stopColor="#abfa50" />
                   </linearGradient>
                 </defs>
               </LineChart>
@@ -184,22 +184,22 @@ const Dashboard = () => {
                   cy="50%"
                   outerRadius={90}
                   innerRadius={50}
-                  fill="#A8D5A2"
+                  fill="#AAC624"
                   label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
-                  labelLine={{ stroke: '#5A3E1E' }}
+                  labelLine={{ stroke: '#4F391A' }}
                   animationDuration={1500}
                 >
                   {platformData.map((entry, index) => (
                     <Cell
                       key={`cell-${index}`}
-                      fill={index === 0 ? '#AAC624' : index === 1 ? '#4F391A' : '#99b926'}
-                      stroke="#5A3E1E"
+                      fill={index === 0 ? '#AAC624' : index === 1 ? '#4F391A' : '#abfa50'}
+                      stroke="#4F391A"
                       strokeWidth={1}
                     />
                   ))}
                 </Pie>
                 <Tooltip content={<CustomTooltip />} />
-                <Legend wrapperStyle={{ color: '#5A3E1E', fontSize: 14 }} />
+                <Legend wrapperStyle={{ color: '#4F391A', fontSize: 14 }} />
               </PieChart>
             </ResponsiveContainer>
           </motion.div>
