@@ -7,8 +7,8 @@ const ClaimProcess = () => {
   return (
     <div>
       {/* <ClaimIncidentDetails /> */}
-      <ClaimEvidenceUpload />
-      {/* <ClaimReviewAndSubmit /> */}
+      {/* <ClaimEvidenceUpload /> */}
+      <ClaimReviewAndSubmit />
     </div>
   )
 }
