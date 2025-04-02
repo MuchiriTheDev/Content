@@ -256,7 +256,9 @@ const Dashboard = () => {
           <Link to="/" className="py-2 hidden md:block">
             <MdArrowBack size={25} className="text-brown" />
           </Link>
-          <img src={assets.logo2} className="w-auto h-12 md:h-16" alt="Logo for CCI" />
+          <Link to='/'>
+            <img src={assets.logo2} alt="Logo" className="h-14 w-fit rounded-full" />            
+          </Link>
         </div>
         <div className="flex items-center gap-2 md:gap-4">
           <motion.button
@@ -340,7 +342,7 @@ const Dashboard = () => {
         transition={{ duration: 1, delay: 0.4 }}
         className="flex-1 ml-0 md:ml-64 mt-16 p-4 md:p-8 overflow-y-auto h-[calc(100vh-4rem)]"
       >
-        <h1 className='text-2xl font-bold py-6 w-full bg-white mb-4 px-5 mt-1 rounded-lg shadow-xl'> Welcome, Muchiri Mwangi</h1>
+        <h1 className='text-2xl font-bold py-6 w-full bg-white mb-4 px-5 mt-2 rounded-lg shadow-xl'> Welcome, Muchiri Mwangi</h1>
         <div className="max-w-full md:max-w-7xl mx-auto">
           {sections[activeSection]}
         </div>
