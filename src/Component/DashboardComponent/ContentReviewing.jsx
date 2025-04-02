@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaUpload, FaCheckCircle, FaTimesCircle, FaExclamationTriangle, FaPauseCircle } from 'react-icons/fa';
+import { FaUpload, FaCheckCircle, FaTimesCircle, FaExclamationTriangle, FaPauseCircle, FaTimes } from 'react-icons/fa';
 
 const ContentReviewing = () => {
   const [contentType, setContentType] = useState('text'); // 'text', 'image', or 'video'
   const [textInput, setTextInput] = useState('');
   const [mediaFile, setMediaFile] = useState(null);
-  const [reviewResult, setReviewResult] = useState( {status: 'Error', message: 'Please provide content to review.' });
+  const [reviewResult, setReviewResult] = useState({ status: 'Error', message: 'Please provide content to review.' });
+  const [showPopup, setShowPopup] = useState(false); // State for popup visibility
 
   // Simulated AI review logic
   const reviewContent = () => {
@@ -35,6 +36,12 @@ const ContentReviewing = () => {
     setReviewResult(result);
   };
 
+  // Generate preview URL for media
+  const getMediaPreview = () => {
+    if (!mediaFile) return null;
+    return URL.createObjectURL(mediaFile);
+  };
+
   return (
     <motion.div
       initial={{ y: 50, opacity: 0 }}
@@ -55,7 +62,10 @@ const ContentReviewing = () => {
         {['text', 'image', 'video'].map((type) => (
           <motion.button
             key={type}
-            onClick={() => setContentType(type)}
+            onClick={() => {
+              setContentType(type);
+              setMediaFile(null); // Reset media file when switching types
+            }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className={`px-4 py-2 rounded-lg font-medium text-sm md:text-base transition-colors duration-300 ${
@@ -87,25 +97,50 @@ const ContentReviewing = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="flex items-center justify-center w-full"
+            className="w-full"
           >
-            <label className="flex flex-col items-center justify-center w-full h-40 bg-white border-2 border-dashed border-appleGreen/70 rounded-lg cursor-pointer hover:bg-yellowGreen/10 transition-all duration-300 shadow-sm">
-              <div className="flex flex-col items-center justify-center text-center">
-                <FaUpload className="text-brown text-3xl mb-2" />
-                <p className="text-brown font-medium">
-                  {mediaFile ? mediaFile.name : `Upload ${contentType === 'image' ? 'an Image' : 'a Video'}`}
-                </p>
-                <p className="text-xs text-brown/60 mt-1">
-                  {contentType === 'image' ? 'JPG, PNG (max 5MB)' : 'MP4 only'}
-                </p>
+            {!mediaFile ? (
+              <label className="flex flex-col items-center justify-center w-full h-40 bg-white border-2 border-dashed border-appleGreen/70 rounded-lg cursor-pointer hover:bg-yellowGreen/10 transition-all duration-300 shadow-sm">
+                <div className="flex flex-col items-center justify-center text-center">
+                  <FaUpload className="text-brown text-3xl mb-2" />
+                  <p className="text-brown font-medium">
+                    Upload {contentType === 'image' ? 'an Image' : 'a Video'}
+                  </p>
+                  <p className="text-xs text-brown/60 mt-1">
+                    {contentType === 'image' ? 'JPG, PNG (max 5MB)' : 'MP4 only'}
+                  </p>
+                </div>
+                <input
+                  type="file"
+                  accept={contentType === 'image' ? 'image/*' : 'video/mp4'}
+                  onChange={(e) => setMediaFile(e.target.files[0])}
+                  className="hidden"
+                />
+              </label>
+            ) : (
+              <div className="relative w-full flex items-center justify-center">
+                {contentType === 'image' ? (
+                  <img
+                    src={getMediaPreview()}
+                    alt="Uploaded preview"
+                    className="w-fit h-48 object-cover rounded-lg cursor-pointer shadow-md"
+                    onClick={() => setShowPopup(true)}
+                  />
+                ) : (
+                  <video
+                    src={getMediaPreview()}
+                    controls
+                    className="w-fit h-48 object-cover rounded-lg shadow-md"
+                  />
+                )}
+                <button
+                  onClick={() => setMediaFile(null)}
+                  className="absolute top-2 left-1/3 p-1 bg-red-500 rounded-full text-white hover:bg-red-600 transition-colors duration-200"
+                >
+                  <FaTimes size={16} />
+                </button>
               </div>
-              <input
-                type="file"
-                accept={contentType === 'image' ? 'image/*' : 'video/mp4'}
-                onChange={(e) => setMediaFile(e.target.files[0])}
-                className="hidden"
-              />
-            </label>
+            )}
           </motion.div>
         )}
       </div>
@@ -155,6 +190,31 @@ const ContentReviewing = () => {
               </span>
             </p>
             <p className="text-brown/80 text-sm mt-1">{reviewResult.message}</p>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Image Popup */}
+      {showPopup && mediaFile && contentType === 'image' && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/70 flex items-center justify-center z-50"
+          onClick={() => setShowPopup(false)}
+        >
+          <div className="relative max-w-3xl w-full p-4 bg-white rounded-lg shadow-xl">
+            <img
+              src={getMediaPreview()}
+              alt="Close-up preview"
+              className="w-full h-auto max-h-[80vh] object-contain rounded-lg"
+            />
+            <button
+              onClick={() => setShowPopup(false)}
+              className="absolute top-2 right-2 p-2 bg-red-500 rounded-full text-white hover:bg-red-600 transition-colors duration-200"
+            >
+              <FaTimes size={20} />
+            </button>
           </div>
         </motion.div>
       )}
