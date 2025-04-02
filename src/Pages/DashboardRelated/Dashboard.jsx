@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaChartBar, FaChartLine, FaChartPie, FaFileAlt, FaBell, FaUser, FaSignOutAlt, FaBars, FaTimes, FaCalendar } from 'react-icons/fa';
+import { FaChartBar, FaChartLine, FaChartPie, FaFileAlt, FaBell, FaUser, FaSignOutAlt, FaBars, FaTimes, FaCalendar, FaUpload } from 'react-icons/fa';
 import { MdArrowBack } from 'react-icons/md';
 import { Link } from 'react-router-dom';
-import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { assets } from '../../assets/assets';
 import InsuranceOverview from '../../Component/DashboardComponent/InsuranceOverview';
 import ClaimsManagement from '../../Component/DashboardComponent/ClaimsManagement';
 import DashboardAnalytics from '../../Component/DashboardComponent/DashboardAnalytics';
+import ContentReviewing from '../../Component/DashboardComponent/ContentReviewing'; // Assuming this is the file path
 
 // Main Dashboard Component
 const Dashboard = () => {
@@ -15,9 +15,10 @@ const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const sections = {
-    overview: ( <InsuranceOverview /> ),
-    analytics: (<DashboardAnalytics />),
-    claims: ( <ClaimsManagement /> ),
+    overview: <InsuranceOverview />,
+    analytics: <DashboardAnalytics />,
+    claims: <ClaimsManagement />,
+    contentReviewing: <ContentReviewing />,
   };
 
   return (
@@ -39,8 +40,8 @@ const Dashboard = () => {
           <Link to="/" className="py-2 hidden md:block">
             <MdArrowBack size={25} className="text-brown" />
           </Link>
-          <Link to='/'>
-            <img src={assets.logo2} alt="Logo" className="h-14 w-fit rounded-full" />            
+          <Link to="/">
+            <img src={assets.logo2} alt="Logo" className="h-14 w-fit rounded-full" />
           </Link>
         </div>
         <div className="flex items-center gap-2 md:gap-4">
@@ -99,6 +100,14 @@ const Dashboard = () => {
               </li>
               <li>
                 <button
+                  onClick={() => { setActiveSection('contentReviewing'); setIsSidebarOpen(false); }}
+                  className={`w-full text-left py-2 md:py-3 px-4 rounded-lg flex items-center gap-3 font-semibold ${activeSection === 'contentReviewing' ? 'bg-gradient-to-r from-yellowGreen to-appleGreen text-brown' : 'text-brown hover:bg-yellowGreen/20'}`}
+                >
+                  <FaUpload />Review Content
+                </button>
+              </li>
+              <li>
+                <button
                   onClick={() => { setActiveSection('claims'); setIsSidebarOpen(false); }}
                   className={`w-full text-left py-2 md:py-3 px-4 rounded-lg flex items-center gap-3 font-semibold ${activeSection === 'claims' ? 'bg-gradient-to-r from-yellowGreen to-appleGreen text-brown' : 'text-brown hover:bg-yellowGreen/20'}`}
                 >
@@ -125,7 +134,7 @@ const Dashboard = () => {
         transition={{ duration: 1, delay: 0.4 }}
         className="flex-1 ml-0 md:ml-64 mt-16 p-4 md:p-8 overflow-y-auto h-[calc(100vh-4rem)]"
       >
-        <h1 className='text-2xl font-bold py-6 w-full bg-white mb-4 px-5 mt-2 rounded-lg shadow-xl'> Welcome, Muchiri Mwangi</h1>
+        <h1 className="text-2xl font-bold py-6 w-full bg-white mb-4 px-5 mt-2 rounded-lg shadow-xl">Welcome, Muchiri Mwangi</h1>
         <div className="max-w-full md:max-w-7xl mx-auto">
           {sections[activeSection]}
         </div>
