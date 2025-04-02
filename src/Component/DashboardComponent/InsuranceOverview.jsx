@@ -7,10 +7,10 @@ import { MdArrowBack } from 'react-icons/md';
 
 // Sample Data for Charts
 const earningsData = [
-  { month: 'Jan', earnings: 2400 },
-  { month: 'Feb', earnings: 1398 },
+  { month: 'Jan', earnings: 8400 },
+  { month: 'Feb', earnings: 4398 },
   { month: 'Mar', earnings: 9800 },
-  { month: 'Apr', earnings: 3908 },
+  { month: 'Apr', earnings: 6908 },
 ];
 const audienceData = [
   { month: 'Jan', followers: 400 },

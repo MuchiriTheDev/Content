@@ -135,7 +135,7 @@ const ContentReviewing = () => {
                 )}
                 <button
                   onClick={() => setMediaFile(null)}
-                  className="absolute top-2 left-1/3 p-1 bg-red-500 rounded-full text-white hover:bg-red-600 transition-colors duration-200"
+                  className="absolute top-2 left-20 p-1 bg-red-500 rounded-full text-white hover:bg-red-600 transition-colors duration-200"
                 >
                   <FaTimes size={16} />
                 </button>
