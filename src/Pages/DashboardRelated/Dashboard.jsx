@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaChartBar, FaChartLine, FaChartPie, FaFileAlt, FaBell, FaUser, FaSignOutAlt, FaBars, FaTimes } from 'react-icons/fa';
+import { FaChartBar, FaChartLine, FaChartPie, FaFileAlt, FaBell, FaUser, FaSignOutAlt, FaBars, FaTimes, FaCalendar } from 'react-icons/fa';
 import { MdArrowBack } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -41,6 +41,29 @@ const StatCard = ({ title, value, icon }) => (
   </motion.div>
 );
 
+// Custom Tooltip Component
+const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.2 }}
+          className="p-4 rounded-xl shadow-xl border-2 border-appleGree bg-white"
+        >
+          <p className="text-lg font-extrabold flex gap-2 items-center text-brown">
+            <FaCalendar/> {label}
+          </p>
+          <p className="text-brown font-semibold mt-1 capitalize">
+            {`${payload[0].name}:- `}
+            <span className="text-yellowGreen font-extrabold">{payload[0].value}</span>
+          </p>
+        </motion.div>
+      );
+    }
+    return null;
+  };
+
 // Main Dashboard Component
 const Dashboard = () => {
   const [activeSection, setActiveSection] = useState('overview');
@@ -57,48 +80,101 @@ const Dashboard = () => {
         </div>
         {/* Charts */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Earnings Over Time (Bar Chart) */}
           <motion.div
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
             className="p-6 bg-white rounded-xl shadow-2xl border border-appleGreen"
           >
-            <h3 className="text-xl md:text-2xl font-extrabold text-brown mb-4">Earnings Over Time</h3>
+            <h3 className="text-xl md:text-2xl font-extrabold text-brown mb-4 tracking-tight">Earnings Over Time</h3>
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={earningsData}>
-                <XAxis dataKey="month" stroke="#5A3E1E" />
-                <YAxis stroke="#5A3E1E" />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="earnings" fill="#A8D5A2" />
+                <XAxis
+                  dataKey="month"
+                  stroke="#5A3E1E"
+                  tick={{ fill: '#5A3E1E', fontSize: 14 }}
+                  tickLine={{ stroke: '#5A3E1E' }}
+                />
+                <YAxis
+                  stroke="#5A3E1E"
+                  tick={{ fill: '#5A3E1E', fontSize: 14 }}
+                  tickLine={{ stroke: '#5A3E1E' }}
+                />
+                <Tooltip content={<CustomTooltip />} />
+                <Legend wrapperStyle={{ color: '#5A3E1E', fontSize: 14 }} />
+                <Bar
+                  dataKey="earnings"
+                  fill="url(#barGradient)"
+                  radius={[10, 10, 0, 0]}
+                  barSize={40}
+                  animationDuration={1500}
+                >
+                  {earningsData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} />
+                  ))}
+                </Bar>
+                <defs>
+                  <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#A8D5A2" />
+                    <stop offset="100%" stopColor="#D9E8A2" />
+                  </linearGradient>
+                </defs>
               </BarChart>
             </ResponsiveContainer>
           </motion.div>
+
+          {/* Audience Growth (Line Chart) */}
           <motion.div
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.4 }}
             className="p-6 bg-white rounded-xl shadow-2xl border border-appleGreen"
           >
-            <h3 className="text-xl md:text-2xl font-extrabold text-brown mb-4">Audience Growth</h3>
+            <h3 className="text-xl md:text-2xl font-extrabold text-brown mb-4 tracking-tight">Audience Growth</h3>
             <ResponsiveContainer width="100%" height={250}>
               <LineChart data={audienceData}>
-                <XAxis dataKey="month" stroke="#5A3E1E" />
-                <YAxis stroke="#5A3E1E" />
-                <Tooltip />
-                <Legend />
-                <Line type="monotone" dataKey="followers" stroke="#A8D5A2" />
+                <XAxis
+                  dataKey="month"
+                  stroke="#5A3E1E"
+                  tick={{ fill: '#5A3E1E', fontSize: 14 }}
+                  tickLine={{ stroke: '#5A3E1E' }}
+                />
+                <YAxis
+                  stroke="#5A3E1E"
+                  tick={{ fill: '#5A3E1E', fontSize: 14 }}
+                  tickLine={{ stroke: '#5A3E1E' }}
+                />
+                <Tooltip content={<CustomTooltip />} />
+                <Legend wrapperStyle={{ color: '#5A3E1E', fontSize: 14 }} />
+                <Line
+                  type="monotone"
+                  dataKey="followers"
+                  stroke="url(#lineGradient)"
+                  strokeWidth={4}
+                  dot={{ r: 6, fill: '#A8D5A2', stroke: '#5A3E1E', strokeWidth: 2 }}
+                  activeDot={{ r: 8, fill: '#D9E8A2', stroke: '#5A3E1E', strokeWidth: 2 }}
+                  animationDuration={1500}
+                />
+                <defs>
+                  <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="#A8D5A2" />
+                    <stop offset="100%" stopColor="#D9E8A2" />
+                  </linearGradient>
+                </defs>
               </LineChart>
             </ResponsiveContainer>
           </motion.div>
+
+          {/* Platform Distribution (Pie Chart) */}
           <motion.div
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.5 }}
-            className="p-6 bg-white rounded-xl shadow-2xl border border-appleGreen"
+            className="p-6 h-fit bg-white rounded-xl shadow-2xl border border-appleGreen"
           >
-            <h3 className="text-xl md:text-2xl font-extrabold text-brown mb-4">Platform Distribution</h3>
-            <ResponsiveContainer width="100%" height={250}>
+            <h3 className="text-xl md:text-2xl font-extrabold text-brown mb-4 tracking-tight">Platform Distribution</h3>
+            <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
                   data={platformData}
@@ -106,16 +182,24 @@ const Dashboard = () => {
                   nameKey="name"
                   cx="50%"
                   cy="50%"
-                  outerRadius={80}
+                  outerRadius={90}
+                  innerRadius={50}
                   fill="#A8D5A2"
-                  label
+                  label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
+                  labelLine={{ stroke: '#5A3E1E' }}
+                  animationDuration={1500}
                 >
                   {platformData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={index % 2 === 0 ? '#A8D5A2' : '#D9E8A2'} />
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={index === 0 ? '#AAC624' : index === 1 ? '#4F391A' : '#99b926'}
+                      stroke="#5A3E1E"
+                      strokeWidth={1}
+                    />
                   ))}
                 </Pie>
-                <Tooltip />
-                <Legend />
+                <Tooltip content={<CustomTooltip />} />
+                <Legend wrapperStyle={{ color: '#5A3E1E', fontSize: 14 }} />
               </PieChart>
             </ResponsiveContainer>
           </motion.div>
@@ -160,7 +244,7 @@ const Dashboard = () => {
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 1, delay: 0.2 }}
-        className="fixed top-0 left-0 w-full bg-white p-4 flex items-center justify-between z-20 "
+        className="fixed top-0 left-0 w-full bg-white p-4 flex items-center justify-between z-20"
       >
         <div className="flex items-center gap-3">
           <button
@@ -193,7 +277,7 @@ const Dashboard = () => {
       </motion.nav>
 
       {/* Sidebar (Hidden on Small Screens, Fixed on Large) */}
-      {isSidebarOpen || window.innerWidth >= 770  ? (
+      {isSidebarOpen || window.innerWidth >= 770 ? (
         <motion.aside
           initial={{ x: -50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
