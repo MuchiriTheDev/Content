@@ -6,8 +6,8 @@ import ClaimReviewAndSubmit from '../../Component/ClaimsComponents/ClaimReviewAn
 const ClaimProcess = () => {
   return (
     <div>
-      <ClaimIncidentDetails />
-      {/* <ClaimEvidenceUpload /> */}
+      {/* <ClaimIncidentDetails /> */}
+      <ClaimEvidenceUpload />
       {/* <ClaimReviewAndSubmit /> */}
     </div>
   )
