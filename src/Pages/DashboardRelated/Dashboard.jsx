@@ -15,7 +15,7 @@ const earningsData = [
 ];
 const audienceData = [
   { month: 'Jan', followers: 400 },
-  { month: 'Feb', followers: 300 },
+  { month: 'Feb', followers: 900 },
   { month: 'Mar', followers: 500 },
   { month: 'Apr', followers: 700 },
 ];
