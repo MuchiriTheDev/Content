@@ -1,12 +1,12 @@
 // app.js
 import express from 'express';
-// import contentRoutes from './routes/content.js';
-// import premiumRoutes from './routes/premiums.js';
 import errorHandler from './Servers/Middlewares/ErrorHandler.js';
 import logger from './Servers/Utilities/Logger.js';
 import AuthRouter from './Servers/Routes/AuthenticationRoutes.js';
 import claimsRouter from './Servers/Routes/ClaimsRoutes.js';
 import config from './Servers/config/config.js';
+import premiumRouter from './Servers/Routes/PremiumRoutes.js';
+import contentRouter from './Servers/Routes/ContentRoutes.js';
 
 const app = express();
 
@@ -24,8 +24,8 @@ app.use((req, res, next) => {
 // API Routes
 app.use('/api/auth', AuthRouter);
 app.use('/api/claims', claimsRouter);
-// app.use('/api/content', contentRoutes);
-// app.use('/api/premiums', premiumRoutes);
+app.use('/api/content', contentRouter);
+app.use('/api/premiums', premiumRouter);
 
 // Root route (health check)
 app.get('/', (req, res) => {
