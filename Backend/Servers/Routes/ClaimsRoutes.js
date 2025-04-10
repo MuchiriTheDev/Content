@@ -16,9 +16,9 @@ const claimsRouter = express.Router();
 // Creator Routes (Private)
 claimsRouter.post('/submit', authMiddleware, uploadClaimFiles, submitClaim);
 claimsRouter.get('/my-claims', authMiddleware, getMyClaims);
-claimsRouter.get('/:id', authMiddleware, getClaimById);
+claimsRouter.get('/:id/claim', authMiddleware, getClaimById);
 claimsRouter.put('/:id/evidence', authMiddleware, uploadClaimFiles, updateClaimEvidence);
-claimsRouter.delete('/:id', authMiddleware, deleteClaim);
+claimsRouter.delete('/:id/delete', authMiddleware, deleteClaim);
 
 // Admin Routes (Private)
 claimsRouter.post('/:id/evaluate-ai', authMiddleware, evaluateClaimAI);
