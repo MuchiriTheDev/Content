@@ -21,9 +21,9 @@ const contentRouter = express.Router();
 // Creator Routes (Private)
 contentRouter.post('/submit', authMiddleware, uploadContentFiles, submitContent);
 contentRouter.get('/my-content', authMiddleware, getMyContent);
-contentRouter.get('/:id', authMiddleware, getContentById);
-contentRouter.put('/:id', authMiddleware, uploadContentFiles, updateContent);
-contentRouter.delete('/:id', authMiddleware, deleteContent);
+contentRouter.get('/:id/content-id', authMiddleware, getContentById);
+contentRouter.put('/:id/update-content', authMiddleware, uploadContentFiles, updateContent);
+contentRouter.delete('/:id/delete-content', authMiddleware, deleteContent);
 
 // Admin Routes (Private)
 contentRouter.post('/:id/assess', authMiddleware, assessContentRisk);

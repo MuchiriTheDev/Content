@@ -4,7 +4,7 @@ import Content from '../Models/Content.js';
 import User from '../Models/User.js';
 import logger from '../Utilities/Logger.js';
 import { sendEmail } from '../Services/EmailServices.js';
-import { uploadToCloudinary } from '../Utilities/Cloudinary.js';
+import { deleteFromCloudinary, uploadToCloudinary } from '../Utilities/Cloudinary.js';
 import upload from '../Utilities/Multer.js';
 import fs from 'fs/promises';
 
@@ -96,7 +96,7 @@ export const getContentById = async (req, res, next) => {
       return res.status(404).json({ success: false, error: 'Content not found' });
     }
 
-    if (req.user.role !== 'Admin' && content.contentDetails.userId.toString() !== req.user.id) {
+    if (req.user.role !== 'Admin' && content.contentDetails.userId.toString() !== req.user.id.toString()) {
       return res.status(403).json({ success: false, error: 'Unauthorized' });
     }
 
@@ -219,7 +219,7 @@ export const updateContent = async (req, res, next) => {
       return res.status(404).json({ success: false, error: 'Content not found' });
     }
 
-    if (content.contentDetails.userId.toString() !== req.user.id) {
+    if (content.contentDetails.userId.toString() !== req.user.id.toString()) {
       return res.status(403).json({ success: false, error: 'Unauthorized' });
     }
 
@@ -272,7 +272,7 @@ export const deleteContent = async (req, res, next) => {
       return res.status(404).json({ success: false, error: 'Content not found' });
     }
 
-    if (content.contentDetails.userId.toString() !== req.user.id) {
+    if (content.contentDetails.userId.toString() !== req.user.id.toString()) {
       return res.status(403).json({ success: false, error: 'Unauthorized' });
     }
 
@@ -289,7 +289,7 @@ export const deleteContent = async (req, res, next) => {
       await Promise.all(deletePromises);
     }
 
-    await content.remove();
+    await content.deleteOne();
 
     logger.info(`Content ${id} deleted by ${req.user.id}`);
     res.json({ success: true, message: 'Content deleted successfully' });
