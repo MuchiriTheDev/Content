@@ -1,1 +1,0 @@
-//App-wide constants (e.g., claim statuses) 
