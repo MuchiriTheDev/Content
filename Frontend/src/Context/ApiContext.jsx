@@ -1,7 +1,5 @@
 import React, { createContext, useState } from 'react';
 import axios from 'axios';
-import { useHistory } from 'react-router-dom';
-
 // Create the context
 export const ApiContext = createContext();
 

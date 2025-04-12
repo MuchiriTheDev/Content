@@ -21,6 +21,7 @@ const authMiddleware = async (req, res, next) => {
     next();
   } catch (error) {
     logger.error(`Auth error: ${error.message}`);
+    console.log(error);
     res.status(401).json({ success: false, error: 'Unauthorized' });
   }
 };

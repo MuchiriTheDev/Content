@@ -7,21 +7,25 @@ import { motion } from 'framer-motion';
 const testimonialsData = [
   {
     name: 'Wanjiku Kariuki',
+    image: assets.CreatorW1,
     location: 'Nairobi, Kenya',
     text: 'CCI pulled me out of a TikTok ban mess—cash hit my account fast, and I was back creating in no time. It’s like having a crew that’s got your back!',
   },
   {
     name: 'Kofi Mensah',
+    image: assets.CreatorM1,
     location: 'Accra, Ghana',
     text: 'The tools CCI gave me stopped a YouTube flag before it wrecked my channel. Now I post with confidence—total game-changer for my hustle.',
   },
   {
     name: 'Priya Sharma',
+    image: assets.CreatorW2,
     location: 'Mumbai, India',
     text: 'CCI gets my vibe. They shaped a plan that fits my Insta gigs perfectly—affordable and solid. I’m hooked, no stress, just growth!',
   },
   {
     name: 'Liam Carter',
+    image: assets.CreatorM2,
     location: 'London, UK',
     text: 'When a sponsor bailed after a platform glitch, CCI stepped up quick. It’s the safety net every creator needs—join this squad, trust me!',
   },
@@ -82,9 +86,9 @@ const Testimonials = () => {
               <div className="slide shadow-lg p-6 rounded-lg bg-white">
                 <div className="user-info flex items-center mb-4">
                   <img
-                    src={assets.user} // Replace with creator-specific avatars later
+                    src={testimonial.image || assets.user} // Replace with creator-specific avatars later
                     alt={`${testimonial.name}'s profile`}
-                    className="w-16 h-16 rounded-full border-4 border-appleGreen mr-4"
+                    className="w-16 h-16 rounded-full border-4 object-cover border-appleGreen mr-4"
                   />
                   <div>
                     <h3 className="text-sm md:text-xl font-semibold text-appleGreen">{testimonial.name}</h3>

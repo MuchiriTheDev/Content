@@ -11,6 +11,12 @@ import user from './user.png'
 import logo1 from './Logo_1.png'
 import logo2 from './Logo_2.png'
 
+import CreatorM1  from './Creator-1-M.png'
+import CreatorM2  from './Creator-2-M.png'
+import CreatorW1  from './Creator-1-W.png'
+import CreatorW2  from './Creator-2-W.png'
+import CreatorW3  from './Creator-3-W.png'
+import CreatorW4  from './Creator-3-W.png'
 export const assets = {
     logo,
     hero,
@@ -23,5 +29,11 @@ export const assets = {
     saving,
     user,
     logo1,
-    logo2
+    logo2,
+    CreatorM1,
+    CreatorM2,
+    CreatorW1,
+    CreatorW2,
+    CreatorW3,
+    CreatorW4,
 }

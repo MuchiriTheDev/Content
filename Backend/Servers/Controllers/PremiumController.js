@@ -13,43 +13,39 @@ export const calculatePremium = async (req, res, next) => {
   try {
     const userId = req.user.id;
 
-    // Verify user exists and is a creator
     const user = await User.findById(userId);
     if (!user || user.role !== 'Creator') {
       return res.status(403).json({ success: false, error: 'Unauthorized or user not found' });
     }
 
-    // Check if premium exists
     let premium = await Premium.findOne({ 'premiumDetails.userId': userId });
     if (!premium) {
       premium = new Premium({
         premiumDetails: {
           userId,
-          baseAmount: 10, // Default base
+          baseAmount: 10,
           adjustmentFactors: {
-            earnings: user.financialInfo.monthlyEarnings,
-            audienceSize: user.platformInfo.platforms.reduce((sum, p) => sum + p.audienceSize, 0),
-            contentRisk: 'Low', // Default, adjust later
-            platformVolatility: 0, // Default
-            infractionCount: user.platformInfo.platforms.reduce((sum, p) => sum + p.riskHistory.length, 0)
+            earnings: user.financialInfo.monthlyEarnings || 0,
+            audienceSize: user.platformInfo.platforms.reduce((sum, p) => sum + p.audienceSize, 0) || 0,
+            contentRisk: 'Low',
+            platformVolatility: 0,
+            infractionCount: user.platformInfo.platforms.reduce((sum, p) => sum + p.riskHistory.length, 0) || 0
           },
-          finalAmount: 10 // Initial value
+          finalAmount: 10
         },
         paymentStatus: { status: 'Pending' }
       });
     }
 
-    // Recalculate premium
     await premium.recalculatePremium();
 
-    // Update user's financialInfo.premium
     user.financialInfo.premium = {
       amount: premium.premiumDetails.finalAmount,
-      lastCalculated: new Date()
+      lastCalculated: new Date(),
+      insuranceId: premium._id
     };
     await user.save();
 
-    // Notify user
     await sendEmail({
       to: user.personalInfo.email,
       subject: 'Your CCI Premium Calculated',
@@ -59,10 +55,10 @@ export const calculatePremium = async (req, res, next) => {
     logger.info(`Premium calculated for user ${userId}: ${premium.premiumDetails.finalAmount}`);
     res.status(200).json({ success: true, premium: premium.premiumDetails });
   } catch (error) {
-    next(error);
+    logger.error(`Error in calculatePremium: ${error.message}, Stack: ${error.stack}`);
+    res.status(500).json({ success: false, error: error.message, stack: error.stack });
   }
 };
-
 // @desc    Get current user's premium
 // @route   GET /api/premiums/my-premium
 // @access  Private (Creator)
