@@ -18,7 +18,7 @@ const SignUp = () => {
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 1, delay: 0.3 }}
-        className="relative z-10  w-full md:h-fit h-full flex items-center justify-center p-8 bg-white backdrop-blur-md rounded-none md:rounded-xl shadow-none md:shadow-2xl border-none md:border border-appleGreen"
+        className="relative z-10  w-full md:h-fit h-full flex items-center  p-8 bg-white backdrop-blur-md rounded-none md:rounded-xl shadow-none md:shadow-2xl border-none md:border border-appleGreen"
       >
         <div className="">
           <div className="flex gap-3 items-center mb-4">
