@@ -12,7 +12,7 @@ const Login = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
-      className="w-screen h-fit min-h-screen bg-gray-50 flex items-center justify-center"
+      className="w-screen h-fit md:min-h-screen bg-gray-50 flex mt-10 md:items-center justify-center"
     >
       <motion.div
         initial={{ y: 50, opacity: 0 }}
@@ -25,16 +25,16 @@ const Login = () => {
           initial={{ x: -100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="hidden md:block h-full w-[40%] overflow-hidden rounded-l-md"
+          className="hidden md:block h-full w-[40%] overflow-hidden px-3 py-2"
         >
-          <img src={assets.login} className="w-full h-full object-cover" alt="Login" />
+          <img src={assets.login} className="w-full h-full object-cover rounded-lg" alt="Login" />
         </motion.div>
         {/* Form Container */}
         <motion.div
           initial={{ x: 100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="h-full w-full md:w-[60%] flex items-center justify-center relative p-4 md:p-6"
+          className="h-full w-full md:w-[60%] flex items-center  relative p-4 md:p-6"
         >
           <form className="w-full max-w-lg">
             {/* Heading */}
