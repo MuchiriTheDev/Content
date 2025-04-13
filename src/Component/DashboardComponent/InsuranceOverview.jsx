@@ -66,7 +66,7 @@ const InsuranceOverview = () => {
     <div className="grid grid-cols-1 gap-6">
             {/* Stat Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              <StatCard title="Total Earnings" value="$15,506" icon={<FaChartBar className="text-appleGreen text-2xl" />} />
+              <StatCard title="Average Earnings" value="$10,506" icon={<FaChartBar className="text-appleGreen text-2xl" />} />
               <StatCard title="Audience Size" value="1.2M" icon={<FaChartLine className="text-appleGreen text-2xl" />} />
               <StatCard title="Active Claims" value="2" icon={<FaFileAlt className="text-appleGreen text-2xl" />} />
             </div>
