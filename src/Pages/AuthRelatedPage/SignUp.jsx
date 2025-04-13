@@ -48,7 +48,7 @@ const SignUp = () => {
                 <MdArrowBack size={27} className="text-brown" />
               </Link>
               <div className="mb-3">
-                <h1 className="text-3xl md:text-4xl mb-2 text-brown font-semibold">
+                <h1 className="text-3xl md:text-4xl mb-2 text-brown font-bold">
                   Create An Account
                 </h1>
                 <p className="text-sm text-gray-500">
@@ -206,7 +206,7 @@ const SignUp = () => {
               transition={{ duration: 0.5, delay: 1.8 }}
               className="w-full h-fit flex items-center justify-center mt-4"
             >
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-center text-gray-500">
                 By signing up, you agree to our{' '}
                 <span className="text-yellowGreen font-bold cursor-pointer">
                   Terms of Service
