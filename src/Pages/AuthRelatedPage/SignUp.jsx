@@ -117,18 +117,18 @@ const SignUp = () => {
                 {/* Country */}
                 <div className="w-full md:w-[50%]">
                   <label
-                    htmlFor="country"
+                    htmlFor="phone"
                     className="text-sm text-yellowGreen flex gap-2 mb-2 items-center"
                   >
-                    Country
+                    Phone Number 
                   </label>
-                  <motion.select
+                  <motion.input
                     whileFocus={{ borderColor: '#A3BFFA' }}
-                    id="country"
+                    type="tel"
+                    id="phone"
+                    placeholder="Enter your number "
                     className="w-full h-10 border-b-2 px-4 border-b-appleGreen focus:outline-none focus:border-b-2 focus:border-b-yellowGreen"
-                  >
-                    <option value="Kenya">Kenya</option>
-                  </motion.select>
+                  />
                 </div>
               </div>
               <div className="w-full h-fit mb-3">
