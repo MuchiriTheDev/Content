@@ -46,7 +46,7 @@ const Navbar = () => {
           className={`lg:w-32 w-25 mx-1 md:mx-2 lg:mx-3 font-medium transition-all lg:text-sm text-xs duration-150 ${scrolling ? 'text-brown' : 'text-white'} hover:text-yellowGreen cursor-pointer `}
           to="services" smooth={true} duration={500} offset={-100}
         >
-         our Services
+         Our Services
         </ScrollLink>
        
       </div>
