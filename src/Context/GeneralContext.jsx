@@ -10,6 +10,9 @@ export const GeneralProvider = ({ children }) => {
         theme: 'light',
         isAuthenticated: false,
     });
+    const [loading, setLoading] = useState(false);
+    const [user, setUser] = useState(null || (localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null));
+    const [token, setToken] = useState(null || localStorage.getItem('token'));
 
     const toggleTheme = () => {
         setState((prevState) => ({
@@ -35,7 +38,10 @@ export const GeneralProvider = ({ children }) => {
     };
 
     return (
-        <GeneralContext.Provider value={{ state, toggleTheme, login, logout }}>
+        <GeneralContext.Provider value={{ 
+            state, toggleTheme, login, logout,
+            loading, setLoading, token, user
+            }}>
             {children}
         </GeneralContext.Provider>
     );

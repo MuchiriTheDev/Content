@@ -1,24 +1,71 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import { assets } from '../../assets/assets';
 import { FaLock, FaMailBulk } from 'react-icons/fa';
 import { MdArrowBack } from 'react-icons/md';
 import { FcGoogle } from 'react-icons/fc';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { GeneralContext } from '../../Context/GeneralContext';
+import Loading from '../../Resources/Loading';
+import toast from 'react-hot-toast';
+import axios from 'axios';
+import { backendUrl } from '../../App';
 
 const Login = () => {
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const { loading , setLoading } = useContext(GeneralContext);
+  const navigate = useNavigate();
+
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true); // Set loading to true when form is submitted
+
+    if (!formData.email || !formData.password) {
+      toast.info('Please fill in all fields!');
+      setLoading(false); // Reset loading state
+      return;
+    }
+    
+    try {
+      const response = await axios.post(`${backendUrl}/auth/login`, formData)
+      if(response.data.success){
+        toast.success('Login successful!');
+        console.log('Login successful:', response.data);
+        localStorage.setItem("token", response.data.token)
+        localStorage.setItem("user", JSON.stringify(response.data.user))
+        navigate('/')
+        return;
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      toast.error(error?.response?.data?.error ||'An error occurred while logging in. Please try again later.');
+      setLoading(false); // Reset loading state
+      return;
+    }finally{
+      setLoading(false); // Reset loading state after API call
+    }
+  };
+
+  if (loading) return <Loading/>; // Show loading spinner if loading is true
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
-      className="w-screen h-fit md:min-h-screen bg-gray-50 flex mt-10 md:items-center justify-center"
+      className="w-screen h-fit md:min-h-screen bg-gray-50 flex  md:items-center justify-center"
     >
       <motion.div
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.2 }}
-       className="md:w-[90%] w-full max-w-5xl shadow-none md:shadow-xl rounded-md bg-none md:bg-white border-none md:border-2 border-appleGreen my-5 md:my-10 flex justify-center items-center h-fit md:min-h-[75vh] relative"
+        className="md:w-[95%] w-full max-w-5xl shadow-none md:shadow-xl rounded-md bg-none md:bg-white border-none md:border-2 border-appleGreen my-5 md:my-14 flex justify-center items-center h-fit min-h-screen md:min-h-[75vh] relative"
       >
         {/* Image - Hidden on small screens */}
         <motion.div
@@ -36,7 +83,7 @@ const Login = () => {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="h-full w-full md:w-[60%] flex items-center  relative p-4 md:p-6"
         >
-          <form className="w-full max-w-lg">
+          <form className="w-full max-w-lg" onSubmit={handleSubmit}>
             {/* Heading */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -76,6 +123,9 @@ const Login = () => {
                   type="email"
                   id="email"
                   placeholder="Enter your email"
+                  value={formData.email}
+                  required
+                  onChange={handleChange}
                   className="w-full h-10 border-b-2 px-4 border-b-appleGreen focus:outline-none focus:border-b-2 focus:border-b-yellowGreen"
                 />
               </div>
@@ -92,10 +142,18 @@ const Login = () => {
                   type="password"
                   id="password"
                   placeholder="Enter your password"
+                  value={formData.password}
+                  required
+                  onChange={handleChange}
                   className="w-full h-10 border-b-2 px-4 border-b-appleGreen focus:outline-none focus:border-b-2 focus:border-b-yellowGreen"
                 />
               </div>
             </motion.div>
+            <div className="flex items-center justify-end w-full mt-2 mb-3">
+                <p className="text-sm text-yellowGreen font-bold cursor-pointer hover:underline">
+                  Forgot Password?
+                </p>
+            </div>
             {/* Submit Button */}
             <motion.div
               initial={{ opacity: 0 }}

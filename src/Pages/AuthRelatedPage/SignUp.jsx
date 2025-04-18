@@ -1,12 +1,68 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import { assets } from '../../assets/assets';
-import { MdArrowBack, MdClose } from 'react-icons/md';
+import { MdArrowBack } from 'react-icons/md';
 import { FaLock, FaMailBulk, FaUser } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import axios from 'axios';
+import { backendUrl } from '../../App';
+import toast from 'react-hot-toast';
+import { GeneralContext } from '../../Context/GeneralContext';
+import Loading from '../../Resources/Loading';
 
 const SignUp = () => {
+  const { loading, setLoading } = useContext(GeneralContext);
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    password: '',
+  });
+  const navigate = useNavigate();
+
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log('Form Data:', formData);
+    setLoading(true);
+    // Here you can add your form submission logic, like sending the data to an API
+    try {
+      const response = await axios.post(`${backendUrl}/auth/register`, formData);
+      console.log('Response:', response.data);
+      if(response.data.success){
+        toast.success('Account created successfully! Please check your email for verification.');
+        navigate('/verify-email')
+        return;
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      toast.error(error?.response?.data?.error||'Error submitting form. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+    // Reset form data after submission
+    setFormData({
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      password: '',
+    });
+    // Add your form submission logic here
+  };
+
+  if (loading) return <Loading />
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -14,13 +70,13 @@ const SignUp = () => {
       transition={{ duration: 0.8 }}
       className="w-screen h-fit md:min-h-screen bg-gray-50 flex items-center justify-center"
     >
+      
       <motion.div
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.2 }}
-        className="md:w-[90%] w-full max-w-5xl shadow-none md:shadow-xl rounded-md bg-none md:bg-white border-none md:border-2 border-appleGreen my-5 md:my-10 flex justify-center items-center h-fit md:min-h-[75vh] relative"
+        className="md:w-[95%] w-full max-w-5xl shadow-none md:shadow-xl rounded-md bg-none md:bg-white border-none md:border-2 border-appleGreen my-5 md:my-10 flex justify-center items-center h-fit md:min-h-[75vh] relative"
       >
-        {/* Image - Hidden on small screens */}
         <motion.div
           initial={{ x: -100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
@@ -29,15 +85,13 @@ const SignUp = () => {
         >
           <img src={assets.signup} className="w-fit h-full object-cover rounded-lg" alt="Signup" />
         </motion.div>
-        {/* Form Container */}
         <motion.div
           initial={{ x: 100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="h-full w-full md:w-[60%] flex items-center  relative p-4 py-8 md:p-6"
+          className="h-full w-full md:w-[60%] flex items-center relative p-4 py-8 md:p-6"
         >
-          <form className="w-full max-w-lg">
-            {/* Heading */}
+          <form className="w-full max-w-lg" onSubmit={handleSubmit}>
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -56,7 +110,6 @@ const SignUp = () => {
                 </p>
               </div>
             </motion.div>
-            {/* Form Inputs */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -64,7 +117,6 @@ const SignUp = () => {
               className="w-full h-fit p-6 flex flex-col items-center justify-center bg-white rounded-lg shadow-lg border-2 border-appleGreen"
             >
               <div className="w-full h-fit flex flex-col md:flex-row gap-5 mb-4">
-                {/* First Name */}
                 <div className="w-full md:w-[50%]">
                   <label
                     htmlFor="firstName"
@@ -77,10 +129,12 @@ const SignUp = () => {
                     type="text"
                     id="firstName"
                     placeholder="Enter your first name"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    required
                     className="w-full h-10 border-b-2 px-4 border-b-appleGreen focus:outline-none focus:border-b-2 focus:border-b-yellowGreen"
                   />
                 </div>
-                {/* Last Name */}
                 <div className="w-full md:w-[50%]">
                   <label
                     htmlFor="lastName"
@@ -93,12 +147,14 @@ const SignUp = () => {
                     type="text"
                     id="lastName"
                     placeholder="Enter your last name"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    required
                     className="w-full h-10 border-b-2 px-4 border-b-appleGreen focus:outline-none focus:border-b-2 focus:border-b-yellowGreen"
                   />
                 </div>
               </div>
               <div className="w-full h-fit flex flex-col md:flex-row gap-5 mb-3">
-                {/* Email */}
                 <div className="w-full md:w-[50%]">
                   <label
                     htmlFor="email"
@@ -111,28 +167,32 @@ const SignUp = () => {
                     type="email"
                     id="email"
                     placeholder="Enter your email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
                     className="w-full h-10 border-b-2 px-4 border-b-appleGreen focus:outline-none focus:border-b-2 focus:border-b-yellowGreen"
                   />
                 </div>
-                {/* Country */}
                 <div className="w-full md:w-[50%]">
                   <label
                     htmlFor="phone"
                     className="text-sm text-yellowGreen flex gap-2 mb-2 items-center"
                   >
-                    Phone Number 
+                    Phone Number
                   </label>
                   <motion.input
                     whileFocus={{ borderColor: '#A3BFFA' }}
                     type="tel"
                     id="phone"
-                    placeholder="Enter your number "
+                    placeholder="Enter your number"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    required
                     className="w-full h-10 border-b-2 px-4 border-b-appleGreen focus:outline-none focus:border-b-2 focus:border-b-yellowGreen"
                   />
                 </div>
               </div>
               <div className="w-full h-fit mb-3">
-                {/* Password */}
                 <label
                   htmlFor="password"
                   className="text-sm text-yellowGreen flex gap-2 mb-2 items-center"
@@ -144,11 +204,14 @@ const SignUp = () => {
                   type="password"
                   id="password"
                   placeholder="Enter your password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
                   className="w-full h-10 border-b-2 px-4 border-b-appleGreen focus:outline-none focus:border-b-2 focus:border-b-yellowGreen"
                 />
               </div>
             </motion.div>
-            {/* Submit Button */}
+            
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
