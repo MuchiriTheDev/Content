@@ -9,7 +9,7 @@ import Dashboard from './Pages/DashboardRelated/Dashboard'
 import { Toaster } from 'react-hot-toast'
 import VerificationNotification from './Pages/AuthRelatedPage/VerificationNotification'
 import EmailVerify from './Pages/AuthRelatedPage/EmailVerify'
-import Inpage404 from './Resources/404.JSX'
+import Inpage404 from './Resources/Inpage404.jsx'
 
 export const backendUrl = `${import.meta.env.VITE_BACKEND_URL}/api`
 console.log(backendUrl)
