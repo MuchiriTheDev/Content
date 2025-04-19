@@ -11,6 +11,7 @@ import VerificationNotification from './Pages/AuthRelatedPage/VerificationNotifi
 import EmailVerify from './Pages/AuthRelatedPage/EmailVerify'
 import Inpage404 from './Resources/Inpage404.jsx'
 import ResetEmail from './Pages/AuthRelatedPage/ResetEmail.jsx'
+import PasswordReset from './Pages/AuthRelatedPage/PasswordReset.jsx'
 
 export const backendUrl = `${import.meta.env.VITE_BACKEND_URL}/api`
 console.log(backendUrl)
@@ -29,6 +30,7 @@ function App() {
         <Route path='/verify-email' element={<VerificationNotification/>}/>
         <Route path='/verify/:token' element={<EmailVerify/>}/>
         <Route path='/reset-email' element={<ResetEmail/>}/>
+        <Route path='/reset-password/:token' element={<PasswordReset/>}/>
         <Route path='*' element={<Inpage404/>}/>
       </Routes>
       <Toaster

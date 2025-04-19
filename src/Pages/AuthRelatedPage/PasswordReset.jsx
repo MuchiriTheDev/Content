@@ -4,44 +4,50 @@ import toast from 'react-hot-toast';
 import { backendUrl } from '../../App';
 import axios from 'axios';
 import Loading from '../../Resources/Loading';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom'; // Import useParams
 
-const ResetEmail = () => {
-    const [email, setEmail] = useState('');
-    const { loading, setLoading } = useContext(GeneralContext)// Assuming you have a loading state in your context
-    const navigate = useNavigate(); // Assuming you're using react-router-dom for navigation
+const PasswordReset = () => {
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const { loading, setLoading } = useContext(GeneralContext);
+    const navigate = useNavigate();
+    const { token } = useParams(); // Extract token from URL params
 
-    const handleSubmit = async(e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true); // Set loading to true when form is submitted
+        setLoading(true);
 
-        if (!email) {
-            toast.info('Please enter your email address!');
-            setLoading(false); // Reset loading state
+        if (!password || !confirmPassword) {
+            toast.info('Please fill in both password fields!');
+            setLoading(false);
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            toast.error('Passwords do not match!');
+            setLoading(false);
             return;
         }
 
         try {
-            const response = await axios.post(`${backendUrl}/auth/forgot-password`, { email });
+            const response = await axios.post(`${backendUrl}/auth/reset-password/${token}`, { password }); // Include token in the request
             if (response.data.success) {
-                toast.success('Reset email sent successfully! Please check your inbox.');
-                console.log('Reset email sent:', response.data);
-                navigate('/verify-email')
+                toast.success('Password reset successfully!');
+                console.log('Password reset:', response.data);
+                navigate('/login');
             } else {
-                toast.error('Failed to send reset email. Please try again.');
+                toast.error('Failed to reset password. Please try again.');
             }
         } catch (error) {
             console.error('Error:', error);
             toast.error(error?.response?.data?.error || 'An error occurred. Please try again later.');
-            
         } finally {
-            setLoading(false); // Reset loading state after API call
+            setLoading(false);
         }
-        // Add your reset email logic here
-        console.log('Reset email for:', email);
     };
 
-    if(loading) return <Loading/>; // Show loading spinner if loading is true
+    if (loading) return <Loading />;
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-white to-beige flex items-center justify-center p-6">
             <div className="w-full max-w-xl bg-white rounded-2xl shadow-lg p-10 border border-gray-200">
@@ -49,26 +55,46 @@ const ResetEmail = () => {
                     Reset Your Password
                 </h2>
                 <p className="text-sm text-gray-600 text-center mb-6">
-                    Enter your email address below, and we'll send you a link to reset your password.
+                    Enter your new password below to reset your account password.
                 </p>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
                         <label
-                            htmlFor="email"
+                            htmlFor="password"
                             className="block text-sm font-medium text-appleGreen mb-2"
                         >
-                            Email Address
+                            New Password
                         </label>
                         <input
-                            type="email"
-                            id="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            type="password"
+                            id="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 
                                                  text-gray-800 placeholder-gray-400 focus:outline-none 
                                                  focus:ring-2 focus:ring-yellowGreen focus:border-yellowGreen"
-                            placeholder="Enter your email"
+                            placeholder="Enter your new password"
+                            required
+                        />
+                    </div>
+
+                    <div>
+                        <label
+                            htmlFor="confirmPassword"
+                            className="block text-sm font-medium text-appleGreen mb-2"
+                        >
+                            Confirm Password
+                        </label>
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 
+                                                 text-gray-800 placeholder-gray-400 focus:outline-none 
+                                                 focus:ring-2 focus:ring-yellowGreen focus:border-yellowGreen"
+                            placeholder="Confirm your new password"
                             required
                         />
                     </div>
@@ -79,7 +105,7 @@ const ResetEmail = () => {
                                              font-semibold hover:bg-appleGreen transition-colors duration-300
                                              focus:outline-none focus:ring-2 focus:ring-appleGreen"
                     >
-                        Send Reset Link
+                        Reset Password
                     </button>
                 </form>
 
@@ -102,4 +128,4 @@ const ResetEmail = () => {
     );
 };
 
-export default ResetEmail;
+export default PasswordReset;
