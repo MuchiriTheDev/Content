@@ -34,7 +34,7 @@ const Hero = () => {
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.6 }}
             viewport={{ once: true }}
-            className="text-3xl md:text-4xl lg:text-5xl font-bold text-yellowGreen mb-4"
+            className="text-3xl md:text-4xl lg:text-5xl font-bold text-appleGreen mb-4"
           >
             Create without Fear
           </motion.h1>
@@ -45,7 +45,7 @@ const Hero = () => {
             viewport={{ once: true }}
             className="text-sm md:text-base lg:text-lg font-medium text-slate-200 mb-6"
           >
-            With <span className='text-yellowGreen font-semibold'>CCI</span>, we empower you to focus on your passion, while we handle the risks. Our AI-driven insurance solutions ensure you can create freely, without the fear of losing your income or content.
+            With <span className='text-appleGreen font-semibold'>CCI</span>, we empower you to focus on your passion, while we handle the risks. Our AI-driven insurance solutions ensure you can create freely, without the fear of losing your income or content.
           </motion.p>
           <motion.div
             initial={{ y: 50, opacity: 0 }}

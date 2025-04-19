@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaChartBar, FaChartLine, FaChartPie, FaFileAlt, FaBell, FaUser, FaSignOutAlt, FaBars, FaTimes, FaCalendar, FaUpload } from 'react-icons/fa';
 import { MdArrowBack } from 'react-icons/md';
@@ -20,6 +20,20 @@ const Dashboard = () => {
     claims: <ClaimsManagement />,
     contentReviewing: <ContentReviewing />,
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.reload();
+  }
+
+  useEffect(() => {
+    if(!localStorage.getItem('token')){
+      window.location.href = '/login';
+      setIsSidebarOpen(false);
+    }
+  },[]);
+
 
   return (
     <div className="w-full h-screen bg-appleGreen text-brown flex flex-col overflow-hidden">
@@ -120,7 +134,7 @@ const Dashboard = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="w-full py-2 md:py-3 bg-gradient-to-r from-yellowGreen to-appleGreen rounded-lg font-semibold text-brown shadow-lg hover:shadow-yellowGreen/50 transition-all duration-300 flex items-center justify-center gap-2"
-            onClick={() => setIsSidebarOpen(false)}
+            onClick={handleLogout}
           >
             <FaSignOutAlt /> Logout
           </motion.button>

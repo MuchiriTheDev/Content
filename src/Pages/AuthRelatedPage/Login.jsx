@@ -150,9 +150,9 @@ const Login = () => {
               </div>
             </motion.div>
             <div className="flex items-center justify-end w-full mt-2 mb-3">
-                <p className="text-sm text-yellowGreen font-bold cursor-pointer hover:underline">
+                <Link to={'/reset-email'} className="text-sm text-yellowGreen font-bold cursor-pointer hover:underline">
                   Forgot Password?
-                </p>
+                </Link>
             </div>
             {/* Submit Button */}
             <motion.div

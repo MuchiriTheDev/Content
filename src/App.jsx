@@ -10,6 +10,7 @@ import { Toaster } from 'react-hot-toast'
 import VerificationNotification from './Pages/AuthRelatedPage/VerificationNotification'
 import EmailVerify from './Pages/AuthRelatedPage/EmailVerify'
 import Inpage404 from './Resources/Inpage404.jsx'
+import ResetEmail from './Pages/AuthRelatedPage/ResetEmail.jsx'
 
 export const backendUrl = `${import.meta.env.VITE_BACKEND_URL}/api`
 console.log(backendUrl)
@@ -27,6 +28,7 @@ function App() {
         <Route path='/dashboard' element={<Dashboard/>}/>
         <Route path='/verify-email' element={<VerificationNotification/>}/>
         <Route path='/verify/:token' element={<EmailVerify/>}/>
+        <Route path='/reset-email' element={<ResetEmail/>}/>
         <Route path='*' element={<Inpage404/>}/>
       </Routes>
       <Toaster

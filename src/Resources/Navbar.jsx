@@ -55,15 +55,14 @@ const Navbar = () => {
         {
           localStorage.getItem('token') ? (
             <RouterLink
-            className="text-white font-semibold lg:text-sm text-xs py-3 px-2 w-54 rounded-lg shadow-md text-nowrap bg-appleGreen text-center cursor-pointer flex items-center gap-2 hover:bg-yellowGreen transition-all duration-150"
+            className="text-white font-semibold lg:text-sm text-xs py-2 px-3  rounded-lg shadow-md text-nowrap bg-appleGreen text-center cursor-pointer flex items-center gap-2 hover:bg-yellowGreen transition-all duration-150"
             to="/dashboard" smooth={true} duration={500} offset={-100}
           >
-            <FaUser />
             Dashboard
           </RouterLink>
           ):(
             <RouterLink
-              className="text-white font-semibold lg:text-sm text-xs py-3 px-2 w-54 rounded-lg shadow-md text-nowrap bg-appleGreen text-center cursor-pointer flex items-center gap-2 hover:bg-yellowGreen transition-all duration-150"
+              className="text-white font-semibold lg:text-sm text-xs py-3 px-2  rounded-lg shadow-md text-nowrap bg-appleGreen text-center cursor-pointer flex items-center gap-2 hover:bg-yellowGreen transition-all duration-150"
               to="/signup" smooth={true} duration={500} offset={-100}
             >
               <FaUser />
