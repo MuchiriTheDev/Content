@@ -12,6 +12,7 @@ import { GeneralContext } from '../../Context/GeneralContext';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { backendUrl } from '../../App'
+import Loading from '../../Resources/Loading';
 
 // Main Dashboard Component
 const Dashboard = () => {
@@ -74,6 +75,7 @@ const Dashboard = () => {
     fetchUserData()
   },[]);
 
+  if (loading) return <Loading />
 
   return (
     <div className="w-full h-screen bg-appleGreen text-brown flex flex-col overflow-hidden">
