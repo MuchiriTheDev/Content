@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaChartBar, FaChartLine, FaChartPie, FaFileAlt, FaBell, FaUser, FaSignOutAlt, FaBars, FaTimes, FaCalendar, FaUpload } from 'react-icons/fa';
 import { MdArrowBack } from 'react-icons/md';
@@ -8,11 +8,16 @@ import InsuranceOverview from '../../Component/DashboardComponent/InsuranceOverv
 import ClaimsManagement from '../../Component/DashboardComponent/ClaimsManagement';
 import DashboardAnalytics from '../../Component/DashboardComponent/DashboardAnalytics';
 import ContentReviewing from '../../Component/DashboardComponent/ContentReviewing'; // Assuming this is the file path
+import { GeneralContext } from '../../Context/GeneralContext';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import { backendUrl } from '../../App'
 
 // Main Dashboard Component
 const Dashboard = () => {
   const [activeSection, setActiveSection] = useState('overview');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { loading, setLoading, profile, setProfile } = useContext(GeneralContext)
 
   const sections = {
     overview: <InsuranceOverview />,
@@ -27,11 +32,46 @@ const Dashboard = () => {
     window.location.reload();
   }
 
+  const fetchUserData = async () => {
+    setLoading(true);
+    const token = localStorage.getItem('token');
+    console.log('Token:', token);
+    if (!token) {
+      setLoading(false);
+      toast.error('No token found. Please log in.');
+      return;
+    }
+  
+    try {
+      console.log('Axios config:', {
+        url: `${backendUrl}/auth/me`,
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const response = await axios.get(`${backendUrl}/auth/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.data.success) {
+        toast.success('User data fetched successfully!');
+        console.log('User data:', response.data.user);
+        setProfile(response.data.user);
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      toast.error(error?.response?.data?.error || 'Failed to fetch user data!');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if(!localStorage.getItem('token')){
       window.location.href = '/login';
       setIsSidebarOpen(false);
     }
+
+    fetchUserData()
   },[]);
 
 
@@ -148,7 +188,7 @@ const Dashboard = () => {
         transition={{ duration: 1, delay: 0.4 }}
         className="flex-1 ml-0 md:ml-64 mt-16 p-4 md:p-8 overflow-y-auto h-[calc(100vh-4rem)]"
       >
-        <h1 className="text-2xl font-bold py-6 w-full bg-white mb-4 px-5 mt-2 rounded-lg shadow-xl">Welcome, Muchiri Mwangi</h1>
+        <h1 className="text-2xl font-bold py-6 w-full bg-white mb-4 px-5 mt-2 rounded-lg shadow-xl">Welcome, {profile?.personalInfo?.firstName} </h1>
         <div className="max-w-full md:max-w-7xl mx-auto">
           {sections[activeSection]}
         </div>
