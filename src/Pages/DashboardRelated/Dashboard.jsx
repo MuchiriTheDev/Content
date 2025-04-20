@@ -97,7 +97,7 @@ const Dashboard = () => {
             <MdArrowBack size={25} className="text-brown" />
           </Link>
           <Link to="/">
-            <img src={assets.logo2} alt="Logo" className="h-14 w-fit rounded-full" />
+            <img src={assets.logo2} alt="Logo" className="h-20 w-fit rounded-full" />
           </Link>
         </div>
         <div className="flex items-center gap-2 md:gap-4">

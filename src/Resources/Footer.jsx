@@ -19,7 +19,7 @@ const Footer = () => {
                 © 2025 Content Creator Insurance™. All Rights Reserved. Built By{' '}
                 <a
                     href="https://muchiri-the-dev.vercel.app/"
-                    className="text-yellowGreen font-semibold hover:underline"
+                    className="text-appleGreen font-semibold hover:underline"
                 >
                     Muchiri Mwangi
                 </a>
