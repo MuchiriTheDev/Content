@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { assets } from '../assets/assets';
 import { MdArrowLeft, MdClose, MdMenu } from 'react-icons/md';
-import { FaHome, FaPhoneAlt, FaQuestion, FaRegUser, FaUser } from 'react-icons/fa';
+import { FaHome, FaLongArrowAltUp, FaPhoneAlt, FaQuestion, FaRegUser, FaUser } from 'react-icons/fa';
 import { GrServices } from 'react-icons/gr';
 import { RiHotelLine } from 'react-icons/ri';
 import { Link as ScrollLink } from 'react-scroll';
 import { Link as RouterLink } from 'react-router-dom';
+import { BiLogOut } from 'react-icons/bi';
 
 const Navbar = () => {
   const [sidebar, showSidebar] = useState(false);
@@ -20,6 +21,11 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.reload();
+  }
   return (
     <nav className={`fixed top-0 left-0 max-w-[100vw] w-full z-30 h-fit p-6 md:px-8 flex justify-between items-center ${scrolling ? 'bg-white' : 'bg-transparent'} transition-all duration-300`}>
       {/* Logo */}
@@ -78,7 +84,7 @@ const Navbar = () => {
           aria-expanded={sidebar}
         >
           {sidebar ? (
-            <MdClose className={`w-10 h-10 ${scrolling ? 'text-brown' : 'text-white'}`} />
+            <MdClose className={`w-10 h-10 ${scrolling ? 'text-brown' : 'text-brown'}`} />
           ) : (
             <MdMenu className={`w-10 h-10 ${scrolling ? 'text-brown' : 'text-white'}`} />
           )}
@@ -89,7 +95,7 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       <div
-        className={`fixed top-0 ${sidebar ? 'right-0' : '-right-64'} md:hidden p-5 transition-all duration-300 w-64 bg-white rounded-l-2xl border border-appleGreen h-full`}
+        className={`fixed top-0 ${sidebar ? 'right-0' : '-right-64'} flex flex-col items-center justify-between md:hidden p-5 transition-all duration-300 w-64 bg-white rounded-l-2xl border border-appleGreen h-full`}
       >
         <ScrollLink
           onClick={() => showSidebar(false)}
@@ -124,15 +130,28 @@ const Navbar = () => {
             <GrServices />
             <p>Services</p>
           </ScrollLink>
-          
-          <RouterLink
-            to={'/signup'}
-            onClick={() => showSidebar(false)}
-            className="text-brown flex items-center gap-2 w-full h-10 mb-6 py-3 font-bold text-lg hover:text-appleGreen"
-          >
-            <FaUser/>
-            <p>Sign up</p>
-          </RouterLink>
+        </div>
+        <div className="w-full p-3">
+          {
+            localStorage.getItem('token') ? (
+              <button
+                onClick={() => {handleLogout() ; showSidebar(false)}}
+                className="text-brown flex items-center gap-2 w-full h-10 mb-6 py-3 font-bold text-lg hover:text-appleGreen"
+              >
+                <BiLogOut/>
+                <p>Logout</p>
+              </button>
+            ) : (
+              <RouterLink
+                to={'/signup'}
+                onClick={() => showSidebar(false)}
+                className="text-brown flex items-center gap-2 w-full h-10 mb-6 py-3 font-bold text-lg hover:text-appleGreen"
+              >
+                <FaUser/>
+                <p>Sign up</p>
+              </RouterLink>
+            )
+          }
         </div>
       </div>
     </nav>
