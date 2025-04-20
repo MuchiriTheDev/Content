@@ -89,20 +89,20 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       <div
-        className={`fixed top-0 ${sidebar ? 'right-0' : '-right-64'} md:hidden p-5 transition-all duration-300 w-64 bg-gradient-to-b from-yellowGreen to-transparent backdrop-blur-md h-full`}
+        className={`fixed top-0 ${sidebar ? 'right-0' : '-right-64'} md:hidden p-5 transition-all duration-300 w-64 bg-white rounded-l-2xl border border-appleGreen h-full`}
       >
         <ScrollLink
           onClick={() => showSidebar(false)}
-          className="w-full text-white flex items-center gap-2 py-10 h-12 text-xl font-bold mb-10"
+          className="w-full text-brown cursor-pointer flex items-center gap-2 py-10 h-12 text-xl font-bold mb-10"
           to="home" smooth={true} duration={500} offset={-100}
         >
-          <MdArrowLeft className="w-10 h-10" />
+          <MdArrowLeft className="w-10  h-10" />
           <p>Back</p>
         </ScrollLink>
         <div className="w-full p-3 flex flex-col items-start">
           <ScrollLink
             onClick={() => showSidebar(false)}
-            className="text-white flex items-center gap-2 w-full h-10 mb-6 py-3 font-bold text-lg hover:text-appleGreen"
+            className="text-brown flex items-center gap-2 w-full h-10 mb-6 py-3 font-bold text-lg hover:text-appleGreen"
             to="how-to-apply" smooth={true} duration={500} offset={-100}
           >
             <FaHome />
@@ -110,7 +110,7 @@ const Navbar = () => {
           </ScrollLink>
           <ScrollLink
             onClick={() => showSidebar(false)}
-            className="text-white flex items-center gap-2 w-full h-10 mb-6 py-3 font-bold text-lg hover:text-appleGreen"
+            className="text-brown flex items-center gap-2 w-full h-10 mb-6 py-3 font-bold text-lg hover:text-appleGreen"
             to="about" smooth={true} duration={500} offset={-100}
           >
             <RiHotelLine />
@@ -118,7 +118,7 @@ const Navbar = () => {
           </ScrollLink>
           <ScrollLink
             onClick={() => showSidebar(false)}
-            className="text-white flex items-center gap-2 w-full h-10 mb-6 py-3 font-bold text-lg hover:text-appleGreen"
+            className="text-brown flex items-center gap-2 w-full h-10 mb-6 py-3 font-bold text-lg hover:text-appleGreen"
             to="services" smooth={true} duration={500} offset={-100}
           >
             <GrServices />
@@ -128,7 +128,7 @@ const Navbar = () => {
           <RouterLink
             to={'/signup'}
             onClick={() => showSidebar(false)}
-            className="text-white flex items-center gap-2 w-full h-10 mb-6 py-3 font-bold text-lg hover:text-appleGreen"
+            className="text-brown flex items-center gap-2 w-full h-10 mb-6 py-3 font-bold text-lg hover:text-appleGreen"
           >
             <FaUser/>
             <p>Sign up</p>

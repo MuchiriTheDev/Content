@@ -163,4 +163,5 @@ const InsuranceDetails = ({ onSubmit, onBack, formData }) => {
   );
 };
 
+
 export default InsuranceDetails;
