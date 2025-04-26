@@ -190,7 +190,7 @@ const PlatformItem = ({ field, index, removePlatform, platformData, register, er
               onClick={() => appendRisk({ violationType: '', date: '', description: '' })}
               className="flex items-center gap-2 py-2 px-4 bg-appleGreen text-white rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-300"
             >
-              <FaPlus size={14} /> Add Incident
+              <FaPlus size={14} /> Incident
             </motion.button>
           </div>
           {riskHistoryFields.length === 0 ? (

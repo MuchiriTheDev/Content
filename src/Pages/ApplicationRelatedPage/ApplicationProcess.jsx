@@ -179,7 +179,7 @@ const ApplicationProcess = () => {
         {
           headers: {
             Authorization: `Bearer ${token}`,
-          },
+          }, 
         }
       );
       if (response.data.success) {
