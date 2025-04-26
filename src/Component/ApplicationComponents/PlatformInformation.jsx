@@ -1,7 +1,7 @@
 import React from 'react';
-import { FaPlus, FaTrash, FaExclamationCircle } from 'react-icons/fa';
+import { FaPlus, FaTrash, FaExclamationCircle, FaLock } from 'react-icons/fa';
 import { motion } from 'framer-motion';
-import { useFieldArray } from 'react-hook-form';
+import { useFieldArray, useWatch } from 'react-hook-form';
 import toast from 'react-hot-toast';
 
 const PlatformInformation = ({ register, errors, control, getValues, setValue }) => {
@@ -10,10 +10,15 @@ const PlatformInformation = ({ register, errors, control, getValues, setValue })
     name: 'platformData',
   });
 
+  // Watch platformData to dynamically show guidance
+  const platformData = useWatch({ control, name: 'platformData', defaultValue: [] });
+
   // Add a new platform
   const addPlatform = () => {
     const currentPlatforms = getValues('platformData') || [];
-    // Optional: Prevent adding if the last platform is incomplete
+    if (currentPlatforms.length >= 5) {
+      return toast.error('You can add up to 5 platforms.');
+    }
     if (currentPlatforms.length > 0) {
       const lastPlatform = currentPlatforms[currentPlatforms.length - 1];
       if (!lastPlatform.name || !lastPlatform.username || !lastPlatform.accountLink) {
@@ -36,6 +41,20 @@ const PlatformInformation = ({ register, errors, control, getValues, setValue })
     }
   };
 
+  // Dynamic guidance for platform selection
+  const platformGuidance = (platformName) => {
+    const messages = {
+      YouTube: 'We’ll analyze YouTube’s policies to tailor your coverage and protect against demonetization or bans.',
+      TikTok: 'We’ll assess TikTok’s guidelines to ensure your coverage fits your content’s risk profile.',
+      Instagram: 'We’ll review Instagram’s rules to provide coverage for suspensions or content restrictions.',
+      X: 'We’ll evaluate X’s policies to protect your income from platform actions.',
+      Facebook: 'We’ll check Facebook’s standards to customize your insurance for potential bans or demonetization.',
+      Other: 'We’ll review your platform’s policies to provide tailored coverage.',
+      '': 'Select a platform to see how we’ll protect your income.',
+    };
+    return messages[platformName] || messages[''];
+  };
+
   return (
     <motion.div
       initial={{ y: 20, opacity: 0 }}
@@ -49,7 +68,7 @@ const PlatformInformation = ({ register, errors, control, getValues, setValue })
           Platform Information
         </h3>
         <p className="text-gray-600 mt-2 text-center text-sm md:text-base">
-          Add the social media platforms you want to insure. Ensure all required fields are filled for accurate coverage.
+          Add the social media platforms you want to insure. This helps us assess risks and tailor your coverage.
         </p>
       </div>
 
@@ -63,12 +82,12 @@ const PlatformInformation = ({ register, errors, control, getValues, setValue })
       ) : (
         fields.map((field, index) => (
           <motion.div
-            key={field.id} // Use field.id from useFieldArray for unique key
+            key={field.id}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
-            className="bg-white border-2 border-appleGreen rounded-xl p-4 md:p-6 shadow-lg hover:shadow-appleGreen/30 transition-shadow duration-300"
+            className="p-4 md:p-6 bg-white rounded-lg shadow-md transition-shadow duration-300"
           >
             <div className="flex justify-between items-center mb-4">
               <h4 className="text-lg md:text-xl font-semibold text-brown">
@@ -90,9 +109,12 @@ const PlatformInformation = ({ register, errors, control, getValues, setValue })
                 <label className="block text-sm font-medium mb-1 text-brown">
                   Platform <span className="text-red-500">*</span>
                 </label>
+                <p className="text-xs text-gray-500 mb-1">
+                  This helps us assess platform-specific risks for your coverage.
+                </p>
                 <select
                   {...register(`platformData.${index}.name`, {
-                    required: 'Platform is required',
+                    required: 'Please select a platform',
                   })}
                   className="w-full h-12 border-2 border-appleGreen rounded-lg text-brown bg-white px-3 focus:ring-2 focus:ring-yellowGreen focus:outline-none transition-all duration-200"
                 >
@@ -109,6 +131,9 @@ const PlatformInformation = ({ register, errors, control, getValues, setValue })
                     <FaExclamationCircle /> {errors.platformData[index].name.message}
                   </p>
                 )}
+                <p className="text-sm text-gray-600 mt-2 flex items-center gap-1">
+                  <FaLock className="text-gray-400" /> {platformGuidance(platformData[index]?.name)}
+                </p>
               </div>
 
               {/* Username */}
@@ -116,10 +141,13 @@ const PlatformInformation = ({ register, errors, control, getValues, setValue })
                 <label className="block text-sm font-medium mb-1 text-brown">
                   Username <span className="text-red-500">*</span>
                 </label>
+                <p className="text-xs text-gray-500 mb-1">
+                  This helps us verify your account for coverage and claims.
+                </p>
                 <input
                   type="text"
                   {...register(`platformData.${index}.username`, {
-                    required: 'Username is required',
+                    required: 'Please enter your username',
                     minLength: {
                       value: 2,
                       message: 'Username must be at least 2 characters',
@@ -140,17 +168,20 @@ const PlatformInformation = ({ register, errors, control, getValues, setValue })
                 <label className="block text-sm font-medium mb-1 text-brown">
                   Account Link <span className="text-red-500">*</span>
                 </label>
+                <p className="text-xs text-gray-500 mb-1">
+                  This lets us review your content to tailor your coverage.
+                </p>
                 <input
                   type="url"
                   {...register(`platformData.${index}.accountLink`, {
-                    required: 'Account link is required',
+                    required: 'Please enter your account link',
                     pattern: {
                       value: /^https?:\/\/.+$/,
-                      message: 'Please enter a valid URL (e.g., https://...)',
+                      message: 'Enter a valid profile URL, e.g., https://www.youtube.com/@yourusername',
                     },
                   })}
                   className="w-full h-12 border-2 border-appleGreen rounded-lg text-brown bg-white px-3 focus:ring-2 focus:ring-yellowGreen focus:outline-none transition-all duration-200"
-                  placeholder="e.g., https://www.youtube.com/@yourusername"
+                  placeholder="e.g., https://www.tiktok.com/@yourusername"
                 />
                 {errors.platformData?.[index]?.accountLink && (
                   <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
@@ -164,6 +195,9 @@ const PlatformInformation = ({ register, errors, control, getValues, setValue })
                 <label className="block text-sm font-medium mb-1 text-brown">
                   Audience Size
                 </label>
+                <p className="text-xs text-gray-500 mb-1">
+                  This helps us estimate your income and risk for a fair premium.
+                </p>
                 <input
                   type="number"
                   {...register(`platformData.${index}.audienceSize`, {
@@ -187,6 +221,9 @@ const PlatformInformation = ({ register, errors, control, getValues, setValue })
                 <label className="block text-sm font-medium mb-1 text-brown">
                   Content Type
                 </label>
+                <p className="text-xs text-gray-500 mb-1">
+                  This helps us assess risk and offer violation prevention tools.
+                </p>
                 <input
                   type="text"
                   {...register(`platformData.${index}.contentType`)}
@@ -206,6 +243,7 @@ const PlatformInformation = ({ register, errors, control, getValues, setValue })
         type="button"
         onClick={addPlatform}
         className="flex items-center justify-center gap-2 w-full md:w-auto py-3 px-6 bg-gradient-to-r from-yellowGreen to-appleGreen rounded-lg font-semibold text-brown shadow-lg hover:shadow-yellowGreen/50 transition-all duration-300"
+        aria-label="Add a new platform"
       >
         <FaPlus size={18} /> Add Platform
       </motion.button>
