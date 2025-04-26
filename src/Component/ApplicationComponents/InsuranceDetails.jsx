@@ -1,167 +1,174 @@
 import React from 'react';
-import { useForm } from 'react-hook-form';
-import { FaShieldAlt, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import { FaShieldAlt, FaCheckCircle, FaTimesCircle, FaExclamationCircle, FaArrowRight } from 'react-icons/fa';
 import { motion } from 'framer-motion';
-import { MdArrowBack } from 'react-icons/md';
-import { Link } from 'react-router-dom';
 
-const InsuranceDetails = ({ onSubmit, onBack, formData }) => {
-  const { register, handleSubmit, formState: { errors } } = useForm({
-    defaultValues: formData // Pre-fill with data from previous steps if available
-  });
-
-  const handleFormSubmit = (data) => {
-    onSubmit({ ...formData, ...data }); // Combine with previous data and submit
-  };
-
+const InsuranceDetails = ({ register, errors, getValues, setValue, onBack }) => {
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 1 }}
-      className="w-full min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 text-brown flex flex-col items-center justify-start py-10 px-4 md:px-10 overflow-auto"
+      initial={{ y: 20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.8 }}
+      className="space-y-6"
     >
-      {/* Header Section */}
-      <div className="w-full max-w-3xl mb-8">
-        <div className="flex gap-4 items-center">
-          <Link to="/" className="py-2" onClick={onBack}>
-            <MdArrowBack size={28} className="text-brown hover:text-appleGreen transition-colors" />
-          </Link>
-          <h2 className="text-3xl font-bold text-brown">
-            Insurance Details & Agreement
-          </h2>
-        </div>
-        <p className="text-lg text-yellowGreen mt-3">
-          Review what we cover, how it works, and agree to the terms to finalize your application.
+      {/* Header */}
+      <div>
+        <h3 className="text-2xl md:text-3xl font-bold text-brown text-center">
+          Insurance Details & Agreement
+        </h3>
+        <p className="text-gray-600 mt-2 text-sm md:text-base text-center">
+          Understand your coverage, select a period, and agree to the terms to finalize your insurance application.
         </p>
       </div>
 
-      {/* Content Container */}
+      {/* Form Card */}
       <motion.div
-        initial={{ y: 50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 1, delay: 0.3 }}
-        className="w-full max-w-3xl bg-white rounded-2xl shadow-xl border border-appleGreen p-8 space-y-8"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className=" p-4 md:p-6  duration-300"
       >
-        {/* Coverage Section */}
-        <div className="space-y-4">
-          <h3 className="text-2xl font-semibold text-brown flex items-center gap-2">
-            <FaShieldAlt className="text-appleGreen" /> What We Cover
-          </h3>
-          <p className="text-gray-700">
-            Content Creators Insurance (CCI) protects your income from platform-induced disruptions, including:
-          </p>
-          <ul className="list-disc pl-6 text-gray-700 space-y-2">
-            <li>Demonetization due to algorithm changes or policy updates.</li>
-            <li>Temporary suspensions for unclear violations.</li>
-            <li>Bans not related to content exclusions (see below).</li>
-            <li>Ad revenue drops from copyright disputes (if not your fault).</li>
-          </ul>
-          <p className="text-gray-700">
-            Payouts are delivered within <span className="font-bold text-appleGreen">72 hours</span> of claim approval, based on your verified earnings.
-          </p>
-        </div>
-
-        {/* Exclusions Section */}
-        <div className="space-y-4">
-          <h3 className="text-2xl font-semibold text-brown flex items-center gap-2">
-            <FaTimesCircle className="text-red-500" /> What We Don’t Cover
-          </h3>
-          <p className="text-gray-700">
-            We do not cover income loss from bans or penalties due to unsuitable content, including:
-          </p>
-          <ul className="list-disc pl-6 text-gray-700 space-y-2">
-            <li>Hate speech or abusive language.</li>
-            <li>Harassment, violence, or explicit content violations.</li>
-            <li>Intentional breaches of platform guidelines (e.g., nudity, threats).</li>
-          </ul>
-        </div>
-
-        {/* How It Works Section */}
-        <div className="space-y-4">
-          <h3 className="text-2xl font-semibold text-brown flex items-center gap-2">
-            <FaCheckCircle className="text-yellowGreen" /> How It Works
-          </h3>
-          <p className="text-gray-700">
-            Here’s the process:
-          </p>
-          <ol className="list-decimal pl-6 text-gray-700 space-y-2">
-            <li>Submit a claim with evidence (e.g., screenshots, emails) of the incident.</li>
-            <li>Our AI and team review it within 72 hours.</li>
-            <li>If approved, receive a lump-sum payout based on your chosen coverage amount.</li>
-          </ol>
-          <p className="text-gray-700">
-            Premiums are tailored to your earnings, content type, audience size, and risk history for fairness and affordability.
-          </p>
-        </div>
-
-        {/* Form Section */}
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
-          {/* Coverage Period */}
-          <div>
-            <label htmlFor="coveragePeriod" className="block text-sm font-medium mb-2 text-brown">
-              Desired Coverage Period
-            </label>
-            <motion.select
-              initial={{ y: 20, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="w-full h-12 border-2 border-appleGreen rounded-lg text-brown bg-transparent outline-none focus:ring-2 focus:ring-yellowGreen"
-              {...register("coveragePeriod", { required: "Please select a coverage period" })}
-            >
-              <option value="">Select Coverage Period</option>
-              <option value="1">1 Month of Earnings</option>
-              <option value="3">3 Months of Earnings</option>
-              <option value="6">6 Months of Earnings</option>
-            </motion.select>
-            {errors.coveragePeriod && <p className="text-red-500 text-xs mt-1">{errors.coveragePeriod.message}</p>}
+        <div className="space-y-6">
+          {/* Coverage Section */}
+          <div className="space-y-4">
+            <h4 className="text-lg md:text-xl font-semibold text-brown flex items-center gap-2">
+              <FaShieldAlt className="text-appleGreen" size={20} /> What We Cover
+            </h4>
+            <p className="text-gray-700 text-sm md:text-base">
+              Content Creators Insurance (CCI) safeguards your income from unexpected platform disruptions, ensuring financial stability.
+            </p>
+            <ul className="list-disc pl-6 text-gray-700 text-sm md:text-base space-y-2">
+              <li><strong>Demonetization</strong>: Protection against income loss due to algorithm changes or policy updates.</li>
+              <li><strong>Temporary Suspensions</strong>: Coverage for suspensions caused by unclear or ambiguous violations.</li>
+              <li><strong>Non-Excluded Bans</strong>: Support for account bans not related to content violations (see exclusions).</li>
+              <li><strong>Copyright Disputes</strong>: Compensation for ad revenue drops from disputes, provided you’re not at fault.</li>
+            </ul>
+            <p className="text-gray-700 text-sm md:text-base">
+              Approved claims are paid out within <span className="font-bold text-appleGreen">72 hours</span>, based on your verified earnings.
+            </p>
           </div>
 
-          {/* Data Accuracy Confirmation */}
-          <div className="flex items-start gap-2">
-            <input
-              type="checkbox"
-              {...register("dataAccuracy", { required: "You must confirm data accuracy" })}
-              className="mt-1 text-appleGreen focus:ring-yellowGreen"
-            />
-            <label className="text-sm text-gray-700">
-              I confirm that all provided information is accurate and complete.
-            </label>
+          {/* Exclusions Section */}
+          <div className="space-y-4">
+            <h4 className="text-lg md:text-xl font-semibold text-brown flex items-center gap-2">
+              <FaTimesCircle className="text-red-500" size={20} /> What We Don’t Cover
+            </h4>
+            <p className="text-gray-700 text-sm md:text-base">
+              We do not cover income loss resulting from violations of platform guidelines or inappropriate content.
+            </p>
+            <ul className="list-disc pl-6 text-gray-700 text-sm md:text-base space-y-2">
+              <li><strong>Hate Speech</strong>: Content promoting hate or abusive language.</li>
+              <li><strong>Harassment or Violence</strong>: Actions violating community standards, including explicit content.</li>
+              <li><strong>Intentional Violations</strong>: Deliberate breaches like nudity or threats.</li>
+            </ul>
           </div>
-          {errors.dataAccuracy && <p className="text-red-500 text-xs">{errors.dataAccuracy.message}</p>}
 
-          {/* Terms Agreement */}
-          <div className="flex items-start gap-2">
-            <input
-              type="checkbox"
-              {...register("termsAgreement", { required: "You must agree to the terms" })}
-              className="mt-1 text-appleGreen focus:ring-yellowGreen"
-            />
-            <label className="text-sm text-gray-700">
-              I agree to the{' '}
-              <a href="/terms" className="text-yellowGreen hover:text-appleGreen underline">
-                Terms and Conditions
-              </a>{' '}
-              of Content Creators Insurance.
-            </label>
+          {/* How It Works Section */}
+          <div className="space-y-4">
+            <h4 className="text-lg md:text-xl font-semibold text-brown flex items-center gap-2">
+              <FaCheckCircle className="text-yellowGreen" size={20} /> How It Works
+            </h4>
+            <p className="text-gray-700 text-sm md:text-base">
+              Our streamlined process ensures quick and fair claim resolution:
+            </p>
+            <ol className="list-decimal pl-6 text-gray-700 text-sm md:text-base space-y-2">
+              <li><strong>Submit a Claim</strong>: Provide evidence (e.g., screenshots, emails) of the disruption.</li>
+              <li><strong>Review Process</strong>: Our AI and team evaluate your claim within 72 hours.</li>
+              <li><strong>Payout</strong>: Receive a lump-sum payment based on your selected coverage period upon approval.</li>
+            </ol>
+            <p className="text-gray-700 text-sm md:text-base">
+              Premiums are customized based on your earnings, content type, audience size, and risk history for affordability.
+            </p>
           </div>
-          {errors.termsAgreement && <p className="text-red-500 text-xs">{errors.termsAgreement.message}</p>}
 
-          {/* Submit Button */}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            type="submit"
-            className="w-full py-3 bg-gradient-to-r from-yellowGreen to-appleGreen rounded-lg font-semibold text-brown shadow-lg hover:shadow-yellowGreen/50 transition-all duration-300"
-          >
-            Submit Application
-          </motion.button>
-        </form>
+          {/* Form Fields */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Coverage Period */}
+            <div>
+              <label className="block text-sm font-medium mb-1 text-brown">
+                Coverage Period <span className="text-red-500">*</span>
+              </label>
+              <select
+                {...register('coveragePeriod', {
+                  required: 'Coverage period is required',
+                })}
+                className="w-full h-12 border-2 border-appleGreen rounded-lg text-brown bg-white px-3 focus:ring-2 focus:ring-yellowGreen focus:outline-none transition-all duration-200"
+              >
+                <option value="">Select Coverage Period</option>
+                <option value="6 months">6 Months</option>
+                <option value="12 months">12 Months</option>
+                <option value="24 months">24 Months</option>
+              </select>
+              {errors.coveragePeriod && (
+                <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                  <FaExclamationCircle /> {errors.coveragePeriod.message}
+                </p>
+              )}
+            </div>
+
+            {/* Data Accuracy Agreement */}
+            <div className="md:col-span-2">
+              <label className="flex items-center gap-2 text-sm font-medium text-brown">
+                <input
+                  type="checkbox"
+                  {...register('dataAccuracy', {
+                    required: 'You must confirm the accuracy of your data',
+                  })}
+                  className="h-5 w-5 text-appleGreen border-appleGreen rounded focus:ring-yellowGreen"
+                />
+                I confirm that all provided information is accurate and complete
+                <span className="text-red-500">*</span>
+              </label>
+              {errors.dataAccuracy && (
+                <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                  <FaExclamationCircle /> {errors.dataAccuracy.message}
+                </p>
+              )}
+            </div>
+
+            {/* Terms and Conditions Agreement */}
+            <div className="md:col-span-2">
+              <label className="flex items-center gap-2 text-sm font-medium text-brown">
+                <input
+                  type="checkbox"
+                  {...register('termsAgreement', {
+                    required: 'You must agree to the terms and conditions',
+                  })}
+                  className="h-5 w-5 text-appleGreen border-appleGreen rounded focus:ring-yellowGreen"
+                />
+                I agree to the{' '}
+                <a
+                  href="/terms-and-conditions"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-yellowGreen hover:underline"
+                >
+                  Terms and Conditions
+                </a>
+                <span className="text-red-500">*</span>
+              </label>
+              {errors.termsAgreement && (
+                <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                  <FaExclamationCircle /> {errors.termsAgreement.message}
+                </p>
+              )}
+            </div>
+
+            {/* Additional Notes */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium mb-1 text-brown">
+                Additional Notes (Optional)
+              </label>
+              <textarea
+                {...register('additionalNotes')}
+                className="w-full h-24 border-2 border-appleGreen rounded-lg text-brown bg-white px-3 py-2 focus:ring-2 focus:ring-yellowGreen focus:outline-none transition-all duration-200"
+                placeholder="e.g., Any special requests or additional information"
+              />
+            </div>
+          </div>
+        </div>
       </motion.div>
     </motion.div>
   );
 };
-
 
 export default InsuranceDetails;
