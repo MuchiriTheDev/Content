@@ -31,19 +31,82 @@ const ApplicationProcess = () => {
         paymentMethod: { type: 'Mpesa', details: {} },
       },
       coveragePeriod: '',
-      dataAccuracy: false,
-      termsAgreement: false,
+      accurateInfo: false,
+      termsAgreed: false,
     },
   });
 
-  // Check for valid token on mount
+  // Fetch existing insurance data on mount
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      toast.error('Please log in to continue.');
-      navigate('/login');
-    }
-  }, [navigate]);
+    const fetchInsuranceData = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.error('Please log in to continue.');
+        navigate('/login');
+        return;
+      }
+
+      try {
+        setLoading(true);
+        const response = await axios.get(`${backendUrl}/insurance/my-insurance`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (response.data.success) {
+          const { insuranceStatus, premium, applicationProgress, platformInfo, financialInfo } = response.data.data;
+          // Pre-populate form if application exists
+          if (platformInfo?.platforms) {
+            setValue('platformData', platformInfo.platforms.map(p => ({
+              name: p.name,
+              username: p.username,
+              accountLink: p.accountLink,
+              audienceSize: p.audienceSize || 0,
+              contentType: p.contentType || '',
+              riskHistory: p.riskHistory.map(r => ({
+                violationType: r.violationType, // Updated to violationType
+                date: r.date ? new Date(r.date).toISOString().split('T')[0] : '', // Convert to date input format
+                description: r.description || '',
+              })) || [],
+            })));
+          }
+          if (financialInfo) {
+            setValue('financialInfo', {
+              monthlyEarnings: financialInfo.monthlyEarnings || 0,
+              currency: financialInfo.currency || 'Ksh',
+              paymentMethod: financialInfo.paymentMethod || { type: 'Mpesa', details: {} },
+            });
+          }
+          if (insuranceStatus?.coveragePeriod) {
+            setValue('coveragePeriod', String(insuranceStatus.coveragePeriod));
+          }
+          if (insuranceStatus?.termsAndAccuracy) {
+            setValue('accurateInfo', insuranceStatus.termsAndAccuracy.hasProvidedAccurateInfo);
+            setValue('termsAgreed', insuranceStatus.termsAndAccuracy.hasAgreedToTerms);
+          }
+          // Set current step based on application progress
+          const stepMap = {
+            PlatformInfo: 1,
+            FinancialInfo: 2,
+            Submitted: 3,
+            Completed: 3,
+          };
+          setCurrentStep(stepMap[applicationProgress?.step] || 1);
+          if (insuranceStatus?.status === 'Pending' || insuranceStatus?.status === 'Approved') {
+            toast.info('You have an existing application. Review or update your details.');
+          }
+        }
+      } catch (error) {
+        console.error('Fetch insurance data error:', error.response?.data || error.message);
+        if (error.response?.data?.error?.includes('Unauthorized')) {
+          localStorage.removeItem('token');
+          toast.error('Session expired. Please log in again.');
+          navigate('/login');
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchInsuranceData();
+  }, [navigate, setValue, setLoading]);
 
   // Save progress to backend
   const saveProgress = async (data, step) => {
@@ -58,10 +121,13 @@ const ApplicationProcess = () => {
 
     try {
       const response = await axios.post(
-        `${backendUrl}/api/insurance/apply`,
+        `${backendUrl}/insurance/apply`,
         {
-          platformData: data.platformData,
+          platformData: data.platformData, // Includes riskHistory with violationType
           financialInfo: data.financialInfo,
+          coveragePeriod: Number(data.coveragePeriod) || undefined,
+          accurateInfo: data.accurateInfo,
+          termsAgreed: data.termsAgreed,
           saveProgress: step,
           submit: false,
         },
@@ -78,7 +144,7 @@ const ApplicationProcess = () => {
       console.error('Save progress error:', error.response?.data || error.message);
       const errorMessage = error.response?.data?.error || 'Failed to save progress.';
       toast.error(errorMessage);
-      if (errorMessage.includes('invalid signature')) {
+      if (errorMessage.includes('invalid signature') || errorMessage.includes('Unauthorized')) {
         localStorage.removeItem('token');
         navigate('/login');
       }
@@ -100,10 +166,13 @@ const ApplicationProcess = () => {
 
     try {
       const response = await axios.post(
-        `${backendUrl}/api/insurance/apply`,
+        `${backendUrl}/insurance/apply`,
         {
-          platformData: data.platformData,
+          platformData: data.platformData, // Includes riskHistory with violationType
           financialInfo: data.financialInfo,
+          coveragePeriod: Number(data.coveragePeriod),
+          accurateInfo: data.accurateInfo,
+          termsAgreed: data.termsAgreed,
           saveProgress: 'Submitted',
           submit: true,
         },
@@ -114,14 +183,24 @@ const ApplicationProcess = () => {
         }
       );
       if (response.data.success) {
-        toast.success('Application submitted successfully!');
+        toast.success('Application submitted successfully! Await our team’s review.');
+        setCurrentStep(1);
+        setValue('platformData', []);
+        setValue('financialInfo', {
+          monthlyEarnings: 0,
+          currency: 'Ksh',
+          paymentMethod: { type: 'Mpesa', details: {} },
+        });
+        setValue('coveragePeriod', '');
+        setValue('accurateInfo', false);
+        setValue('termsAgreed', false);
         navigate('/dashboard');
       }
     } catch (error) {
       console.error('Submit application error:', error.response?.data || error.message);
       const errorMessage = error.response?.data?.error || 'Failed to submit application.';
       toast.error(errorMessage);
-      if (errorMessage.includes('invalid signature')) {
+      if (errorMessage.includes('invalid signature') || errorMessage.includes('Unauthorized')) {
         localStorage.removeItem('token');
         navigate('/login');
       }
@@ -167,7 +246,7 @@ const ApplicationProcess = () => {
           Insurance Application
         </h2>
         <p className="text-lg text-yellowGreen mt-3 text-center">
-          Complete the steps below to apply for Content Creators Insurance.
+          Complete the steps to apply for Content Creators Insurance.
         </p>
       </div>
 
@@ -228,7 +307,7 @@ const ApplicationProcess = () => {
             errors={errors}
             getValues={getValues}
             setValue={setValue}
-            control={control} // Pass control prop
+            control={control}
             onBack={handleBack}
             formData={getValues()}
             onSubmit={onSubmit}
