@@ -25,7 +25,7 @@ const InsuranceDetails = ({ register, errors, getValues, setValue, onBack }) => 
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className=" p-4 md:p-6  duration-300"
+        className=" p-0 md:p-6  duration-300"
       >
         <div className="space-y-6">
           {/* Coverage Section */}
@@ -127,7 +127,7 @@ const InsuranceDetails = ({ register, errors, getValues, setValue, onBack }) => 
 
             {/* Terms and Conditions Agreement */}
             <div className="md:col-span-2">
-              <label className="flex items-center gap-2 text-sm font-medium text-brown">
+              <label className="flex w-full items-center gap-2 text-sm font-medium text-brown">
                 <input
                   type="checkbox"
                   {...register('termsAgreement', {

@@ -251,7 +251,7 @@ const ApplicationProcess = () => {
               type="submit"
               className="flex items-center gap-2 py-3 px-6 bg-gradient-to-r from-yellowGreen to-appleGreen rounded-lg font-semibold text-brown shadow-md hover:shadow-yellowGreen/50 transition-all duration-300"
             >
-              {currentStep === steps.length ? 'Submit Application' : 'Next'} <FaArrowRight />
+              {currentStep === steps.length ? 'Submit' : 'Next'} <FaArrowRight />
             </motion.button>
           </div>
         </form>
