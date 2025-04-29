@@ -219,8 +219,8 @@ const Dashboard = () => {
         transition={{ duration: 0.5, delay: 0.2 }}
         className="flex-1 ml-0 md:ml-64 mt-20 p-6 overflow-y-auto"
       >
-        <h1 className="text-2xl md:text-3xl font-bold bg-white p-4 rounded-lg shadow-md mb-6">
-          Welcome, {profile?.personalInfo?.firstName || 'User'}
+        <h1 className="text-2xl md:text-3xl font-bold bg-white p-4 py-6 rounded-2xl border border-appleGreen text-center shadow-md mb-6">
+          Welcome {profile?.personalInfo?.firstName || 'User'} 👋
         </h1>
         <div className="max-w-7xl mx-auto">{sections[activeSection]}</div>
       </motion.main>

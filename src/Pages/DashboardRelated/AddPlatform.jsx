@@ -79,6 +79,7 @@ const AddPlatform = ({setActiveSection}) => {
           }
         }
       } catch (error) {
+        console.log(error)
         toast.error('Failed to verify application status.');
         navigate('/dashboard');
       } finally {
@@ -127,12 +128,12 @@ const AddPlatform = ({setActiveSection}) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
-      className="w-full min-h-screen bg-gray-100 text-brown flex flex-col items-center justify-start py-10 px-4 md:px-10"
+      className="w-full min-h-screen bg-gray-100 text-brown flex flex-col items-center justify-start "
     >
       {/* Header */}
-      <div className="w-full max-w-4xl mb-8 text-center">
-        <h2 className="text-3xl md:text-4xl font-bold text-brown">Add a New Platform</h2>
-        <p className="text-lg text-yellowGreen mt-3">
+      <div className="w-full py-6 mb-8 text-center shadow-xl rounded-2xl border border-appleGreen bg-white">
+        <h2 className="text-2xl md:text-3xl font-bold text-brown">Add a New Platform</h2>
+        <p className="text-base text-yellowGreen mt-3">
           Add a social media platform to your pending insurance application to ensure comprehensive coverage.
         </p>
       </div>
@@ -142,7 +143,7 @@ const AddPlatform = ({setActiveSection}) => {
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8 }}
-        className="w-full max-w-4xl bg-white rounded-2xl shadow-xl border border-appleGreen p-6 md:p-8"
+        className="w-full  bg-white rounded-2xl shadow-xl border border-appleGreen p-6 md:p-8"
       >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Platform Details */}

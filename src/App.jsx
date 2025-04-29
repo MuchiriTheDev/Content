@@ -1,5 +1,5 @@
-import React from 'react'
-import { Route, Routes } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { Route, Routes, useLocation } from 'react-router-dom'
 import LandingPage from './Pages/LandingPageRelated/LandingPage'
 import ApplicationProcess from './Pages/ApplicationRelatedPage/ApplicationProcess'
 import SignUp from './Pages/AuthRelatedPage/SignUp'
@@ -17,8 +17,13 @@ import AddPlatform from './Pages/DashboardRelated/AddPlatform.jsx'
 export const backendUrl = `${import.meta.env.VITE_BACKEND_URL}/api`
 console.log(backendUrl)
 
-
 function App() {
+  const location = useLocation()
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [location])
+
   return (
     <div className="">
       <Routes>
