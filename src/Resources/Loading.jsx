@@ -166,7 +166,7 @@ const Loading = () => {
 
       {/* Loading Text */}
       <motion.p
-        className="mt-12 text-2xl font-light tracking-widest text-brown font-['Playfair_Display']"
+        className="mt-12 text-2xl font-light tracking-widest text-brown "
         variants={textVariants}
         animate="animate"
       >
