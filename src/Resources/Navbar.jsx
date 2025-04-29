@@ -29,9 +29,8 @@ const Navbar = () => {
   return (
     <nav className={`fixed top-0 left-0 max-w-[100vw] w-full z-30 h-fit p-6 md:px-8 flex justify-between items-center ${scrolling ? 'bg-white' : 'bg-transparent'} transition-all duration-300`}>
       {/* Logo */}
-      <div className="flex justify-center items-center md:w-1/4 px-4">
-        <img className="h-fit w-40" src={scrolling ? assets.logo2 : assets.logo1} alt="Making Sents Logo" />
-        
+      <div className="flex justify-center items-center w-fit md:w-1/4 px-4">
+        <img className="h-fit w-32 md:w-40" src={scrolling ? assets.logo2 : assets.logo1} alt="Making Sents Logo" />
       </div>
 
       {/* Nav items (Desktop) */}
@@ -57,7 +56,7 @@ const Navbar = () => {
        
       </div>
 
-      <div className='w-1/4 flex justify-center items-center gap-4'>
+      <div className='w-1/3 md:w-1/4 flex justify-center items-center gap-2'>
         {
           localStorage.getItem('token') ? (
             <RouterLink

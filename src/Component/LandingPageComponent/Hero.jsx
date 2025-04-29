@@ -52,17 +52,17 @@ const Hero = () => {
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 1 }}
             viewport={{ once: true }}
-            className="w-full flex justify-center items-center gap-4"
+            className="w-full flex justify-center items-center gap-5"
           >
             <Link
-              className="h-14 w-fit px-6 py-4 rounded-md shadow-md font-bold bg-appleGreen flex justify-center items-center gap-2 text-base text-white cursor-pointer"
+              className="h-14 w-fit px-4 md:px-6 py-2 md:py-4 rounded-md shadow-md font-bold bg-appleGreen flex justify-center items-center gap-2 text-base text-white cursor-pointer"
               to="/application"
             >
               <p>Apply Now</p>
-              <FaExclamation className="text-xl h-full" />
+              <FaExclamation className="text-xs md:text-sm h-full" />
             </Link>
             <Link
-              className="h-14 w-fit px-6 py-4 rounded-md shadow-md font-bold bg-transparent border-2 border-appleGreen flex justify-center items-center gap-2 text-base text-white cursor-pointer hover:bg-appleGreen hover:text-white transition-all"
+              className="h-14 w-fit px-4 md:px-6 py-2 md:py-4 rounded-md shadow-md font-bold bg-transparent border-2 border-appleGreen flex justify-center items-center gap-2 text-base text-white cursor-pointer hover:bg-appleGreen hover:text-white transition-all"
               to="/claim"
             >
               <p>Claim Now</p>
