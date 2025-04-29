@@ -58,15 +58,16 @@ const AddPlatform = () => {
   // Check application status on mount
   useEffect(() => {
     const checkStatus = async () => {
+    // setLoading(true);
       const token = localStorage.getItem('token');
       if (!token) {
         toast.error('Please log in to continue.');
         navigate('/login');
+        setLoading(false);
         return;
       }
 
       try {
-        setLoading(true);
         const response = await axios.get(`${backendUrl}/insurance/status`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -81,7 +82,7 @@ const AddPlatform = () => {
         toast.error('Failed to verify application status.');
         navigate('/dashboard');
       } finally {
-        setLoading(false);
+        // setLoading(false);
       }
     };
     checkStatus();

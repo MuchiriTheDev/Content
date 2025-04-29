@@ -175,9 +175,11 @@ const Dashboard = () => {
             <ul className="space-y-2">
               {[
                 { id: 'overview', label: 'Overview', icon: <FaChartBar /> },
-                { id: 'analytics', label: 'Analytics', icon: <FaChartLine /> },
+                { id: 'addPlatform', label: 'Add Platform', icon: <FaUpload />},
+                // { id: 'analytics', label: 'Analytics', icon: <FaChartLine /> },
                 { id: 'contentReviewing', label: 'Review Content', icon: <FaUpload /> },
                 { id: 'claims', label: 'Claims', icon: <FaFileAlt /> },
+                
               ].map((item) => (
                 <li key={item.id}>
                   <button
