@@ -133,7 +133,7 @@ const AddPlatform = ({setActiveSection}) => {
       {/* Header */}
       <div className="w-full py-6 mb-8 text-center shadow-xl rounded-2xl border border-appleGreen bg-white">
         <h2 className="text-2xl md:text-3xl font-bold text-brown">Add a New Platform</h2>
-        <p className="text-base text-yellowGreen mt-3">
+        <p className="text-xs md:text-base text-yellowGreen mt-3">
           Add a social media platform to your pending insurance application to ensure comprehensive coverage.
         </p>
       </div>
