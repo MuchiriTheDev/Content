@@ -13,6 +13,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { backendUrl } from '../../App';
 import Loading from '../../Resources/Loading';
+import AddPlatform from './AddPlatform';
 
 const Dashboard = () => {
   const [activeSection, setActiveSection] = useState('overview');
@@ -23,10 +24,11 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   const sections = {
-    overview: <InsuranceOverview insuranceData={insuranceData} profile={profile} />,
+    overview: <InsuranceOverview insuranceData={insuranceData} setSection={setActiveSection} profile={profile} />,
     analytics: <DashboardAnalytics />,
     claims: <ClaimsManagement />,
     contentReviewing: <ContentReviewing />,
+    addPlatform: <AddPlatform />,
   };
 
   const handleLogout = () => {

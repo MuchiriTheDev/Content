@@ -1,7 +1,8 @@
 import React from 'react';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { FaChartBar, FaChartLine, FaFileAlt, FaCalendar, FaShieldAlt } from 'react-icons/fa';
+import { FaChartBar, FaChartLine, FaFileAlt, FaCalendar, FaShieldAlt, FaPlus } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 // Stat Card Component
 const StatCard = ({ title, value, icon }) => (
@@ -34,7 +35,7 @@ const CustomTooltip = ({ active, payload, label }) => {
         </p>
         <p className="text-brown font-medium mt-1 capitalize">
           {`${payload[0].name}: `}
-          <span className="text-yellowGreen font-bold">{payload[0].value}</span>
+          <span className="text-yellowGreen font-bold">{payload[0].value.toLocaleString()} followers</span>
         </p>
       </motion.div>
     );
@@ -58,25 +59,29 @@ const fallbackData = {
   ],
 };
 
-const InsuranceOverview = ({ insuranceData, profile }) => {
+const InsuranceOverview = ({ insuranceData, profile, setSection }) => {
+  const navigate = useNavigate();
+
   // Process data
   const earningsData = fallbackData.earnings; // No historical earnings data in backend
   const audienceData = fallbackData.audience; // No historical audience data in backend
   const platformData = profile?.platformInfo?.platforms
-    ? profile.platformInfo.platforms.reduce((acc, platform) => {
-        const existing = acc.find((p) => p.name === platform.name);
-        if (existing) {
-          existing.value += 1;
-        } else {
-          acc.push({ name: platform.name, value: 1 });
-        }
-        return acc;
-      }, [])
-    : [{ name: 'YouTube', value: 1 }]; // Fallback to YouTube
+    ? profile.platformInfo.platforms.map((platform, index) => {
+        // Count how many times this platform name appears before this index to create unique names
+        const samePlatformCount = profile.platformInfo.platforms
+          .slice(0, index)
+          .filter((p) => p.name === platform.name).length;
+        const displayName = samePlatformCount > 0 ? `${platform.name} ${samePlatformCount + 1}` : platform.name;
+        return {
+          name: displayName,
+          value: platform.audienceSize || 0,
+        };
+      })
+    : [{ name: 'YouTube', value: 1000 }]; // Fallback to a single YouTube platform
 
   // Calculate stat card values
   const averageEarnings = profile?.financialInfo?.monthlyEarnings
-    ? `Ksh ${profile.financialInfo.monthlyEarnings.toLocaleString()}`
+    ? `${profile.financialInfo.currency} ${profile.financialInfo.monthlyEarnings.toLocaleString()}`
     : 'N/A';
   const totalAudience = profile?.platformInfo?.platforms
     ? profile.platformInfo.platforms.reduce((sum, p) => sum + (p.audienceSize || 0), 0).toLocaleString()
@@ -86,17 +91,22 @@ const InsuranceOverview = ({ insuranceData, profile }) => {
     : 0;
   const insuranceStatus = insuranceData?.insuranceStatus?.status || 'Not Applied';
 
+  // Handle Add Platform button click
+  const handleAddPlatform = () => {
+    setSection('addPlatform'); // Set the active section to 'addPlatform'
+  };
+
   return (
     <div className="grid grid-cols-1 gap-6">
       {/* Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
-          title="Average Earnings"
+          title="Total Earnings"
           value={averageEarnings}
           icon={<FaChartBar className="text-appleGreen text-2xl" />}
         />
         <StatCard
-          title="Audience Size"
+          title="Total Audience"
           value={totalAudience}
           icon={<FaChartLine className="text-appleGreen text-2xl" />}
         />
@@ -177,14 +187,14 @@ const InsuranceOverview = ({ insuranceData, profile }) => {
           </ResponsiveContainer>
         </motion.div>
 
-        {/* Platform Distribution (Pie Chart) */}
+        {/* Platform Audience Distribution (Pie Chart) */}
         <motion.div
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.4 }}
           className="p-6 bg-white rounded-xl shadow-md border border-appleGreen lg:col-span-2"
         >
-          <h3 className="text-xl font-bold text-brown mb-4">Platform Distribution</h3>
+          <h3 className="text-xl font-bold text-brown mb-4">Audience Size Distribution</h3>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
@@ -195,13 +205,24 @@ const InsuranceOverview = ({ insuranceData, profile }) => {
                 cy="50%"
                 outerRadius={100}
                 innerRadius={50}
-                label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
+                label={({ name, value }) => `${name} (${value.toLocaleString() === 158 ? value.toLocaleString * 1000 :  value.toLocaleString()})`}
                 labelLine={{ stroke: '#4F391A' }}
               >
                 {platformData.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
-                    fill={index % 3 === 0 ? '#AAC624' : index % 3 === 1 ? '#4F391A' : '#abfa50'}
+                    fill={
+                      index % 10 === 0 ? '#AAC624' :       // Vibrant lime (yellow-green)
+                      index % 10 === 1 ? '#4F391A' :       // Deep chocolate brown
+                      index % 10 === 2 ? '#C0DC3A' :       // Electric lime
+                      index % 10 === 3 ? '#634725' :       // Warm chestnut brown
+                      index % 10 === 4 ? '#8FAF10' :       // Olive green
+                      index % 10 === 5 ? '#3A2B10' :       // Cool espresso brown
+                      index % 10 === 6 ? '#abfa50' :       // Neon green
+                      index % 10 === 7 ? '#5D4328' :       // Reddish-brown (new variant)
+                      index % 10 === 8 ? '#D2FF8C' :       // Pastel mint
+                      index % 10 === 9 ? '#2E2210'  : null       // Nearly black brown (new darkest variant)
+                    }
                   />
                 ))}
               </Pie>
@@ -209,6 +230,24 @@ const InsuranceOverview = ({ insuranceData, profile }) => {
               <Legend />
             </PieChart>
           </ResponsiveContainer>
+          {/* Add Platform Button */}
+          {insuranceStatus === 'Pending' && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+              className="mt-6 flex justify-center"
+            >
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleAddPlatform}
+                className="flex items-center gap-2 py-3 px-6 bg-gradient-to-r from-yellowGreen to-appleGreen rounded-lg font-semibold text-white shadow-md hover:shadow-lg transition-all"
+              >
+                <FaPlus /> Add Platform
+              </motion.button>
+            </motion.div>
+          )}
         </motion.div>
       </div>
     </div>

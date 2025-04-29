@@ -56,8 +56,8 @@ const ApplicationProcess = () => {
           
           // Check if user has already applied
           if (insuranceStatus?.status === 'Pending' || insuranceStatus?.status === 'Approved') {
-            toast.error('You have already applied for insurance. Check your application status in the dashboard.');
-            navigate('/dashboard');
+            toast.error('You have already applied for insurance. You can edit application status ');
+            navigate('/aplication/edit');
             return;
           }
 
