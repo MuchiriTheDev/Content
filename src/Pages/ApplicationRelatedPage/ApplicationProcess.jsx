@@ -13,16 +13,16 @@ import FinancialInformation from '../../Component/ApplicationComponents/Financia
 import InsuranceDetails from '../../Component/ApplicationComponents/InsuranceDetails';
 
 const steps = [
-  { id: 1, name: 'Platform Information', component: PlatformInformation },
-  { id: 2, name: 'Financial Information', component: FinancialInformation },
-  { id: 3, name: 'Insurance Details', component: InsuranceDetails },
+  { id: 1, name: 'Platform Information', enumName: 'PlatformInfo', component: PlatformInformation },
+  { id: 2, name: 'Financial Information', enumName: 'FinancialInfo', component: FinancialInformation },
+  { id: 3, name: 'Insurance Details', enumName: 'Submitted', component: InsuranceDetails },
 ];
 
 const ApplicationProcess = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const { loading, setLoading, profile } = useContext(GeneralContext);
   const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors }, getValues, setValue, control } = useForm({
+  const { register, handleSubmit, formState: { errors }, getValues, setValue, control, trigger } = useForm({
     defaultValues: {
       platformData: [],
       financialInfo: {
@@ -53,17 +53,25 @@ const ApplicationProcess = () => {
         });
         if (response.data.success) {
           const { insuranceStatus, premium, applicationProgress, platformInfo, financialInfo } = response.data.data;
-          // Pre-populate form if application exists
+          
+          // Check if user has already applied
+          if (insuranceStatus?.status === 'Pending' || insuranceStatus?.status === 'Approved') {
+            toast.error('You have already applied for insurance. Check your application status in the dashboard.');
+            navigate('/dashboard');
+            return;
+          }
+
+          // Populate form data for users who haven't applied or can reapply
           if (platformInfo?.platforms) {
-            setValue('platformData', platformInfo.platforms.map(p => ({
+            setValue('platformData', platformInfo.platforms.map((p) => ({
               name: p.name,
               username: p.username,
               accountLink: p.accountLink,
               audienceSize: p.audienceSize || 0,
               contentType: p.contentType || '',
-              riskHistory: p.riskHistory.map(r => ({
-                violationType: r.violationType, // Updated to violationType
-                date: r.date ? new Date(r.date).toISOString().split('T')[0] : '', // Convert to date input format
+              riskHistory: p.riskHistory.map((r) => ({
+                violationType: r.violationType,
+                date: r.date ? new Date(r.date).toISOString().split('T')[0] : '',
                 description: r.description || '',
               })) || [],
             })));
@@ -82,7 +90,6 @@ const ApplicationProcess = () => {
             setValue('accurateInfo', insuranceStatus.termsAndAccuracy.hasProvidedAccurateInfo);
             setValue('termsAgreed', insuranceStatus.termsAndAccuracy.hasAgreedToTerms);
           }
-          // Set current step based on application progress
           const stepMap = {
             PlatformInfo: 1,
             FinancialInfo: 2,
@@ -90,9 +97,6 @@ const ApplicationProcess = () => {
             Completed: 3,
           };
           setCurrentStep(stepMap[applicationProgress?.step] || 1);
-          if (insuranceStatus?.status === 'Pending' || insuranceStatus?.status === 'Approved') {
-            toast.info('You have an existing application. Review or update your details.');
-          }
         }
       } catch (error) {
         console.error('Fetch insurance data error:', error.response?.data || error.message);
@@ -100,6 +104,8 @@ const ApplicationProcess = () => {
           localStorage.removeItem('token');
           toast.error('Session expired. Please log in again.');
           navigate('/login');
+        } else {
+          toast.error('Failed to fetch insurance data. Please try again.');
         }
       } finally {
         setLoading(false);
@@ -109,7 +115,7 @@ const ApplicationProcess = () => {
   }, [navigate, setValue, setLoading]);
 
   // Save progress to backend
-  const saveProgress = async (data, step) => {
+  const saveProgress = async (data, stepEnum) => {
     setLoading(true);
     const token = localStorage.getItem('token');
     if (!token) {
@@ -120,15 +126,16 @@ const ApplicationProcess = () => {
     }
 
     try {
+      console.log('Saving progress with payload:', JSON.stringify({ platformData: data.platformData, financialInfo: data.financialInfo, saveProgress: stepEnum }));
       const response = await axios.post(
         `${backendUrl}/insurance/apply`,
         {
-          platformData: data.platformData, // Includes riskHistory with violationType
+          platformData: data.platformData,
           financialInfo: data.financialInfo,
           coveragePeriod: Number(data.coveragePeriod) || undefined,
           accurateInfo: data.accurateInfo,
           termsAgreed: data.termsAgreed,
-          saveProgress: step,
+          saveProgress: stepEnum,
           submit: false,
         },
         {
@@ -164,11 +171,32 @@ const ApplicationProcess = () => {
       return;
     }
 
+    // Validate platformData and financialInfo
+    if (!data.platformData || data.platformData.length === 0) {
+      setLoading(false);
+      toast.error('Please provide at least one platform.');
+      return;
+    }
+    if (!data.financialInfo.monthlyEarnings || data.financialInfo.monthlyEarnings <= 0) {
+      setLoading(false);
+      toast.error('Please provide valid monthly earnings.');
+      return;
+    }
+
     try {
+      console.log('Submitting application with payload:', JSON.stringify({
+        platformData: data.platformData,
+        financialInfo: data.financialInfo,
+        coveragePeriod: Number(data.coveragePeriod),
+        accurateInfo: data.accurateInfo,
+        termsAgreed: data.termsAgreed,
+        saveProgress: 'Submitted',
+        submit: true,
+      }));
       const response = await axios.post(
         `${backendUrl}/insurance/apply`,
         {
-          platformData: data.platformData, // Includes riskHistory with violationType
+          platformData: data.platformData,
           financialInfo: data.financialInfo,
           coveragePeriod: Number(data.coveragePeriod),
           accurateInfo: data.accurateInfo,
@@ -179,7 +207,7 @@ const ApplicationProcess = () => {
         {
           headers: {
             Authorization: `Bearer ${token}`,
-          }, 
+          },
         }
       );
       if (response.data.success) {
@@ -203,6 +231,9 @@ const ApplicationProcess = () => {
       if (errorMessage.includes('invalid signature') || errorMessage.includes('Unauthorized')) {
         localStorage.removeItem('token');
         navigate('/login');
+      } else if (errorMessage.includes('Insurance already applied for or active')) {
+        toast.error('You have already applied for insurance. Check your application status in the dashboard.');
+        navigate('/dashboard');
       }
     } finally {
       setLoading(false);
@@ -212,9 +243,30 @@ const ApplicationProcess = () => {
   // Handle form submission for each step
   const onSubmit = async (data) => {
     if (currentStep < steps.length) {
-      await saveProgress(data, steps[currentStep - 1].name);
+      await saveProgress(data, steps[currentStep - 1].enumName);
       setCurrentStep(currentStep + 1);
     } else {
+      const isValid = await trigger(['coveragePeriod', 'accurateInfo', 'termsAgreed']);
+      if (!isValid) {
+        toast.error('Please complete all required fields.');
+        return;
+      }
+      if (!data.accurateInfo || !data.termsAgreed) {
+        toast.error('You must agree to the terms and confirm accurate information.');
+        return;
+      }
+      if (![6, 12, 24].includes(Number(data.coveragePeriod))) {
+        toast.error('Please select a valid coverage period (6, 12, or 24 months).');
+        return;
+      }
+
+      const confirmSubmission = window.confirm(
+        'Are you sure you want to submit your application? Please ensure all information is accurate.'
+      );
+      if (!confirmSubmission) {
+        return;
+      }
+
       await submitApplication(data);
     }
   };
@@ -330,7 +382,7 @@ const ApplicationProcess = () => {
               type="submit"
               className="flex items-center gap-2 py-3 px-6 bg-gradient-to-r from-yellowGreen to-appleGreen rounded-lg font-semibold text-brown shadow-md hover:shadow-yellowGreen/50 transition-all duration-300"
             >
-              {currentStep === steps.length ? 'Submit' : 'Next'} <FaArrowRight />
+              {currentStep === steps.length ? 'Submit Application' : 'Next'} <FaArrowRight />
             </motion.button>
           </div>
         </form>
