@@ -10,7 +10,7 @@ import { backendUrl } from '../../App';
 import Loading from '../../Resources/Loading';
 import { FaArrowLeft, FaPlus, FaTrash, FaExclamationCircle, FaLock } from 'react-icons/fa';
 
-const AddPlatform = () => {
+const AddPlatform = ({setActiveSection}) => {
   const { loading, setLoading } = useContext(GeneralContext);
   const navigate = useNavigate();
   const {
@@ -387,16 +387,8 @@ const AddPlatform = () => {
           </div>
 
           {/* Form Actions */}
-          <div className="flex justify-between mt-8">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              type="button"
-              onClick={() => navigate('/dashboard')}
-              className="flex items-center gap-2 py-3 px-6 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg font-semibold text-brown shadow-md hover:shadow-lg transition-all duration-300"
-            >
-              <FaArrowLeft /> Back to Dashboard
-            </motion.button>
+          <div className="flex items-center justify-center mt-8">
+            
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
