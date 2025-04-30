@@ -38,11 +38,17 @@ const ClaimProcess = () => {
         incidentDate: '',
         description: '',
       },
-      evidenceFiles: [],
+      evidence: {
+        accountScreenshot: null,
+        emailScreenshot: null,
+        emailMessage: '',
+        additionalFiles: [],
+        additionalUrls: [],
+        additionalNotes: '',
+      },
       termsAgreed: false,
     },
   });
-
   // Fetch existing claim data on mount
   useEffect(() => {
     const fetchClaimData = async () => {
@@ -108,118 +114,143 @@ const ClaimProcess = () => {
     fetchClaimData();
   }, [navigate, setValue, setLoading]);
 
-  // Save progress to backend
-  const saveProgress = async (data, stepEnum) => {
-    setLoading(true);
-    const token = localStorage.getItem('token');
-    if (!token) {
-      setLoading(false);
-      toast.error('Session expired. Please log in again.');
+// Save progress to backend
+const saveProgress = async (data, stepEnum) => {
+  setLoading(true);
+  const token = localStorage.getItem('token');
+  if (!token) {
+    setLoading(false);
+    toast.error('Session expired. Please log in again.');
+    navigate('/login');
+    return;
+  }
+
+  try {
+    const formData = new FormData();
+    formData.append('incidentDetails', JSON.stringify(data.incidentDetails));
+    if (data.evidence.accountScreenshot instanceof File) {
+      formData.append('accountScreenshot', data.evidence.accountScreenshot);
+    }
+    if (data.evidence.emailScreenshot instanceof File) {
+      formData.append('emailScreenshot', data.evidence.emailScreenshot);
+    }
+    formData.append('emailMessage', data.evidence.emailMessage || '');
+    data.evidence.additionalFiles.forEach((file, index) => {
+      if (file instanceof File) {
+        formData.append(`additionalFiles`, file);
+      }
+    });
+    formData.append('additionalUrls', JSON.stringify(data.evidence.additionalUrls || []));
+    formData.append('additionalNotes', data.evidence.additionalNotes || '');
+    formData.append('saveProgress', stepEnum);
+    formData.append('submit', false);
+
+    const response = await axios.post(`${backendUrl}/claims/save`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    if (response.data.success) {
+      toast.success(response.data.message);
+    }
+  } catch (error) {
+    console.error('Save progress error:', error.response?.data || error.message);
+    const errorMessage = error.response?.data?.error || 'Failed to save progress.';
+    toast.error(errorMessage);
+    if (errorMessage.includes('invalid signature') || errorMessage.includes('Unauthorized')) {
+      localStorage.removeItem('token');
       navigate('/login');
-      return;
     }
+  } finally {
+    setLoading(false);
+  }
+};
 
-    try {
-      const formData = new FormData();
-      formData.append('incidentDetails', JSON.stringify(data.incidentDetails));
-      data.evidenceFiles.forEach((file, index) => {
-        if (file instanceof File) {
-          formData.append(`evidenceFiles`, file);
-        }
-      });
-      formData.append('saveProgress', stepEnum);
-      formData.append('submit', false);
+// Submit claim
+const submitClaim = async (data) => {
+  setLoading(true);
+  const token = localStorage.getItem('token');
+  if (!token) {
+    setLoading(false);
+    toast.error('Session expired. Please log in again.');
+    navigate('/login');
+    return;
+  }
 
-      const response = await axios.post(`${backendUrl}/claims/save`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      if (response.data.success) {
-        toast.success(response.data.message);
-      }
-    } catch (error) {
-      console.error('Save progress error:', error.response?.data || error.message);
-      const errorMessage = error.response?.data?.error || 'Failed to save progress.';
-      toast.error(errorMessage);
-      if (errorMessage.includes('invalid signature') || errorMessage.includes('Unauthorized')) {
-        localStorage.removeItem('token');
-        navigate('/login');
-      }
-    } finally {
-      setLoading(false);
+  if (!data.incidentDetails.platform || !data.incidentDetails.incidentType) {
+    setLoading(false);
+    toast.error('Please provide all required incident details.');
+    return;
+  }
+  if (!data.evidence.accountScreenshot) {
+    setLoading(false);
+    toast.error('Please upload a screenshot of your account status.');
+    return;
+  }
+
+  try {
+    const formData = new FormData();
+    formData.append('incidentDetails', JSON.stringify(data.incidentDetails));
+    if (data.evidence.accountScreenshot instanceof File) {
+      formData.append('accountScreenshot', data.evidence.accountScreenshot);
     }
-  };
+    if (data.evidence.emailScreenshot instanceof File) {
+      formData.append('emailScreenshot', data.evidence.emailScreenshot);
+    }
+    formData.append('emailMessage', data.evidence.emailMessage || '');
+    data.evidence.additionalFiles.forEach((file, index) => {
+      if (file instanceof File) {
+        formData.append(`additionalFiles`, file);
+      }
+    });
+    formData.append('additionalUrls', JSON.stringify(data.evidence.additionalUrls || []));
+    formData.append('additionalNotes', data.evidence.additionalNotes || '');
+    formData.append('termsAgreed', data.termsAgreed);
+    formData.append('saveProgress', 'Submitted');
+    formData.append('submit', true);
 
-  // Submit claim
-  const submitClaim = async (data) => {
-    setLoading(true);
-    const token = localStorage.getItem('token');
-    if (!token) {
-      setLoading(false);
-      toast.error('Session expired. Please log in again.');
+    const response = await axios.post(`${backendUrl}/claims/submit`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    if (response.data.success) {
+      toast.success('Claim submitted successfully! Await our team’s review.');
+      setCurrentStep(1);
+      setValue('incidentDetails', {
+        platform: '',
+        incidentType: '',
+        incidentDate: '',
+        description: '',
+      });
+      setValue('evidence', {
+        accountScreenshot: null,
+        emailScreenshot: null,
+        emailMessage: '',
+        additionalFiles: [],
+        additionalUrls: [],
+        additionalNotes: '',
+      });
+      setValue('termsAgreed', false);
+      navigate('/dashboard');
+    }
+  } catch (error) {
+    console.error('Submit claim error:', error.response?.data || error.message);
+    const errorMessage = error.response?.data?.error || 'Failed to submit claim.';
+    toast.error(errorMessage);
+    if (errorMessage.includes('invalid signature') || errorMessage.includes('Unauthorized')) {
+      localStorage.removeItem('token');
       navigate('/login');
-      return;
+    } else if (errorMessage.includes('Claim already submitted')) {
+      toast.error('You have already submitted a claim. Check status in dashboard.');
+      navigate('/dashboard');
     }
-
-    if (!data.incidentDetails.platform || !data.incidentDetails.incidentType) {
-      setLoading(false);
-      toast.error('Please provide all required incident details.');
-      return;
-    }
-    if (data.evidenceFiles.length === 0) {
-      setLoading(false);
-      toast.error('Please upload at least one evidence file.');
-      return;
-    }
-
-    try {
-      const formData = new FormData();
-      formData.append('incidentDetails', JSON.stringify(data.incidentDetails));
-      data.evidenceFiles.forEach((file, index) => {
-        if (file instanceof File) {
-          formData.append(`evidenceFiles`, file);
-        }
-      });
-      formData.append('termsAgreed', data.termsAgreed);
-      formData.append('saveProgress', 'Submitted');
-      formData.append('submit', true);
-
-      const response = await axios.post(`${backendUrl}/claims/submit`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      if (response.data.success) {
-        toast.success('Claim submitted successfully! Await our team’s review.');
-        setCurrentStep(1);
-        setValue('incidentDetails', {
-          platform: '',
-          incidentType: '',
-          incidentDate: '',
-          description: '',
-        });
-        setValue('evidenceFiles', []);
-        setValue('termsAgreed', false);
-        navigate('/dashboard');
-      }
-    } catch (error) {
-      console.error('Submit claim error:', error.response?.data || error.message);
-      const errorMessage = error.response?.data?.error || 'Failed to submit claim.';
-      toast.error(errorMessage);
-      if (errorMessage.includes('invalid signature') || errorMessage.includes('Unauthorized')) {
-        localStorage.removeItem('token');
-        navigate('/login');
-      } else if (errorMessage.includes('Claim already submitted')) {
-        toast.error('You have already submitted a claim. Check status in dashboard.');
-        navigate('/dashboard');
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Handle form submission for each step
   const onSubmit = async (data) => {
@@ -227,19 +258,19 @@ const ClaimProcess = () => {
       await saveProgress(data, steps[currentStep - 1].enumName);
       setCurrentStep(currentStep + 1);
     } else {
-      const isValid = await trigger(['termsAgreed']);
+      const isValid = await trigger(['termsAgreed', 'evidence.accountScreenshot']);
       if (!isValid || !data.termsAgreed) {
-        toast.error('You must agree to the terms to submit the claim.');
+        toast.error('Please agree to the terms and upload an account screenshot.');
         return;
       }
-
+  
       const confirmSubmission = window.confirm(
         'Are you sure you want to submit your claim? Ensure all details are accurate.'
       );
       if (!confirmSubmission) {
         return;
       }
-
+  
       await submitClaim(data);
     }
   };
