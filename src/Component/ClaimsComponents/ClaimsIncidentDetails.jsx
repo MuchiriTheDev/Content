@@ -1,356 +1,148 @@
 import React from 'react';
-import { useForm } from 'react-hook-form';
-import { FaCalendarAlt, FaExclamationCircle, FaGlobe, FaClock, FaFileAlt, FaUser, FaBell } from 'react-icons/fa';
+import { FaExclamationCircle, FaInfoCircle } from 'react-icons/fa';
 import { motion } from 'framer-motion';
-import { MdArrowBack } from 'react-icons/md';
-import { Link } from 'react-router-dom';
 
-const ClaimIncidentDetails = ({ onNext }) => {
-  const { register, handleSubmit, formState: { errors } } = useForm();
-
-  const onSubmit = (data) => {
-    onNext(data); // Pass data to the next step
-  };
-
+const ClaimIncidentDetails = ({ register, errors, getValues, setValue, control }) => {
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 1 }}
-      className="w-full min-h-screen bg-gray-100 text-brown flex flex-col items-center justify-start py-8 px-4 md:px-8 overflow-auto"
+      initial={{ y: 20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.8 }}
+      className="space-y-6"
     >
-      {/* Header Section */}
-      <div className="w-full mb-6">
-        <div className="flex gap-3 items-center">
-          <Link to="/dashboard" className="py-2">
-            <MdArrowBack size={25} className="text-brown" />
-          </Link>
-          <h2 className="text-2xl font-extrabold text-brown">
-            Incident Details
-          </h2>
-        </div>
-        <p className="text-yellowGreen text-sm mt-2">
-          Provide detailed information about the incident that affected your income. The more details you share, the faster we can process your claim.
+      {/* Header */}
+      <div>
+        <h3 className="text-2xl md:text-3xl font-bold text-brown text-center">
+          Incident Details
+        </h3>
+        <p className="text-gray-600 mt-2 text-sm md:text-base text-center">
+          Provide details about the incident affecting your content or income.
         </p>
       </div>
 
-      {/* Form Container */}
-      <motion.form
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 0.5 }}
-        onSubmit={handleSubmit(onSubmit)}
-        className="w-full grid grid-cols-1 md:grid-cols-2 gap-5 gap-y-20 items-center bg-white backdrop-blur-md rounded-xl shadow-2xl border border-appleGreen p-6"
+      {/* Form Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="p-4 md:p-6 bg-white rounded-lg shadow-md transition-all duration-300"
       >
-        {/* Incident Basics Section */}
-        <div className="space-y-4 w-full h-full">
-          <h3 className="text-xl font-bold text-brown border-b-2 border-appleGreen pb-2 w-fit">Incident Basics</h3>
-          {/* Incident Date */}
-          <div>
-            <label htmlFor="incidentDate" className="block text-sm font-medium mb-1 text-brown">
-              Date of Incident
-            </label>
-            <motion.div
-              initial={{ y: 50, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="w-full h-12 border-2 border-appleGreen rounded-lg flex gap-3 items-center"
-            >
-              <FaCalendarAlt className="w-fit p-2 h-full text-appleGreen" />
-              <input
-                className="border-none placeholder:text-gray-600 text-brown bg-transparent outline-none w-full h-full"
-                type="date"
-                {...register("incidentDate", { required: "Incident date is required" })}
-              />
-            </motion.div>
-            {errors.incidentDate && <p className="text-red-500 text-xs mt-1">{errors.incidentDate.message}</p>}
-          </div>
-
-          {/* Affected Platform */}
-          <div>
-            <label htmlFor="platform" className="block text-sm font-medium mb-1 text-brown">
-              Affected Platform
-            </label>
-            <motion.select
-              initial={{ y: 50, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="w-full h-12 border-2 border-appleGreen rounded-lg text-brown bg-transparent outline-none"
-              {...register("platform", { required: "Platform is required" })}
-            >
-              <option value="">Select Platform</option>
-              <option value="youtube">YouTube</option>
-              <option value="tiktok">TikTok</option>
-              <option value="instagram">Instagram</option>
-              <option value="x">X</option>
-              <option value="other">Other</option>
-            </motion.select>
-            {errors.platform && <p className="text-red-500 text-xs mt-1">{errors.platform.message}</p>}
-          </div>
-
-          {/* Other Platform */}
-          <div>
-            <label htmlFor="otherPlatform" className="block text-sm font-medium mb-1 text-brown">
-              If Other, Specify Platform
-            </label>
-            <motion.div
-              initial={{ y: 50, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="w-full h-12 border-2 border-appleGreen rounded-lg flex gap-3 items-center"
-            >
-              <FaGlobe className="w-fit p-2 h-full text-appleGreen" />
-              <input
-                className="border-none placeholder:text-gray-600 text-brown bg-transparent outline-none w-full h-full"
-                type="text"
-                {...register("otherPlatform")}
-                placeholder="Ex: Twitch"
-              />
-            </motion.div>
-          </div>
-        </div>
-
-        {/* Incident Impact Section */}
-        <div className="space-y-4 w-full h-full">
-          <h3 className="text-xl font-bold text-brown border-b-2 border-appleGreen pb-2 w-fit">Incident Impact</h3>
-          {/* Incident Type */}
-          <div>
-            <label htmlFor="incidentType" className="block text-sm font-medium mb-1 text-brown">
-              Type of Incident
-            </label>
-            <motion.select
-              initial={{ y: 50, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="w-full h-12 border-2 border-appleGreen rounded-lg text-brown bg-transparent outline-none"
-              {...register("incidentType", { required: "Incident type is required" })}
-            >
-              <option value="">Select Incident Type</option>
-              <option value="demonetization">Demonetization</option>
-              <option value="suspension">Temporary Suspension</option>
-              <option value="ban">Permanent Ban</option>
-              <option value="adDrop">Ad Revenue Drop</option>
-              <option value="contentRemoval">Content Removal</option>
-              <option value="other">Other</option>
-            </motion.select>
-            {errors.incidentType && <p className="text-red-500 text-xs mt-1">{errors.incidentType.message}</p>}
-          </div>
-
-          {/* Other Incident Type */}
-          <div>
-            <label htmlFor="otherIncidentType" className="block text-sm font-medium mb-1 text-brown">
-              If Other, Specify Incident Type
-            </label>
-            <motion.div
-              initial={{ y: 50, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="w-full h-12 border-2 border-appleGreen rounded-lg flex gap-3 items-center"
-            >
-              <FaExclamationCircle className="w-fit p-2 h-full text-appleGreen" />
-              <input
-                className="border-none placeholder:text-gray-600 text-brown bg-transparent outline-none w-full h-full"
-                type="text"
-                {...register("otherIncidentType")}
-                placeholder="Ex: Account Hack"
-              />
-            </motion.div>
-          </div>
-
-          {/* Incident Duration */}
-          <div>
-            <label htmlFor="incidentDuration" className="block text-sm font-medium mb-1 text-brown">
-              Duration of Incident (Days)
-            </label>
-            <motion.div
-              initial={{ y: 50, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="w-full h-12 border-2 border-appleGreen rounded-lg flex gap-3 items-center"
-            >
-              <FaClock className="w-fit p-2 h-full text-appleGreen" />
-              <input
-                className="border-none placeholder:text-gray-600 text-brown bg-transparent outline-none w-full h-full"
-                type="number"
-                {...register("incidentDuration", { required: "Duration is required", min: { value: 1, message: "Must be at least 1 day" } })}
-                placeholder="Ex: 7"
-              />
-            </motion.div>
-            {errors.incidentDuration && <p className="text-red-500 text-xs mt-1">{errors.incidentDuration.message}</p>}
-          </div>
-
-          {/* Affected Audience Size */}
-          <div>
-            <label htmlFor="audienceSize" className="block text-sm font-medium mb-1 text-brown">
-              Affected Audience Size (e.g., Subscribers/Followers)
-            </label>
-            <motion.div
-              initial={{ y: 50, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="w-full h-12 border-2 border-appleGreen rounded-lg flex gap-3 items-center"
-            >
-              <FaUser className="w-fit p-2 h-full text-appleGreen" />
-              <input
-                className="border-none placeholder:text-gray-600 text-brown bg-transparent outline-none w-full h-full"
-                type="number"
-                {...register("audienceSize", { required: "Audience size is required", min: { value: 0, message: "Cannot be negative" } })}
-                placeholder="Ex: 50000"
-              />
-            </motion.div>
-            {errors.audienceSize && <p className="text-red-500 text-xs mt-1">{errors.audienceSize.message}</p>}
-          </div>
-        </div>
-
-        {/* Platform Interaction Section */}
-        <div className="space-y-4 w-full h-full">
-          <h3 className="text-xl font-bold text-brown border-b-2 border-appleGreen pb-2 w-fit">Platform Interaction</h3>
-          {/* Prior Warnings */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Platform */}
           <div>
             <label className="block text-sm font-medium mb-1 text-brown">
-              Did You Receive Prior Warnings or Notifications?
+              Platform <span className="text-red-500">*</span>
             </label>
-            <motion.div
-              initial={{ y: 50, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="space-y-2"
+            <p className="text-xs text-gray-500 mb-1">
+              Select the platform where the incident occurred.
+            </p>
+            <select
+              {...register('incidentDetails.platform', {
+                required: 'Please select a platform',
+              })}
+              className="w-full h-12 border-2 border-appleGreen rounded-lg text-brown bg-white px-3 focus:ring-2 focus:ring-yellowGreen focus:outline-none transition-all duration-200"
             >
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  {...register("priorWarnings", { required: "Please select an option" })}
-                  value="yes"
-                  className="text-appleGreen"
-                />
-                <span className="text-brown">Yes</span>
-              </label>
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  {...register("priorWarnings", { required: "Please select an option" })}
-                  value="no"
-                  className="text-appleGreen"
-                />
-                <span className="text-brown">No</span>
-              </label>
-            </motion.div>
-            {errors.priorWarnings && <p className="text-red-500 text-xs mt-1">{errors.priorWarnings.message}</p>}
+              <option value="">Select Platform</option>
+              <option value="YouTube">YouTube</option>
+              <option value="TikTok">TikTok</option>
+              <option value="Instagram">Instagram</option>
+              <option value="X">X</option>
+              <option value="Facebook">Facebook</option>
+              <option value="Other">Other</option>
+            </select>
+            {errors.incidentDetails?.platform && (
+              <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                <FaExclamationCircle /> {errors.incidentDetails.platform.message}
+              </p>
+            )}
+            <p className="text-sm text-gray-600 mt-2 flex items-center gap-1">
+              <FaInfoCircle className="text-gray-400" />
+              We’ll review platform policies to assess your claim.
+            </p>
           </div>
 
-          {/* Warning Details */}
+          {/* Incident Type */}
           <div>
-            <label htmlFor="warningDetails" className="block text-sm font-medium mb-1 text-brown">
-              If Yes, Describe Warnings or Notifications
+            <label className="block text-sm font-medium mb-1 text-brown">
+              Incident Type <span className="text-red-500">*</span>
             </label>
-            <motion.div
-              initial={{ y: 50, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="w-full h-16 border-2 border-appleGreen rounded-lg flex gap-3 items-center"
+            <p className="text-xs text-gray-500 mb-1">
+              Specify the type of incident (e.g., ban, suspension).
+            </p>
+            <select
+              {...register('incidentDetails.incidentType', {
+                required: 'Please select an incident type',
+              })}
+              className="w-full h-12 border-2 border-appleGreen rounded-lg text-brown bg-white px-3 focus:ring-2 focus:ring-yellowGreen focus:outline-none transition-all duration-200"
             >
-              <FaBell className="w-fit p-2 h-full text-appleGreen" />
-              <input
-                className="border-none placeholder:text-gray-600 text-brown bg-transparent outline-none w-full h-full"
-                type="text"
-                {...register("warningDetails")}
-                placeholder="Ex: Copyright strike on 15/03/2025"
-              />
-            </motion.div>
+              <option value="">Select Incident Type</option>
+              <option value="Ban">Ban</option>
+              <option value="Suspension">Suspension</option>
+              <option value="Demonetization">Demonetization</option>
+              <option value="CopyrightDispute">Copyright Dispute</option>
+            </select>
+            {errors.incidentDetails?.incidentType && (
+              <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                <FaExclamationCircle /> {errors.incidentDetails.incidentType.message}
+              </p>
+            )}
           </div>
 
-          {/* Platform Communication */}
+          {/* Incident Date */}
           <div>
-            <label htmlFor="platformCommunication" className="block text-sm font-medium mb-1 text-brown">
-              Communication from Platform (e.g., Email Subject)
+            <label className="block text-sm font-medium mb-1 text-brown">
+              Incident Date <span className="text-red-500">*</span>
             </label>
-            <motion.div
-              initial={{ y: 50, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="w-full h-12 border-2 border-appleGreen rounded-lg flex gap-3 items-center"
-            >
-              <FaBell className="w-fit p-2 h-full text-appleGreen" />
-              <input
-                className="border-none placeholder:text-gray-600 text-brown bg-transparent outline-none w-full h-full"
-                type="text"
-                {...register("platformCommunication", { required: "Platform communication is required" })}
-                placeholder="Ex: 'Your account has been demonetized' email on 01/04/2025"
-              />
-            </motion.div>
-            {errors.platformCommunication && <p className="text-red-500 text-xs mt-1">{errors.platformCommunication.message}</p>}
+            <p className="text-xs text-gray-500 mb-1">
+              When did the incident occur?
+            </p>
+            <input
+              type="date"
+              {...register('incidentDetails.incidentDate', {
+                required: 'Please enter the incident date',
+                validate: (value) =>
+                  new Date(value) <= new Date() || 'Date cannot be in the future',
+              })}
+              className="w-full h-12 border-2 border-appleGreen rounded-lg text-brown bg-white px-3 focus:ring-2 focus:ring-yellowGreen focus:outline-none transition-all duration-200"
+            />
+            {errors.incidentDetails?.incidentDate && (
+              <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                <FaExclamationCircle /> {errors.incidentDetails.incidentDate.message}
+              </p>
+            )}
+          </div>
+
+          {/* Description */}
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium mb-1 text-brown">
+              Description <span className="text-red-500">*</span>
+            </label>
+            <p className="text-xs text-gray-500 mb-1">
+              Describe the incident in detail to help us process your claim.
+            </p>
+            <textarea
+              {...register('incidentDetails.description', {
+                required: 'Please provide a description',
+                minLength: {
+                  value: 10,
+                  message: 'Description must be at least 10 characters',
+                },
+                maxLength: {
+                  value: 1000,
+                  message: 'Description cannot exceed 1000 characters',
+                },
+              })}
+              className="w-full h-24 border-2 border-appleGreen rounded-lg text-brown bg-white px-3 py-2 focus:ring-2 focus:ring-yellowGreen focus:outline-none transition-all duration-200"
+              placeholder="e.g., My account was suspended due to a copyright claim."
+            />
+            {errors.incidentDetails?.description && (
+              <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                <FaExclamationCircle /> {errors.incidentDetails.description.message}
+              </p>
+            )}
           </div>
         </div>
-
-        {/* Content Details Section */}
-        <div className="space-y-4 w-full h-full">
-          <h3 className="text-xl font-bold text-brown border-b-2 border-appleGreen pb-2 w-fit">Content Details</h3>
-          {/* Affected Content */}
-          <div>
-            <label htmlFor="affectedContent" className="block text-sm font-medium mb-1 text-brown">
-              Affected Content (e.g., Video Title, Post ID)
-            </label>
-            <motion.div
-              initial={{ y: 50, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="w-full h-12 border-2 border-appleGreen rounded-lg flex gap-3 items-center"
-            >
-              <FaFileAlt className="w-fit p-2 h-full text-appleGreen" />
-              <input
-                className="border-none placeholder:text-gray-600 text-brown bg-transparent outline-none w-full h-full"
-                type="text"
-                {...register("affectedContent", { required: "Affected content is required" })}
-                placeholder="Ex: 'My Latest Vlog' or Post ID: 12345"
-              />
-            </motion.div>
-            {errors.affectedContent && <p className="text-red-500 text-xs mt-1">{errors.affectedContent.message}</p>}
-          </div>
-
-          {/* Incident Description */}
-          <div>
-            <label htmlFor="description" className="block text-sm font-medium mb-1 text-brown">
-              Detailed Incident Description
-            </label>
-            <motion.div
-              initial={{ y: 50, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="w-full h-24 border-2 border-appleGreen rounded-lg flex gap-3 p-3"
-            >
-              <FaFileAlt className="w-fit p-2 h-full text-appleGreen" />
-              <textarea
-                className="border-none placeholder:text-gray-600 text-brown bg-transparent outline-none w-full h-full resize-none"
-                {...register("description", { required: "Description is required" })}
-                placeholder="Ex: My YouTube channel was demonetized on 01/04/2025 due to an algorithm update affecting all my videos uploaded in March."
-              />
-            </motion.div>
-            {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>}
-          </div>
-        </div>
-
-        {/* Next Button */}
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          type="submit"
-          className="w-fit px-10 py-3 bg-gradient-to-r from-yellowGreen to-appleGreen rounded-lg font-semibold text-brown shadow-lg hover:shadow-yellowGreen/50 transition-all duration-300 transform"
-        >
-          Next
-        </motion.button>
-      </motion.form>
+      </motion.div>
     </motion.div>
   );
 };
