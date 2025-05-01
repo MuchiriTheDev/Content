@@ -12,6 +12,7 @@ import ClaimIncidentDetails from '../../Component/ClaimsComponents/ClaimsInciden
 import ClaimEvidenceUpload from '../../Component/ClaimsComponents/ClaimsEvidenceUpload';
 import ClaimReviewAndSubmit from '../../Component/ClaimsComponents/ClaimReviewAndSubmit';
 
+
 // Constants
 const STEPS = [
   { id: 1, name: 'Incident Details', enumName: 'IncidentDetails', component: ClaimIncidentDetails },
@@ -21,7 +22,7 @@ const STEPS = [
 
 const ClaimProcess = () => {
   const [currentStep, setCurrentStep] = useState(1);
-  const [accounts, setAccounts] = useState([]);
+  const [insuredPlatforms, setInsuredPlatforms] = useState([]);
   const { loading, setLoading } = useContext(GeneralContext);
   const navigate = useNavigate();
 
@@ -29,42 +30,35 @@ const ClaimProcess = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     getValues,
     setValue,
     control,
     trigger,
+    reset,
   } = useForm({
+    mode: 'onChange',
     defaultValues: {
       incidentDetails: {
         platform: '',
         incidentType: '',
         incidentDate: '',
-        description: '',
+        incidentDescription: '',
+        reportedEarningsLoss: '',
+        currency: 'KES',
+        platformNotification: '',
       },
       evidence: {
-        accountScreenshot: null,
-        emailScreenshot: null,
-        emailMessage: '',
-        additionalFiles: [],
-        additionalUrls: [],
+        files: [], // Array of { file, type, description }
+        affectedContent: [], // Array of { url, description, mediaType }
+        evidenceSummary: '',
         additionalNotes: '',
       },
       termsAgreed: false,
     },
   });
 
-  // Fallback accounts (for testing without API)
-  const fallbackAccounts = [
-    { name: 'YouTube', username: '@CreatorYT', accountLink: 'https://youtube.com/@CreatorYT' },
-    { name: 'TikTok', username: '@CreatorTok', accountLink: 'https://tiktok.com/@CreatorTok' },
-    { name: 'Instagram', username: '@CreatorInsta', accountLink: 'https://instagram.com/CreatorInsta' },
-    { name: 'X', username: '@CreatorX', accountLink: 'https://x.com/CreatorX' },
-    { name: 'Facebook', username: '@CreatorFB', accountLink: 'https://facebook.com/CreatorFB' },
-    { name: 'Other', username: '@CreatorOther', accountLink: 'https://example.com/CreatorOther' },
-  ];
-
-  // Fetch user platforms and claim data on mount
+  // Fetch user data and existing claims on mount
   useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem('token');
@@ -76,64 +70,36 @@ const ClaimProcess = () => {
 
       setLoading(true);
       try {
-        // Fetch platforms
-        // TODO: Uncomment when API is ready
-        // const platformResponse = await axios.get(`${backendUrl}/user/platforms`, {
-        //   headers: { Authorization: `Bearer ${token}` },
-        // });
-        // if (platformResponse.data.success) {
-        //   setAccounts(platformResponse.data.data);
-        // } else {
-        //   throw new Error(platformResponse.data.error || 'Failed to fetch platforms');
-        // }
-        setAccounts(fallbackAccounts); // Use fallback for now
-
-        // Fetch existing claim
-        const claimResponse = await axios.get(`${backendUrl}/claims/my-claim`, {
+        // Fetch user platforms
+        const userResponse = await axios.get(`${backendUrl}/auth/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        if (claimResponse.data.success) {
-          const { claimStatus, claimProgress, incidentDetails, evidence } = claimResponse.data.data;
+        if (userResponse.data.success) {
+          const platforms = userResponse.data.user.platformInfo.platforms || [];
+          setInsuredPlatforms(platforms);
+          if (platforms.length === 0) {
+            toast.error('No insured platforms found. Please add platforms in your profile.');
+            navigate('/profile');
+          }
+        } else {
+          throw new Error(userResponse.data.error || 'Failed to fetch user data');
+        }
 
-          // Block if pending or approved claim exists
-          if (['Pending', 'Approved'].includes(claimStatus?.status)) {
+        // Check for existing claims
+        const claimsResponse = await axios.get(`${backendUrl}/claims/my-claims`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (claimsResponse.data.success) {
+          const pendingOrApproved = claimsResponse.data.claims.some(claim =>
+            ['Submitted', 'Under Review', 'AI Reviewed', 'Manual Review', 'Approved'].includes(
+              claim.statusHistory.history[claim.statusHistory.history.length - 1].status
+            )
+          );
+          if (pendingOrApproved) {
             toast.error('You have a pending or approved claim. View status in dashboard.');
             navigate('/dashboard');
             return;
           }
-
-          // Populate form
-          if (incidentDetails) {
-            setValue('incidentDetails', {
-              platform: incidentDetails.platform || '',
-              incidentType: incidentDetails.incidentType || '',
-              incidentDate: incidentDetails.incidentDate
-                ? new Date(incidentDetails.incidentDate).toISOString().split('T')[0]
-                : '',
-              description: incidentDetails.description || '',
-            });
-          }
-          if (evidence) {
-            setValue('evidence', {
-              accountScreenshot: null, // Files are not restored (stored server-side)
-              emailScreenshot: null,
-              emailMessage: evidence.emailMessage || '',
-              additionalFiles: [], // Files are not restored
-              additionalUrls: evidence.additionalUrls || [],
-              additionalNotes: evidence.additionalNotes || '',
-            });
-          }
-          if (claimStatus?.termsAgreed) {
-            setValue('termsAgreed', claimStatus.termsAgreed);
-          }
-
-          // Set step based on progress
-          const stepMap = {
-            IncidentDetails: 1,
-            EvidenceUpload: 2,
-            Submitted: 3,
-          };
-          setCurrentStep(stepMap[claimProgress?.step] || 1);
         }
       } catch (error) {
         console.error('Fetch data error:', error.response?.data || error.message);
@@ -148,9 +114,9 @@ const ClaimProcess = () => {
       }
     };
     fetchData();
-  }, [navigate, setValue, setLoading]);
+  }, [navigate, setLoading]);
 
-  // Save progress to backend
+  // Save progress to backend (optional for partial saves)
   const saveProgress = async (data, stepEnum) => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -163,24 +129,25 @@ const ClaimProcess = () => {
       setLoading(true);
       const formData = new FormData();
       formData.append('incidentDetails', JSON.stringify(data.incidentDetails));
-      if (data.evidence.accountScreenshot instanceof File) {
-        formData.append('accountScreenshot', data.evidence.accountScreenshot);
-      }
-      if (data.evidence.emailScreenshot instanceof File) {
-        formData.append('emailScreenshot', data.evidence.emailScreenshot);
-      }
-      formData.append('emailMessage', data.evidence.emailMessage || '');
-      data.evidence.additionalFiles.forEach((file) => {
-        if (file instanceof File) {
-          formData.append('additionalFiles', file);
+      formData.append('evidence', JSON.stringify({
+        affectedContent: data.evidence.affectedContent,
+        evidenceSummary: data.evidence.evidenceSummary,
+        additionalNotes: data.evidence.additionalNotes,
+      }));
+
+      // Append files with types and descriptions
+      data.evidence.files.forEach((fileObj, index) => {
+        if (fileObj.file instanceof File) {
+          formData.append('evidenceFiles', fileObj.file);
+          formData.append(`fileType_${index}`, fileObj.type);
+          formData.append(`fileDescription_${index}`, fileObj.description || '');
         }
       });
-      formData.append('additionalUrls', JSON.stringify(data.evidence.additionalUrls || []));
-      formData.append('additionalNotes', data.evidence.additionalNotes || '');
+
       formData.append('saveProgress', stepEnum);
       formData.append('submit', false);
 
-      const response = await axios.post(`${backendUrl}/claims/save`, formData, {
+      const response = await axios.post(`${backendUrl}/claims/submit`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
@@ -212,24 +179,26 @@ const ClaimProcess = () => {
     try {
       setLoading(true);
       const formData = new FormData();
-      formData.append('incidentDetails', JSON.stringify(data.incidentDetails));
-      if (data.evidence.accountScreenshot instanceof File) {
-        formData.append('accountScreenshot', data.evidence.accountScreenshot);
-      }
-      if (data.evidence.emailScreenshot instanceof File) {
-        formData.append('emailScreenshot', data.evidence.emailScreenshot);
-      }
-      formData.append('emailMessage', data.evidence.emailMessage || '');
-      data.evidence.additionalFiles.forEach((file) => {
-        if (file instanceof File) {
-          formData.append('additionalFiles', file);
+      formData.append('platform', data.incidentDetails.platform);
+      formData.append('incidentType', data.incidentDetails.incidentType);
+      formData.append('incidentDate', data.incidentDetails.incidentDate);
+      formData.append('incidentDescription', data.incidentDetails.incidentDescription);
+      formData.append('reportedEarningsLoss', data.incidentDetails.reportedEarningsLoss);
+      formData.append('currency', data.incidentDetails.currency);
+      formData.append('platformNotification', data.incidentDetails.platformNotification);
+      formData.append('evidenceSummary', data.evidence.evidenceSummary);
+      formData.append('additionalNotes', data.evidence.additionalNotes || '');
+      formData.append('affectedContent', JSON.stringify(data.evidence.affectedContent));
+      formData.append('termsAgreed', data.termsAgreed);
+
+      // Append files with types and descriptions
+      data.evidence.files.forEach((fileObj, index) => {
+        if (fileObj.file instanceof File) {
+          formData.append('evidenceFiles', fileObj.file);
+          formData.append(`fileType_${index}`, fileObj.type);
+          formData.append(`fileDescription_${index}`, fileObj.description || '');
         }
       });
-      formData.append('additionalUrls', JSON.stringify(data.evidence.additionalUrls || []));
-      formData.append('additionalNotes', data.evidence.additionalNotes || '');
-      formData.append('termsAgreed', data.termsAgreed);
-      formData.append('saveProgress', 'Submitted');
-      formData.append('submit', true);
 
       const response = await axios.post(`${backendUrl}/claims/submit`, formData, {
         headers: {
@@ -237,23 +206,10 @@ const ClaimProcess = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
+
       toast.success('Claim submitted successfully! Check status in dashboard.');
+      reset();
       setCurrentStep(1);
-      setValue('incidentDetails', {
-        platform: '',
-        incidentType: '',
-        incidentDate: '',
-        description: '',
-      });
-      setValue('evidence', {
-        accountScreenshot: null,
-        emailScreenshot: null,
-        emailMessage: '',
-        additionalFiles: [],
-        additionalUrls: [],
-        additionalNotes: '',
-      });
-      setValue('termsAgreed', false);
       navigate('/dashboard');
     } catch (error) {
       console.error('Submit claim error:', error.response?.data || error.message);
@@ -262,8 +218,7 @@ const ClaimProcess = () => {
       if (errorMessage.includes('Unauthorized') || errorMessage.includes('invalid signature')) {
         localStorage.removeItem('token');
         navigate('/login');
-      } else if (errorMessage.includes('Claim already submitted')) {
-        toast.error('You have already submitted a claim. Check status in dashboard.');
+      } else if (errorMessage.includes('pending or approved claim')) {
         navigate('/dashboard');
       }
     } finally {
@@ -277,8 +232,18 @@ const ClaimProcess = () => {
       // Validate current step
       const fieldsToValidate =
         currentStep === 1
-          ? ['incidentDetails.platform', 'incidentDetails.incidentType', 'incidentDetails.incidentDate', 'incidentDetails.description']
-          : ['evidence.accountScreenshot'];
+          ? [
+              'incidentDetails.platform',
+              'incidentDetails.incidentType',
+              'incidentDetails.incidentDate',
+              'incidentDetails.incidentDescription',
+              'incidentDetails.reportedEarningsLoss',
+              'incidentDetails.platformNotification',
+            ]
+          : [
+              'evidence.files',
+              'evidence.evidenceSummary',
+            ];
       const isValid = await trigger(fieldsToValidate);
       if (!isValid) {
         toast.error('Please complete all required fields.');
@@ -288,9 +253,14 @@ const ClaimProcess = () => {
       setCurrentStep(currentStep + 1);
     } else {
       // Final submission
-      const isValid = await trigger(['termsAgreed', 'evidence.accountScreenshot']);
+      const isValid = await trigger(['termsAgreed', 'evidence.files', 'evidence.evidenceSummary']);
       if (!isValid || !data.termsAgreed) {
-        toast.error('Please agree to the terms and upload an account screenshot.');
+        toast.error('Please agree to the terms and ensure all required evidence is provided.');
+        return;
+      }
+
+      if (!data.evidence.files.some(file => ['Screenshot', 'Email', 'Notification'].includes(file.type))) {
+        toast.error('At least one evidence file must be a Screenshot, Email, or Notification.');
         return;
       }
 
@@ -323,27 +293,27 @@ const ClaimProcess = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
-      className="w-full min-h-screen bg-white text-brown flex flex-col items-center justify-start py-10 px-4 md:px-10"
+      className="w-full min-h-screen bg-gray-50 text-brown flex flex-col items-center justify-start py-10 px-4 md:px-10"
       role="main"
       aria-label="Claim Submission Process"
     >
       {/* Header */}
-      <div className="w-full max-w-4xl mb-8 text-center">
+      <div className="w-full max-w-5xl mb-8 text-center">
         <h2 className="text-3xl md:text-4xl font-bold text-brown">Submit a Claim</h2>
         <p className="text-lg text-yellowGreen mt-3">
-          Provide details and evidence to process your insurance claim.
+          Provide details and evidence to process your insurance claim efficiently.
         </p>
       </div>
 
       {/* Progress Indicator */}
-      <nav className="w-full max-w-4xl mb-12" aria-label="Progress Steps">
+      <nav className="w-full max-w-5xl mb-12" aria-label="Progress Steps">
         <div className="flex items-center justify-between">
           {STEPS.map((step, index) => (
             <React.Fragment key={step.id}>
               <div className="flex flex-col items-center">
                 <motion.div
                   className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center ${
-                    currentStep >= step.id ? 'bg-appleGreen text-white' : 'bg-fadeBrown text-brown'
+                    currentStep >= step.id ? 'bg-appleGreen text-white' : 'bg-gray-200 text-brown'
                   } z-10`}
                   animate={{ scale: currentStep === step.id ? 1.2 : 1 }}
                   transition={{ duration: 0.3 }}
@@ -368,7 +338,7 @@ const ClaimProcess = () => {
                 <div className="flex-1 h-1 mx-2">
                   <div
                     className={`w-full h-full ${
-                      currentStep > step.id ? 'bg-appleGreen' : 'bg-fadeBrown'
+                      currentStep > step.id ? 'bg-appleGreen' : 'bg-gray-200'
                     }`}
                     aria-hidden="true"
                   />
@@ -385,7 +355,7 @@ const ClaimProcess = () => {
         initial={{ x: 50, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-4xl bg-white rounded-2xl shadow-xl border border-appleGreen/10 p-6 md:p-8"
+        className="w-full max-w-5xl bg-white rounded-2xl shadow-xl border border-appleGreen/10 p-6 md:p-8"
       >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
           <CurrentStepComponent
@@ -395,7 +365,7 @@ const ClaimProcess = () => {
             setValue={setValue}
             control={control}
             onBack={handleBack}
-            accounts={accounts} // Pass accounts to components
+            insuredPlatforms={insuredPlatforms} // Pass insured platforms
           />
 
           {/* Navigation Buttons */}
@@ -415,10 +385,21 @@ const ClaimProcess = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               type="submit"
-              className="flex items-center gap-2 py-3 px-6 bg-gradient-to-r from-yellowGreen to-appleGreen rounded-lg font-semibold text-brown shadow-md hover:shadow-yellowGreen/50 transition-all duration-300"
+              disabled={isSubmitting}
+              className={`flex items-center gap-2 py-3 px-6 rounded-lg font-semibold shadow-md transition-all duration-300 ${
+                isSubmitting
+                  ? 'bg-gray-400 cursor-not-allowed'
+                  : 'bg-gradient-to-r from-yellowGreen to-appleGreen text-brown hover:shadow-yellowGreen/50'
+              }`}
               aria-label={currentStep === STEPS.length ? 'Submit Claim' : 'Go to Next Step'}
             >
-              {currentStep === STEPS.length ? 'Submit Claim' : 'Next'}
+              {isSubmitting ? (
+                'Processing...'
+              ) : currentStep === STEPS.length ? (
+                'Submit Claim'
+              ) : (
+                'Next'
+              )}
               <FaArrowRight aria-hidden="true" />
             </motion.button>
           </div>
