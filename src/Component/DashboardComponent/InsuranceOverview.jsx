@@ -87,8 +87,9 @@ const InsuranceOverview = ({ insuranceData, profile, setSection }) => {
     ? profile.platformInfo.platforms.reduce((sum, p) => sum + (p.audienceSize || 0), 0).toLocaleString()
     : '0';
   const activeClaims = insuranceData?.claims?.length
-    ? insuranceData.claims.filter((c) => c.status === 'Pending').length
+    ? insuranceData.claims.filter((c) => c.status !== 'Rejected').length
     : 0;
+
   const insuranceStatus = insuranceData?.insuranceStatus?.status || 'Not Applied';
 
   // Handle Add Platform button click

@@ -67,6 +67,7 @@ const Dashboard = () => {
       });
       if (insuranceResponse.data.success) {
         setInsuranceData(insuranceResponse.data.data);
+        console.log('Insurance data:', insuranceResponse.data.data);
         toast.success('Insurance data loaded successfully!');
       }
     } catch (error) {
