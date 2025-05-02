@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { backendUrl } from '../../App';
 import { FiTrash2, FiPlus, FiAlertCircle } from 'react-icons/fi'; // Icons for actions
+import ClaimComponentPopup from '../ClaimsComponents/ClaimComponentPopup';
+import { GeneralContext } from '../../Context/GeneralContext';
 
 const ClaimsManagement = () => {
   const [claims, setClaims] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { claimId, setClaimId } = useContext(GeneralContext); // State to hold the claim ID for the popup
   const [error, setError] = useState(null);
   const [deleteModal, setDeleteModal] = useState({ open: false, claimId: null });
   const navigate = useNavigate();
@@ -83,7 +86,7 @@ const ClaimsManagement = () => {
           My Claims
         </h3>
         <Link
-          to="/claims/submit"
+          to="/claims"
           className="inline-flex text-xs md:text-sm items-center px-2 md:px-4 py-2.5 bg-gradient-to-r from-yellowGreen to-appleGreen rounded-lg font-semibold text-brown shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300"
         >
           <FiPlus className="mr-2" />
@@ -126,7 +129,7 @@ const ClaimsManagement = () => {
             No claims found. Start by filing a new claim.
           </p>
           <Link
-            to="/claims/submit"
+            to="/claims"
             className="mt-4 inline-block px-6 py-3 bg-appleGreen text-brown rounded-lg font-semibold hover:bg-yellowGreen transition-colors duration-300"
           >
             File Your First Claim
@@ -144,7 +147,7 @@ const ClaimsManagement = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
               className="bg-white p-4 md:p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-appleGreen cursor-pointer"
-              onClick={() => navigate(`/claims/${claim._id}`)}
+              onClick={() => setClaimId(claim._id)}
             >
               <div className="grid grid-cols-2 md:grid-cols-5 gap-4 items-center">
                 {/* Claim ID */}

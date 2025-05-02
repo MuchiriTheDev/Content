@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaChartBar, FaChartLine, FaChartPie, FaFileAlt, FaBell, FaUser, FaSignOutAlt, FaBars, FaTimes, FaUpload } from 'react-icons/fa';
-import { MdArrowBack } from 'react-icons/md';
-import { Link, useNavigate } from 'react-router-dom';
+import { MdArrowBack, MdPayment } from 'react-icons/md';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { assets } from '../../assets/assets';
 import InsuranceOverview from '../../Component/DashboardComponent/InsuranceOverview';
 import ClaimsManagement from '../../Component/DashboardComponent/ClaimsManagement';
@@ -14,12 +14,18 @@ import toast from 'react-hot-toast';
 import { backendUrl } from '../../App';
 import Loading from '../../Resources/Loading';
 import AddPlatform from './AddPlatform';
+import { IoAdd, IoAddCircle } from 'react-icons/io5';
+import PremiumPage from '../../Component/DashboardComponent/PremiumPage';
+import ClaimComponentPopup from '../../Component/ClaimsComponents/ClaimComponentPopup';
 
 const Dashboard = () => {
-  const [activeSection, setActiveSection] = useState('overview');
+  const [ searchParams ] = useSearchParams();
+  const section = searchParams.get('section') || 'overview';
+  console.log(section)
+  const [activeSection, setActiveSection] = useState(section || 'overview');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 768);
-  const { loading, setLoading, profile, setProfile } = useContext(GeneralContext);
+  const { loading, setLoading, profile, setProfile , claimId } = useContext(GeneralContext);
   const [insuranceData, setInsuranceData] = useState(null);
   const navigate = useNavigate();
 
@@ -29,6 +35,7 @@ const Dashboard = () => {
     claims: <ClaimsManagement />,
     contentReviewing: <ContentReviewing />,
     addPlatform: <AddPlatform />,
+    premiums: <PremiumPage />,
   };
 
   const handleLogout = () => {
@@ -105,6 +112,7 @@ const Dashboard = () => {
 
   return (
     <div className="w-full min-h-screen bg-gray-100 text-brown flex flex-col overflow-hidden">
+      <ClaimComponentPopup claimId={claimId} />
       {/* Navbar */}
       <motion.nav
         initial={{ y: -50, opacity: 0 }}
@@ -176,14 +184,15 @@ const Dashboard = () => {
             <ul className="space-y-2">
               {[
                 { id: 'overview', label: 'Overview', icon: <FaChartBar /> },
-                { id: 'addPlatform', label: 'Add Platform', icon: <FaUpload />},
-                // { id: 'analytics', label: 'Analytics', icon: <FaChartLine /> },
+                { id: 'addPlatform', label: 'Add Platform', icon: <IoAddCircle />},
+                { id: 'premiums', label: 'Premiums', icon: <MdPayment /> },
                 { id: 'contentReviewing', label: 'Review Content', icon: <FaUpload /> },
                 { id: 'claims', label: 'Claims', icon: <FaFileAlt /> },
                 
               ].map((item) => (
                 <li key={item.id}>
-                  <button
+                  <Link
+                    to={`/dashboard?section=${item.id}`}
                     onClick={() => {
                       setActiveSection(item.id);
                       setIsSidebarOpen(false);
@@ -196,7 +205,7 @@ const Dashboard = () => {
                     aria-label={`Switch to ${item.label}`}
                   >
                     {item.icon} {item.label}
-                  </button>
+                  </Link>
                 </li>
               ))}
             </ul>
