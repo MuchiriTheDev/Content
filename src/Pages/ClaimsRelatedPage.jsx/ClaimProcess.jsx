@@ -78,7 +78,7 @@ const ClaimProcess = () => {
           const platforms = userResponse.data.user.platformInfo.platforms || [];
           setInsuredPlatforms(platforms);
           if (platforms.length === 0) {
-            toast.error('No insured platforms found. Please add platforms in your profile.');
+            toast.error('No insured platforms found. Please add platforms in your dashboard.');
             navigate('/dashboard');
           }
         } else {
