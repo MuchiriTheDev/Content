@@ -14,6 +14,7 @@ const PremiumPage = ({financialData}) => {
   const [error, setError] = useState(null);
   const [showHistory, setShowHistory] = useState(false);
   const [paymentModal, setPaymentModal] = useState({ open: false });
+  
   // Fetch premium data
   useEffect(() => {
     const fetchData = async () => {
@@ -62,7 +63,7 @@ const PremiumPage = ({financialData}) => {
         `${backendUrl}/premiums/pay`,
         {
           paymentMethod: financialData?.type,
-          paymentDetails: { mobileNumber: financialData?.details?.mobileNumber },
+          paymentDetails: JSON.stringify({ mobileNumber: financialData?.details?.mobileNumber }),
         },
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );
@@ -72,6 +73,7 @@ const PremiumPage = ({financialData}) => {
       });
     } catch (err) {
       setPaymentModal({ open: false });
+      console.log(err)
       toast.error(err.response?.data?.error || 'Payment failed', {
         style: { background: '#FECACA', color: '#7F1D1D' },
       });
