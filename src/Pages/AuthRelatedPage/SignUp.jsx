@@ -1,13 +1,12 @@
 import React, { useContext, useState } from 'react';
-import { assets } from '../../assets/assets';
 import { MdArrowBack } from 'react-icons/md';
-import { FaLock, FaMailBulk, FaUser } from 'react-icons/fa';
+import { FaUser, FaMailBulk, FaLock, FaPhone, FaExclamationCircle } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { Link, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
+import { toast } from 'react-hot-toast';
 import { backendUrl } from '../../App';
-import toast from 'react-hot-toast';
 import { GeneralContext } from '../../Context/GeneralContext';
 import Loading from '../../Resources/Loading';
 
@@ -20,266 +19,382 @@ const SignUp = () => {
     phone: '',
     password: '',
   });
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
-
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [id]: value,
-    }));
+    if (id === 'phone') {
+      const digits = value.replace(/\D/g, '').slice(0, 9);
+      setFormData((prev) => ({ ...prev, [id]: digits }));
+      setErrors((prev) => ({ ...prev, phone: digits.length !== 9 ? 'Phone number must be 9 digits' : '' }));
+    } else {
+      setFormData((prev) => ({ ...prev, [id]: value }));
+      setErrors((prev) => ({ ...prev, [id]: '' }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!/^[a-zA-Z\s]+$/.test(formData.firstName)) newErrors.firstName = 'Letters and spaces only';
+    if (!/^[a-zA-Z\s]+$/.test(formData.lastName)) newErrors.lastName = 'Letters and spaces only';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = 'Invalid email format';
+    if (formData.phone.length !== 9) newErrors.phone = 'Phone number must be 9 digits';
+    if (formData.password.length < 8) newErrors.password = 'Minimum 8 characters';
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form Data:', formData);
+    if (!validateForm()) {
+      toast.error('Please fix the form errors.', {
+        style: { background: '#FECACA', color: '#7F1D1D', borderRadius: '8px' },
+      });
+      return;
+    }
     setLoading(true);
-    // Here you can add your form submission logic, like sending the data to an API
     try {
-      const response = await axios.post(`${backendUrl}/auth/register`, formData);
-      console.log('Response:', response.data);
-      if(response.data.success){
-        toast.success('Account created successfully! Please check your email for verification.');
-        navigate('/verify-email')
-        setFormData({
-          firstName: '',
-          lastName: '',
-          email: '',
-          phone: '',
-          password: '',
+      const submissionData = {
+        ...formData,
+        phone: `+254${formData.phone}`,
+      };
+      const response = await axios.post(`${backendUrl}/auth/register`, submissionData);
+      if (response.data.success) {
+        toast.success('Account created! Check your email for verification.', {
+          style: { background: '#A3E635', color: '#4A2C2A', borderRadius: '8px' },
         });
-        return;
+        setFormData({ firstName: '', lastName: '', email: '', phone: '', password: '' });
+        navigate('/verify-email');
       }
     } catch (error) {
-      console.error('Error submitting form:', error);
-      toast.error(error?.response?.data?.error||'Error submitting form. Please try again.');
+      toast.error(error?.response?.data?.error || 'Error creating account.', {
+        style: { background: '#FECACA', color: '#7F1D1D', borderRadius: '8px' },
+      });
     } finally {
       setLoading(false);
     }
-    // Add your form submission logic here
   };
 
-  if (loading) return <Loading />
+  const handleGoogleSignUp = () => {
+    toast.info('Google Sign-Up is coming soon!', {
+      style: { background: '#FECACA', color: '#7F1D1D', borderRadius: '8px' },
+    });
+  };
+
+  // Guidance messages inspired by PlatformInformation
+  const fieldGuidance = {
+    firstName: 'Your first name helps us personalize your account.',
+    lastName: 'Your last name is used for account verification.',
+    email: 'We’ll send a verification link to this email.',
+    phone: 'Your phone number ensures secure account recovery.',
+    password: 'Create a strong password (minimum 8 characters).',
+  };
+
+  if (loading) return <Loading />;
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
-      className="w-screen h-fit md:min-h-screen bg-gray-50 flex items-center justify-center"
+      transition={{ duration: 1 }}
+      className="min-h-screen w-full bg-gradient-to-br from-white to-appleGreen/10 flex items-center justify-center p-6 relative overflow-hidden"
     >
-      
+      {/* Background Shapes */}
       <motion.div
-        initial={{ y: 50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.2 }}
-        className="md:w-[95%] w-full max-w-5xl shadow-none md:shadow-xl rounded-md bg-none md:bg-white border-none md:border-2 border-appleGreen my-5 md:my-10 flex justify-center items-center h-fit md:min-h-[75vh] relative"
+        animate={{ scale: [1, 1.15, 1], opacity: [0.2, 0.4, 0.2] }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute top-0 left-0 w-1/3 h-1/3 bg-yellowGreen rounded-full blur-xl -z-10"
+      />
+      <motion.div
+        animate={{ scale: [1, 1.1, 1], opacity: [0.15, 0.3, 0.15] }}
+        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute bottom-0 right-0 w-1/3 h-1/3 bg-brown rounded-full blur-xl -z-10"
+      />
+
+      <motion.div
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.8, type: 'spring', stiffness: 120 }}
+        className="w-full max-w-5xl bg-white rounded-2xl shadow-lg border border-appleGreen/20 p-4 md:p-10"
       >
+        {/* Header */}
         <motion.div
-          initial={{ x: -100, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="hidden md:flex h-full w-[40%] overflow-hidden items-center justify-center px-3"
+          initial={{ y: -30, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="flex  items-center gap-4 mb-8 w-full"
         >
-          <img src={assets.signup} className="w-fit h-full object-cover rounded-lg" alt="Signup" />
-        </motion.div>
-        <motion.div
-          initial={{ x: 100, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="h-full w-full md:w-[60%] flex items-center relative p-4 py-8 md:p-6"
-        >
-          <form className="w-full max-w-lg" onSubmit={handleSubmit}>
+          <Link to="/">
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
-              className="flex gap-5 mb-4"
+              whileHover={{ scale: 1.2 }}
+              whileTap={{ scale: 0.9 }}
+              className="p-2 bg-brown/10 rounded-full"
             >
-              <Link to="/">
-                <MdArrowBack size={27} className="text-brown" />
-              </Link>
-              <div className="mb-3">
-                <h1 className="text-3xl md:text-4xl mb-2 text-brown font-bold">
-                  Create An Account
-                </h1>
-                <p className="text-sm text-gray-500">
-                  Create an account <strong>for free</strong> and start your journey to financial security as a content creator.
-                </p>
-              </div>
+              <MdArrowBack size={24} className="text-brown" />
             </motion.div>
+          </Link>
+          <h1 className="text-2xl md:text-3xl font-bold text-brown">Create an Account</h1>
+          <div className="w-10" />
+        </motion.div>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="text-gray-600 mb-8 text-sm md:text-base"
+        >
+          Sign up <span className="font-semibold text-yellowGreen">for free</span> to start securing your financial future.
+        </motion.p>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-2 items-start">
+            {/* First Name */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.8 }}
-              className="w-full h-fit p-6 flex flex-col items-center justify-center bg-white rounded-lg shadow-lg border-2 border-appleGreen"
+              initial={{ x: -50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
             >
-              <div className="w-full h-fit flex flex-col md:flex-row gap-5 mb-4">
-                <div className="w-full md:w-[50%]">
-                  <label
-                    htmlFor="firstName"
-                    className="text-sm text-yellowGreen flex gap-2 mb-2 items-center"
+              <label htmlFor="firstName" className="block text-sm font-medium text-brown mb-1">
+                First Name <span className="text-red-500">*</span>
+              </label>
+              <p className="text-xs text-gray-500 mb-2">{fieldGuidance.firstName}</p>
+              <motion.input
+                whileFocus={{ scale: 1.02, borderColor: '#AAC624' }}
+                type="text"
+                id="firstName"
+                placeholder="Enter first name"
+                value={formData.firstName}
+                onChange={handleChange}
+                required
+                className={`w-full h-12 border-2 ${errors.firstName ? 'border-red-400' : 'border-appleGreen'} rounded-lg text-brown bg-white px-3 focus:ring-2 focus:ring-yellowGreen focus:outline-none transition-all duration-200`}
+              />
+              <AnimatePresence>
+                {errors.firstName && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="text-red-500 text-xs mt-1 flex items-center gap-1"
                   >
-                    <FaUser /> First Name
-                  </label>
-                  <motion.input
-                    whileFocus={{ borderColor: '#A3BFFA' }}
-                    type="text"
-                    id="firstName"
-                    placeholder="Enter your first name"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    required
-                    className="w-full h-10 border-b-2 px-4 border-b-appleGreen focus:outline-none focus:border-b-2 focus:border-b-yellowGreen"
-                  />
-                </div>
-                <div className="w-full md:w-[50%]">
-                  <label
-                    htmlFor="lastName"
-                    className="text-sm text-yellowGreen flex gap-2 mb-2 items-center"
+                    <FaExclamationCircle /> {errors.firstName}
+                  </motion.p>
+                )}
+              </AnimatePresence>
+            </motion.div>
+
+            {/* Last Name */}
+            <motion.div
+              initial={{ x: -50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.7 }}
+            >
+              <label htmlFor="lastName" className="block text-sm font-medium text-brown mb-1">
+                Last Name <span className="text-red-500">*</span>
+              </label>
+              <p className="text-xs text-gray-500 mb-2">{fieldGuidance.lastName}</p>
+              <motion.input
+                whileFocus={{ scale: 1.02, borderColor: '#AAC624' }}
+                type="text"
+                id="lastName"
+                placeholder="Enter last name"
+                value={formData.lastName}
+                onChange={handleChange}
+                required
+                className={`w-full h-12 border-2 ${errors.lastName ? 'border-red-400' : 'border-appleGreen'} rounded-lg text-brown bg-white px-3 focus:ring-2 focus:ring-yellowGreen focus:outline-none transition-all duration-200`}
+              />
+              <AnimatePresence>
+                {errors.lastName && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="text-red-500 text-xs mt-1 flex items-center gap-1"
                   >
-                    <FaUser /> Last Name
-                  </label>
-                  <motion.input
-                    whileFocus={{ borderColor: '#A3BFFA' }}
-                    type="text"
-                    id="lastName"
-                    placeholder="Enter your last name"
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    required
-                    className="w-full h-10 border-b-2 px-4 border-b-appleGreen focus:outline-none focus:border-b-2 focus:border-b-yellowGreen"
-                  />
-                </div>
-              </div>
-              <div className="w-full h-fit flex flex-col md:flex-row gap-5 mb-3">
-                <div className="w-full md:w-[50%]">
-                  <label
-                    htmlFor="email"
-                    className="text-sm text-yellowGreen flex gap-2 mb-2 items-center"
+                    <FaExclamationCircle /> {errors.lastName}
+                  </motion.p>
+                )}
+              </AnimatePresence>
+            </motion.div>
+
+            {/* Email */}
+            <motion.div
+              initial={{ x: -50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.8 }}
+            >
+              <label htmlFor="email" className="block text-sm font-medium text-brown mb-1">
+                Email <span className="text-red-500">*</span>
+              </label>
+              <p className="text-xs text-gray-500 mb-2">{fieldGuidance.email}</p>
+              <motion.input
+                whileFocus={{ scale: 1.02, borderColor: '#AAC624' }}
+                type="email"
+                id="email"
+                placeholder="Enter your email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className={`w-full h-12 border-2 ${errors.email ? 'border-red-400' : 'border-appleGreen'} rounded-lg text-brown bg-white px-3 focus:ring-2 focus:ring-yellowGreen focus:outline-none transition-all duration-200`}
+              />
+              <AnimatePresence>
+                {errors.email && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="text-red-500 text-xs mt-1 flex items-center gap-1"
                   >
-                    <FaMailBulk /> Email
-                  </label>
-                  <motion.input
-                    whileFocus={{ borderColor: '#A3BFFA' }}
-                    type="email"
-                    id="email"
-                    placeholder="Enter your email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    className="w-full h-10 border-b-2 px-4 border-b-appleGreen focus:outline-none focus:border-b-2 focus:border-b-yellowGreen"
-                  />
-                </div>
-                <div className="w-full md:w-[50%]">
-                  <label
-                    htmlFor="phone"
-                    className="text-sm text-yellowGreen flex gap-2 mb-2 items-center"
-                  >
-                    Phone Number
-                  </label>
-                  <motion.input
-                    whileFocus={{ borderColor: '#A3BFFA' }}
-                    type="tel"
-                    id="phone"
-                    placeholder="Enter your number"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    required
-                    className="w-full h-10 border-b-2 px-4 border-b-appleGreen focus:outline-none focus:border-b-2 focus:border-b-yellowGreen"
-                  />
-                </div>
-              </div>
-              <div className="w-full h-fit mb-3">
-                <label
-                  htmlFor="password"
-                  className="text-sm text-yellowGreen flex gap-2 mb-2 items-center"
-                >
-                  <FaLock /> Password
-                </label>
+                    <FaExclamationCircle /> {errors.email}
+                  </motion.p>
+                )}
+              </AnimatePresence>
+            </motion.div>
+
+            {/* Phone Number */}
+            <motion.div
+              initial={{ x: -50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.9 }}
+            >
+              <label htmlFor="phone" className="block text-sm font-medium text-brown mb-1">
+                Phone Number <span className="text-red-500">*</span>
+              </label>
+              <p className="text-xs text-gray-500 mb-2">{fieldGuidance.phone}</p>
+              <div className="flex">
+                <span className="inline-flex items-center px-4 bg-brown text-white text-sm font-medium rounded-l-lg">
+                  +254
+                </span>
                 <motion.input
-                  whileFocus={{ borderColor: '#A3BFFA' }}
-                  type="password"
-                  id="password"
-                  placeholder="Enter your password"
-                  value={formData.password}
+                  whileFocus={{ scale: 1.02, borderColor: '#AAC624' }}
+                  type="tel"
+                  id="phone"
+                  placeholder="712345678"
+                  value={formData.phone}
                   onChange={handleChange}
                   required
-                  className="w-full h-10 border-b-2 px-4 border-b-appleGreen focus:outline-none focus:border-b-2 focus:border-b-yellowGreen"
+                  maxLength={9}
+                  className={`w-full h-12 border-2 ${errors.phone ? 'border-red-400' : 'border-appleGreen'} rounded-r-lg text-brown bg-white px-3 focus:ring-2 focus:ring-yellowGreen focus:outline-none transition-all duration-200`}
                 />
               </div>
+              <AnimatePresence>
+                {errors.phone && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="text-red-500 text-xs mt-1 flex items-center gap-1"
+                  >
+                    <FaExclamationCircle /> {errors.phone}
+                  </motion.p>
+                )}
+              </AnimatePresence>
             </motion.div>
-            
+
+            {/* Password */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 1 }}
-              className="w-full h-fit flex items-center justify-center mt-3"
+              initial={{ x: -50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 1.0 }}
             >
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                type="submit"
-                className="w-full h-10 bg-yellowGreen text-white font-bold rounded-md hover:bg-brown transition-all duration-300"
-              >
-                Create Account
-              </motion.button>
+              <label htmlFor="password" className="block text-sm font-medium text-brown mb-1">
+                Password <span className="text-red-500">*</span>
+              </label>
+              <p className="text-xs text-gray-500 mb-2">{fieldGuidance.password}</p>
+              <motion.input
+                whileFocus={{ scale: 1.02, borderColor: '#AAC624' }}
+                type="password"
+                id="password"
+                placeholder="Create a password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                className={`w-full h-12 border-2 ${errors.password ? 'border-red-400' : 'border-appleGreen'} rounded-lg text-brown bg-white px-3 focus:ring-2 focus:ring-yellowGreen focus:outline-none transition-all duration-200`}
+              />
+              <AnimatePresence>
+                {errors.password && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="text-red-500 text-xs mt-1 flex items-center gap-1"
+                  >
+                    <FaExclamationCircle /> {errors.password}
+                  </motion.p>
+                )}
+              </AnimatePresence>
             </motion.div>
-            {/* Links */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 1.2 }}
-              className="w-full h-fit flex items-center justify-center mt-2"
+          </div>
+
+          {/* Submit Button (Outside Grid) */}
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 1.1 }}
+            className="mt-6"
+          >
+            <motion.button
+              whileHover={{ scale: 1.05, boxShadow: '0 8px 25px rgba(124, 179, 42, 0.3)' }}
+              whileTap={{ scale: 0.95 }}
+              type="submit"
+              className="w-full h-12 bg-gradient-to-r from-yellowGreen to-appleGreen text-brown font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
             >
-              <p className="text-sm text-gray-500">
-                Already have an account?{' '}
-                <Link to="/login" className="text-yellowGreen font-bold cursor-pointer">
-                  Login
-                </Link>
-              </p>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 1.4 }}
-              className="w-full h-fit flex items-center justify-center mt-2"
-            >
-              <p className="text-sm text-gray-500">Or</p>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 1.6 }}
-              className="w-full h-fit flex items-center justify-center mt-2"
-            >
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="w-full h-10 bg-white text-brown font-bold rounded-md border-2 border-brown hover:bg-brown hover:text-white transition-all flex justify-center items-center gap-3 duration-300"
-              >
-                <FcGoogle /> Continue with Google
-              </motion.button>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 1.8 }}
-              className="w-full h-fit flex items-center justify-center mt-4"
-            >
-              <p className="text-sm text-center text-gray-500">
-                By signing up, you agree to our{' '}
-                <span className="text-yellowGreen font-bold cursor-pointer">
-                  Terms of Service
-                </span>{' '}
-                and{' '}
-                <span className="text-yellowGreen font-bold cursor-pointer">
-                  Privacy Policy
-                </span>
-              </p>
-            </motion.div>
-          </form>
+              Create Account
+            </motion.button>
+          </motion.div>
+        </form>
+
+        {/* Divider */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 1.2 }}
+          className="flex items-center my-6"
+        >
+          <div className="flex-grow h-px bg-gray-200"></div>
+          <span className="mx-4 text-sm text-gray-500 font-medium">Or</span>
+          <div className="flex-grow h-px bg-gray-200"></div>
+        </motion.div>
+
+        {/* Google Sign-Up */}
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 1.3 }}
+        >
+          <motion.button
+            whileHover={{ scale: 1.05, boxShadow: '0 8px 25px rgba(79, 57, 26, 0.2)' }}
+            whileTap={{ scale: 0.95 }}
+            onClick={handleGoogleSignUp}
+            className="w-full h-12 bg-white text-brown font-semibold rounded-lg border-2 border-brown flex items-center justify-center gap-3 hover:bg-brown hover:text-white transition-all duration-300"
+          >
+            <FcGoogle size={20} /> Continue with Google
+          </motion.button>
+        </motion.div>
+
+        {/* Links */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 1.4 }}
+          className="text-center mt-6 space-y-3"
+        >
+          <p className="text-sm text-gray-600">
+            Already have an account?{' '}
+            <Link to="/login" className="text-yellowGreen font-semibold hover:underline">
+              Log In
+            </Link>
+          </p>
+          <p className="text-sm text-gray-600">
+            By signing up, you agree to our{' '}
+            <Link to="/terms" className="text-yellowGreen font-semibold hover:underline">
+              Terms of Service
+            </Link>{' '}
+            and{' '}
+            <Link to="/privacy" className="text-yellowGreen font-semibold hover:underline">
+              Privacy Policy
+            </Link>
+          </p>
         </motion.div>
       </motion.div>
     </motion.div>
