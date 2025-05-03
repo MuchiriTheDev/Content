@@ -42,6 +42,13 @@ const SignUp = () => {
       if(response.data.success){
         toast.success('Account created successfully! Please check your email for verification.');
         navigate('/verify-email')
+        setFormData({
+          firstName: '',
+          lastName: '',
+          email: '',
+          phone: '',
+          password: '',
+        });
         return;
       }
     } catch (error) {
@@ -50,14 +57,6 @@ const SignUp = () => {
     } finally {
       setLoading(false);
     }
-    // Reset form data after submission
-    setFormData({
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      password: '',
-    });
     // Add your form submission logic here
   };
 

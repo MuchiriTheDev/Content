@@ -5,6 +5,7 @@ export const GeneralContext = createContext();
 
 // Create the provider component
 export const GeneralProvider = ({ children }) => {
+    
     const [claimId, setClaimId] = useState(null);
     const [loading, setLoading] = useState(false);
     const [user, setUser] = useState(null || (localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null));

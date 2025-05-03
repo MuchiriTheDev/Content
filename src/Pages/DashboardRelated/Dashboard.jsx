@@ -21,7 +21,6 @@ import ClaimComponentPopup from '../../Component/ClaimsComponents/ClaimComponent
 const Dashboard = () => {
   const [ searchParams ] = useSearchParams();
   const section = searchParams.get('section') || 'overview';
-  console.log(section)
   const [activeSection, setActiveSection] = useState(section || 'overview');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 768);

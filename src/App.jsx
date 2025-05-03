@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
-import LandingPage from './Pages/LandingPageRelated/LandingPage'
+import LandingPage from './Pages/LandingPageRelated/LandingPage.jsx'
 import ApplicationProcess from './Pages/ApplicationRelatedPage/ApplicationProcess'
 import SignUp from './Pages/AuthRelatedPage/SignUp'
 import Login from './Pages/AuthRelatedPage/Login'
