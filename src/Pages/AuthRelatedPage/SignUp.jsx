@@ -116,7 +116,7 @@ const SignUp = () => {
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.8, type: 'spring', stiffness: 120 }}
-        className="w-full md:max-w-5xl bg-white rounded-2xl shadow-lg border border-appleGreen/20 p-8 md:p-10"
+        className="w-full md:max-w-5xl bg-white h-full md:h-fit rounded-2xl shadow-lg border border-appleGreen/20 p-8 md:p-10"
       >
         {/* Header */}
         <motion.div

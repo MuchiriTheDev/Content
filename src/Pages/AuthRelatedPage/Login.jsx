@@ -102,7 +102,7 @@ const Login = () => {
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.8, type: 'spring', stiffness: 120 }}
-        className="w-full md:max-w-2xl bg-white rounded-2xl shadow-lg border border-appleGreen/20 "
+        className="w-full md:max-w-2xl bg-white h-full md:h-fit rounded-2xl shadow-lg border border-appleGreen/20 "
       >
        
         {/* Form Section */}
