@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaChartBar, FaChartLine, FaChartPie, FaFileAlt, FaBell, FaUser, FaSignOutAlt, FaBars, FaTimes, FaUpload } from 'react-icons/fa';
+import { FaChartBar, FaChartLine, FaChartPie, FaFileAlt, FaBell, FaUser, FaSignOutAlt, FaBars, FaTimes, FaUpload, FaRegFileAlt } from 'react-icons/fa';
 import { MdArrowBack, MdPayment } from 'react-icons/md';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { assets } from '../../assets/assets';
@@ -17,6 +17,8 @@ import AddPlatform from './AddPlatform';
 import { IoAdd, IoAddCircle } from 'react-icons/io5';
 import PremiumPage from '../../Component/DashboardComponent/PremiumPage';
 import ClaimComponentPopup from '../../Component/ClaimsComponents/ClaimComponentPopup';
+import { CgAdd } from 'react-icons/cg';
+import { FaFileCirclePlus } from 'react-icons/fa6';
 
 const Dashboard = () => {
   const [ searchParams ] = useSearchParams();
@@ -144,7 +146,11 @@ const Dashboard = () => {
             className="p-2 bg-appleGreen text-white rounded-full shadow-md hover:bg-yellowGreen"
             aria-label="Notifications"
           >
-            <FaBell size={18} />
+            <Link
+              to="/application"
+            >
+              <CgAdd size={18} />
+            </Link>
           </motion.button>
           <motion.button
             whileHover={{ scale: 1.1 }}
@@ -152,7 +158,9 @@ const Dashboard = () => {
             className="p-2 bg-appleGreen text-white rounded-full shadow-md hover:bg-yellowGreen"
             aria-label="User Profile"
           >
-            <FaUser size={18} />
+            <Link to="/claim">
+              <FaRegFileAlt size={18} />
+            </Link>
           </motion.button>
         </div>
       </motion.nav>

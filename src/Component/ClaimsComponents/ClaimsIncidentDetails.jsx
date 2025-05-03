@@ -36,13 +36,13 @@ const ClaimIncidentDetails = ({ register, errors, getValues, setValue, control, 
       >
         {insuredPlatforms.length === 0 ? (
           <div className="p-4 bg-gray-100 text-gray-600 text-center rounded-lg">
-            <p>No insured platforms registered. Please add platforms in your profile.</p>
+            <p>No insured platforms registered. Please add platforms in your Dashboard.</p>
             <a
-              href="/profile"
+              href="/dashboard"
               className="text-yellowGreen hover:underline font-semibold"
               aria-label="Go to profile to add platforms"
             >
-              Go to Profile
+              Go to Dashboard
             </a>
           </div>
         ) : (
