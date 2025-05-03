@@ -5,11 +5,16 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
 // Stat Card Component
-const StatCard = ({ title, value, icon }) => (
+const StatCard = ({ title, value, icon, link }) => (
   <motion.div
     initial={{ y: 20, opacity: 0 }}
     animate={{ y: 0, opacity: 1 }}
     transition={{ duration: 0.5 }}
+    onClick={() => {
+      if (link) {
+        window.location.href = link; // Open link in a new tab
+      }
+    }}
     className="p-4 bg-white rounded-xl shadow-md border border-appleGreen flex items-center gap-4"
   >
     {icon}
@@ -114,6 +119,7 @@ const InsuranceOverview = ({ insuranceData, profile, setSection }) => {
         <StatCard
           title="Active Claims"
           value={activeClaims}
+          link={`/dashboard?section=claims`}
           icon={<FaFileAlt className="text-appleGreen text-2xl" />}
         />
         <StatCard
