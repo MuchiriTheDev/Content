@@ -8,13 +8,12 @@ import { toast } from 'react-hot-toast';
 import moment from 'moment';
 import { backendUrl } from '../../App'; // Adjust path as needed
 
-const PremiumPage = () => {
+const PremiumPage = ({financialData}) => {
   const [premiumData, setPremiumData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showHistory, setShowHistory] = useState(false);
   const [paymentModal, setPaymentModal] = useState({ open: false });
-
   // Fetch premium data
   useEffect(() => {
     const fetchData = async () => {
@@ -62,8 +61,8 @@ const PremiumPage = () => {
       const response = await axios.post(
         `${backendUrl}/premiums/pay`,
         {
-          paymentMethod: 'Mpesa',
-          paymentDetails: { mobileNumber: '+254725759744' },
+          paymentMethod: financialData?.type,
+          paymentDetails: { mobileNumber: financialData?.details?.mobileNumber },
         },
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );
@@ -109,7 +108,7 @@ const PremiumPage = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10">
         <div>
           <h1 className="text-3xl md:text-4xl font-bold text-brown tracking-tight">
-            Insurance Premium Dashboard
+            Your Premium
           </h1>
           <p className="text-sm md:text-base text-gray-600 mt-2">
             Manage your premium payments and view adjustments seamlessly.

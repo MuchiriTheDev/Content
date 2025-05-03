@@ -34,7 +34,7 @@ const Dashboard = () => {
     claims: <ClaimsManagement />,
     contentReviewing: <ContentReviewing />,
     addPlatform: <AddPlatform />,
-    premiums: <PremiumPage />,
+    premiums: <PremiumPage financialData={profile?.financialInfo?.paymentMethod} />,
   };
 
   const handleLogout = () => {
@@ -65,6 +65,7 @@ const Dashboard = () => {
       });
       if (userResponse.data.success) {
         setProfile(userResponse.data.user);
+        console.log('User data:', userResponse.data.user);
       }
 
       // Fetch insurance data
