@@ -84,7 +84,7 @@ const Login = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
-      className="min-h-screen w-full bg-gradient-to-br from-white to-appleGreen/10 flex items-center justify-center p-6 relative overflow-hidden"
+      className="min-h-screen w-full bg-gradient-to-br from-white to-appleGreen/10 flex items-center justify-center p-0 md:p-6 relative overflow-hidden"
     >
       {/* Background Shapes */}
       <motion.div
@@ -102,7 +102,7 @@ const Login = () => {
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.8, type: 'spring', stiffness: 120 }}
-        className="w-full max-w-2xl bg-white rounded-2xl shadow-lg border border-appleGreen/20 "
+        className="w-full md:max-w-2xl bg-white rounded-2xl shadow-lg border border-appleGreen/20 "
       >
        
         {/* Form Section */}
@@ -110,7 +110,7 @@ const Login = () => {
           initial={{ x: 100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="w-full p-6 md:p-10 flex items-center justify-center"
+          className="w-full p-10 flex items-center justify-center"
         >
           <form className="w-full" onSubmit={handleSubmit}>
             {/* Header */}

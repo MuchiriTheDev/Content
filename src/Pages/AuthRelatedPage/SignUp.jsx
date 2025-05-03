@@ -98,7 +98,7 @@ const SignUp = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
-      className="min-h-screen w-full bg-gradient-to-br from-white to-appleGreen/10 flex items-center justify-center p-6 relative overflow-hidden"
+      className="min-h-screen w-full bg-gradient-to-br from-white to-appleGreen/10 flex items-center justify-center p-0 md:p-6 relative overflow-hidden"
     >
       {/* Background Shapes */}
       <motion.div
@@ -116,7 +116,7 @@ const SignUp = () => {
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.8, type: 'spring', stiffness: 120 }}
-        className="w-full max-w-5xl bg-white rounded-2xl shadow-lg border border-appleGreen/20 p-4 md:p-10"
+        className="w-full md:max-w-5xl bg-white rounded-2xl shadow-lg border border-appleGreen/20 p-8 md:p-10"
       >
         {/* Header */}
         <motion.div
@@ -148,7 +148,7 @@ const SignUp = () => {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-2 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6  items-start">
             {/* First Name */}
             <motion.div
               initial={{ x: -50, opacity: 0 }}
