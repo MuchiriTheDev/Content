@@ -86,7 +86,7 @@ const ClaimsManagement = () => {
           My Claims
         </h3>
         <Link
-          to="/claims"
+          to="/claim"
           className="inline-flex text-xs md:text-sm items-center px-2 md:px-4 py-2.5 bg-gradient-to-r from-yellowGreen to-appleGreen rounded-lg font-semibold text-brown shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300"
         >
           <FiPlus className="mr-2" />
@@ -129,7 +129,7 @@ const ClaimsManagement = () => {
             No claims found. Start by filing a new claim.
           </p>
           <Link
-            to="/claims"
+            to="/claim"
             className="mt-4 inline-block px-6 py-3 bg-appleGreen text-brown rounded-lg font-semibold hover:bg-yellowGreen transition-colors duration-300"
           >
             File Your First Claim

@@ -79,7 +79,7 @@ const ClaimProcess = () => {
           setInsuredPlatforms(platforms);
           if (platforms.length === 0) {
             toast.error('No insured platforms found. Please add platforms in your profile.');
-            navigate('/profile');
+            navigate('/dashboard');
           }
         } else {
           throw new Error(userResponse.data.error || 'Failed to fetch user data');
