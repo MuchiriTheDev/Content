@@ -4,9 +4,9 @@ import { useForm, useWatch } from 'react-hook-form';
 import { FaUpload, FaCheckCircle, FaExclamationTriangle, FaTimes, FaPlay, FaInfoCircle, FaVideo, FaImage } from 'react-icons/fa';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { GeneralContext } from '../../Context/GeneralContext'; // Adjust path
+import { GeneralContext } from '../../Context/GeneralContext';
 import { backendUrl } from '../../App';
-import Loading from '../../Resources/Loading'; // Adjust path
+import Loading from '../../Resources/Loading';
 
 const ContentReviewing = () => {
   const { loading, setLoading } = useContext(GeneralContext);
@@ -137,6 +137,7 @@ const ContentReviewing = () => {
         riskLevel: riskAssessment.riskLevel || 'N/A',
         risks: Array.isArray(riskAssessment.risks) ? riskAssessment.risks : [],
         reasons: Array.isArray(riskAssessment.reasons) ? riskAssessment.reasons : [],
+        mediaAnalysis: riskAssessment.mediaAnalysis || { type: 'None', description: '', analysisNotes: '' }, // Include media analysis
       });
       toast.success('Content reviewed successfully!');
     } catch (err) {
@@ -557,6 +558,28 @@ const ContentReviewing = () => {
                     </div>
 
                     <div className="space-y-4">
+                      {/* Media Analysis Section */}
+                      {reviewResult.mediaAnalysis && reviewResult.mediaAnalysis.type !== 'None' && (
+                        <div>
+                          <h4 className="text-sm font-medium text-brown flex items-center gap-2 mb-2">
+                            <FaInfoCircle className="text-yellowGreen" /> Media Analysis
+                          </h4>
+                          <div className="space-y-2">
+                            {reviewResult.mediaAnalysis.description && (
+                              <p className="text-sm text-brown/80 bg-white/10 p-2 rounded-lg">
+                                <span className="font-medium">Description:</span> {reviewResult.mediaAnalysis.description}
+                              </p>
+                            )}
+                            {reviewResult.mediaAnalysis.analysisNotes && (
+                              <p className="text-sm text-brown/80 bg-white/10 p-2 rounded-lg">
+                                <span className="font-medium">Notes:</span> {reviewResult.mediaAnalysis.analysisNotes}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Risks Section */}
                       {reviewResult.risks.length > 0 ? (
                         <div>
                           <h4 className="text-sm font-medium text-brown flex items-center gap-2 mb-2">
@@ -575,6 +598,7 @@ const ContentReviewing = () => {
                         <p className="text-sm text-brown/80 bg-white/10 p-2 rounded-lg">No specific risks identified.</p>
                       )}
 
+                      {/* Reasons Section */}
                       <div>
                         <h4 className="text-sm font-medium text-brown flex items-center gap-2 mb-2">
                           <FaInfoCircle className="text-yellowGreen" /> Reasons
