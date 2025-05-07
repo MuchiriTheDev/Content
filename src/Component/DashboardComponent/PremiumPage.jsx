@@ -24,6 +24,7 @@ const PremiumPage = ({financialData}) => {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         setPremiumData(response.data.premium);
+        console.log(response.data.premium)
         setLoading(false);
       } catch (err) {
         setError(err.response?.data?.error || 'Failed to fetch premium data');
@@ -90,7 +91,7 @@ const PremiumPage = ({financialData}) => {
     };
     return (
       <span
-        className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${
+        className={`inline-flex items-center px-3 py-1 rounded-full text-xs md:text-sm font-semibold ${
           statusStyles[status] || 'bg-gray-200 text-gray-900'
         } transition-all duration-300`}
       >
@@ -112,7 +113,7 @@ const PremiumPage = ({financialData}) => {
           <h1 className="text-3xl md:text-4xl font-bold text-brown tracking-tight">
             Your Premium
           </h1>
-          <p className="text-sm md:text-base text-gray-600 mt-2">
+          <p className="text-xs md:text-sm md:text-base text-gray-600 mt-2">
             Manage your premium payments and view adjustments seamlessly.
           </p>
         </div>
@@ -186,14 +187,14 @@ const PremiumPage = ({financialData}) => {
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-500 flex items-center">
+                  <p className="text-xs md:text-sm text-gray-500 flex items-center">
                     <FiDollarSign className="mr-1" /> Current Premium
                   </p>
-                  <p className="text-4xl font-bold text-brown mt-2">
-                    KES {premiumData.finalAmount.toFixed(2)}
+                  <p className="text-2xl md:text-4xl font-bold text-brown mt-2">
+                    KES {premiumData?.premiumDetails?.finalAmount.toFixed(2)}
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">
-                    {premiumData.finalPercentage.toFixed(2)}% of earnings
+                  <p className="text-xs md:text-sm text-gray-600 mt-1">
+                    {premiumData?.premiumDetails?.finalPercentage.toFixed(2)}% of earnings
                   </p>
                 </div>
                 <FiDollarSign className="text-5xl text-yellowGreen opacity-80" />
@@ -209,15 +210,15 @@ const PremiumPage = ({financialData}) => {
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-500 flex items-center">
+                  <p className="text-xs md:text-sm text-gray-500 flex items-center">
                     <FiClock className="mr-1" /> Payment Status
                   </p>
                   <div className="mt-2">
-                    {getPaymentStatusBadge(premiumData.paymentStatus?.status || 'Pending')}
+                    {getPaymentStatusBadge(premiumData?.paymentStatus?.status || 'Pending')}
                   </div>
-                  {premiumData.paymentStatus?.dueDate && (
-                    <p className="text-sm text-gray-600 mt-1">
-                      Due: {moment(premiumData.paymentStatus.dueDate).format('MMM D, YYYY')}
+                  {premiumData?.premiumDetails?.paymentStatus?.dueDate && (
+                    <p className="text-xs md:text-sm text-gray-600 mt-1">
+                      Due: {moment(premiumData?.paymentStatus.dueDate).format('MMM D, YYYY')}
                     </p>
                   )}
                 </div>
@@ -238,21 +239,21 @@ const PremiumPage = ({financialData}) => {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <p className="text-sm text-gray-500">Currency</p>
-                <p className="text-brown font-medium">{premiumData.currency}</p>
+                <p className="text-xs md:text-sm text-gray-500">Currency</p>
+                <p className="text-brown font-medium">{premiumData?.premiumDetails?.currency}</p>
               </div>
-              {premiumData.discount.percentage > 0 && (
+              {premiumData?.premiumDetails?.discount.percentage > 0 && (
                 <div>
-                  <p className="text-sm text-gray-500">Discount Applied</p>
-                  <p className="text-appleGreen font-medium">{premiumData.discount.percentage}%</p>
+                  <p className="text-xs md:text-sm text-gray-500">Discount Applied</p>
+                  <p className="text-appleGreen font-medium">{premiumData?.premiumDetails?.discount.percentage}%</p>
                 </div>
               )}
-              {premiumData.manualAdjustment && (
+              {premiumData?.premiumDetails?.manualAdjustment && (
                 <div className="col-span-1 md:col-span-2">
-                  <p className="text-sm text-gray-500">Manual Adjustment</p>
+                  <p className="text-xs md:text-sm text-gray-500">Manual Adjustment</p>
                   <p className="text-brown font-medium">
-                    {premiumData.manualAdjustment.percentage}% - {premiumData.manualAdjustment.reason} (
-                    {moment(premiumData.manualAdjustment.adjustedAt).format('MMM D, YYYY')})
+                    {premiumData?.premiumDetails?.manualAdjustment.percentage}% - {premiumData?.premiumDetails?.manualAdjustment.reason} (
+                    {moment(premiumData?.manualAdjustment?.adjustedAt).format('MMM D, YYYY')})
                   </p>
                 </div>
               )}
@@ -267,7 +268,7 @@ const PremiumPage = ({financialData}) => {
           </motion.div>
 
           {/* Adjustment History */}
-          {premiumData.adjustmentHistory?.length > 0 && (
+          {premiumData?.premiumDetails?.adjustmentHistory?.length > 0 && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -295,7 +296,7 @@ const PremiumPage = ({financialData}) => {
                   >
                     <table className="w-full text-left table-auto">
                       <thead>
-                        <tr className="text-sm text-gray-500 bg-gray-50">
+                        <tr className="text-xs md:text-sm text-gray-500 bg-gray-50">
                           <th className="p-4 w-44 font-medium">
                             <FiClock className="inline mr-1" /> Date
                           </th>
@@ -311,7 +312,7 @@ const PremiumPage = ({financialData}) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {premiumData.adjustmentHistory.map((adjustment, index) => (
+                        {premiumData?.premiumDetails?.adjustmentHistory.map((adjustment, index) => (
                           <motion.tr
                             key={adjustment._id}
                             initial={{ opacity: 0, y: 10 }}
@@ -319,12 +320,12 @@ const PremiumPage = ({financialData}) => {
                             transition={{ duration: 0.2, delay: index * 0.1 }}
                             className="border-t border-gray-100 hover:bg-appleGreen/10 transition-all duration-200"
                           >
-                            <td className="p-4 text-sm text-brown">
+                            <td className="p-4 text-xs md:text-sm text-brown">
                               {moment(adjustment.adjustedAt).format('MMM D, YYYY')}
                             </td>
-                            <td className="p-4 text-sm text-brown">{adjustment.percentage}%</td>
-                            <td className="p-4 text-sm text-brown">{adjustment.newFinalAmount.toFixed(2)}</td>
-                            <td className="p-4 text-sm text-brown">{adjustment.reason}</td>
+                            <td className="p-4 text-xs md:text-sm text-brown">{adjustment.percentage}%</td>
+                            <td className="p-4 text-xs md:text-sm text-brown">{adjustment.newFinalAmount.toFixed(2)}</td>
+                            <td className="p-4 text-xs md:text-sm text-brown">{adjustment.reason}</td>
                           </motion.tr>
                         ))}
                       </tbody>
