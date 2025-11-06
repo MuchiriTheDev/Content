@@ -11,23 +11,23 @@ const Contact = () => {
       <div className="w-full md:h-[70vh] h-fit md:flex-row flex-col flex justify-center items-center gap-3">
         {/* Links */}
         <div className="md:w-1/2 w-full h-full p-4">
-          <h1 className="text-brown font-bold text-lg mb-3 w-full">Reach Out to CCI Easily</h1>
+          <h1 className="text-brown font-bold text-base mb-3 w-full">Reach Out to CCI Easily</h1>
           <motion.div
             initial={{ y: 100, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 1, delay: 0.6 }}
             viewport={{ once: true }}
-            className="flex justify-center items-center gap-3 h-20 w-full mb-3"
+            className="flex justify-center items-center gap-3 h-16 w-full mb-3"
           >
-            <div className="h-full w-[10%] p-0 lg:p-4 flex justify-center items-center text-appleGreen text-xl">
+            <div className="h-full w-[10%] p-0 lg:p-4 flex justify-center items-center text-appleGreen text-lg">
               <FaPhoneAlt className="w-fit h-full" />
             </div>
             <a
               href="tel:+254798159691"
               className="h-full flex justify-start items-start flex-col p-2 w-[90%]"
             >
-              <h2 className="font-semibold text-appleGreen text-lg">+254 798 159 691</h2>
-              <p>Call our Kenya-based team for instant assistance</p>
+              <h2 className="font-semibold text-appleGreen text-sm">+254 798 159 691</h2>
+              <p className="text-xs">Call our Kenya-based team for instant assistance</p>
             </a>
           </motion.div>
           <motion.div
@@ -35,17 +35,17 @@ const Contact = () => {
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 1, delay: 0.6 }}
             viewport={{ once: true }}
-            className="flex justify-center items-center gap-3 h-20 w-full mb-3"
+            className="flex justify-center items-center gap-3 h-16 w-full mb-3"
           >
-            <div className="h-full w-[10%] p-0 lg:p-4 flex justify-center items-center text-appleGreen text-xl">
+            <div className="h-full w-[10%] p-0 lg:p-4 flex justify-center items-center text-appleGreen text-lg">
               <FaMailBulk className="w-fit h-full" />
             </div>
             <a
               href="mailto:support@cci.co.ke"
               className="h-full flex justify-start items-start flex-col p-2 w-[90%]"
             >
-              <h2 className="font-semibold text-appleGreen text-lg">support@cci.co.ke</h2>
-              <p>Email us for claims, inquiries, or support</p>
+              <h2 className="font-semibold text-appleGreen text-sm">support@cci.co.ke</h2>
+              <p className="text-xs">Email us for claims, inquiries, or support</p>
             </a>
           </motion.div>
           <motion.div
@@ -53,9 +53,9 @@ const Contact = () => {
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 1, delay: 0.6 }}
             viewport={{ once: true }}
-            className="flex justify-center items-center gap-3 h-20 w-full mb-3"
+            className="flex justify-center items-center gap-3 h-16 w-full mb-3"
           >
-            <div className="h-full w-[10%] p-0 lg:p-4 flex justify-center items-center text-appleGreen text-xl">
+            <div className="h-full w-[10%] p-0 lg:p-4 flex justify-center items-center text-appleGreen text-lg">
               <FaLocationPinLock className="w-fit h-full" />
             </div>
             <a
@@ -64,15 +64,15 @@ const Contact = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <h2 className="font-semibold text-appleGreen text-lg">Nairobi, Kenya</h2>
-              <p>Visit our headquarters in Kenya’s digital hub</p>
+              <h2 className="font-semibold text-appleGreen text-sm">Nairobi, Kenya</h2>
+              <p className="text-xs">Visit our headquarters in Kenya’s digital hub</p>
             </a>
           </motion.div>
         </div>
 
         {/* Form section */}
         <form className="md:w-1/2 w-full md:h-full h-fit p-4">
-          <h1 className="flex items-center gap-2 text-brown font-bold text-lg mb-3 w-full">
+          <h1 className="flex items-center gap-2 text-brown font-bold text-base mb-3 w-full">
             <p>Send CCI a Message</p> <FaMessage />
           </h1>
           <motion.div
@@ -80,11 +80,11 @@ const Contact = () => {
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 1, delay: 0.6 }}
             viewport={{ once: true }}
-            className="w-full h-14 border-2 border-appleGreen rounded flex gap-3 items-center mb-3"
+            className="w-full h-12 border-2 border-appleGreen rounded flex gap-3 items-center mb-3"
           >
             <FaUser className="w-fit p-2 h-full text-appleGreen" />
             <input
-              className="border-none placeholder:text-gray-600 text-brown bg-transparent outline-none w-3/4 h-full"
+              className="border-none placeholder:text-gray-600 text-brown bg-transparent outline-none w-3/4 h-full text-xs"
               type="text"
               name="name"
               required
@@ -96,11 +96,11 @@ const Contact = () => {
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 1, delay: 0.6 }}
             viewport={{ once: true }}
-            className="w-full h-14 border-2 border-appleGreen rounded flex gap-3 items-center mb-3"
+            className="w-full h-12 border-2 border-appleGreen rounded flex gap-3 items-center mb-3"
           >
             <FaMailBulk className="w-fit p-2 h-full text-appleGreen" />
             <input
-              className="border-none placeholder:text-gray-600 text-brown bg-transparent outline-none w-3/4 h-full"
+              className="border-none placeholder:text-gray-600 text-brown bg-transparent outline-none w-3/4 h-full text-xs"
               type="email"
               name="email"
               required
@@ -112,11 +112,11 @@ const Contact = () => {
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 1, delay: 0.6 }}
             viewport={{ once: true }}
-            className="w-full h-14 border-2 border-appleGreen rounded flex gap-3 items-center mb-3"
+            className="w-full h-12 border-2 border-appleGreen rounded flex gap-3 items-center mb-3"
           >
             <FaPhone className="w-fit p-2 h-full text-appleGreen" />
             <input
-              className="border-none placeholder:text-gray-600 text-brown bg-transparent outline-none w-3/4 h-full"
+              className="border-none placeholder:text-gray-600 text-brown bg-transparent outline-none w-3/4 h-full text-xs"
               type="tel"
               name="phone"
               required
@@ -128,11 +128,11 @@ const Contact = () => {
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 1, delay: 0.6 }}
             viewport={{ once: true }}
-            className="w-full h-28 border-2 border-appleGreen rounded flex gap-3 items-start mb-3 overflow-hidden"
+            className="w-full h-24 border-2 border-appleGreen rounded flex gap-3 items-start mb-3 overflow-hidden"
           >
-            <FaMessage className="w-fit p-2 h-14 text-appleGreen" />
+            <FaMessage className="w-fit p-2 h-12 text-appleGreen" />
             <textarea
-              className="border-none placeholder:text-gray-600 text-brown bg-transparent outline-none w-full h-full pl-0 p-4"
+              className="border-none placeholder:text-gray-600 text-brown bg-transparent outline-none w-full h-full pl-0 p-3 text-xs"
               required
               placeholder="How can CCI assist you today?"
             />
@@ -142,7 +142,7 @@ const Contact = () => {
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 1, delay: 0.6 }}
             viewport={{ once: true }}
-            className="h-12 w-28 rounded py-3 px-4 bg-appleGreen text-white font-bold"
+            className="h-10 w-24 rounded py-2 px-3 bg-appleGreen text-white font-bold text-sm"
             type="submit"
           >
             Send

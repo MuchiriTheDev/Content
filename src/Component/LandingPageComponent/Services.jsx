@@ -6,24 +6,24 @@ const Services = () => {
   const services = [
     {
       id: 1,
-      category: 'Protection',
-      title: 'Your Income Lifeline',
+      category: 'Income Protection',
+      title: 'Secure Your Earnings',
       description:
-        'CCI catches you when platforms drop the ball—think bans or cash flow stalls. Quick payouts keep your dreams on track, no matter where you’re at.',
+        'If your channel faces a ban, demonetization, or suspension, CCI covers up to 70% of your daily income. Get payouts in 7-10 days to keep creating without financial stress.',
     },
     {
       id: 2,
-      category: 'Prevention',
-      title: 'Risk-Busting Tools',
+      category: 'AI Analytics & Review',
+      title: 'Spot Risks Early',
       description:
-        'Stay in the game with CCI’s clever kit—content checks and platform tips. Dodge the flags and keep your spark blazing bright.',
+        'Connect your account for real-time monitoring via YouTube API. Our AI scans videos for issues, provides growth tips, and helps avoid platform pitfalls before they impact you.',
     },
     {
       id: 3,
-      category: 'Personalization',
-      title: 'Coverage Your Way',
+      category: 'Personalized Toolkit',
+      title: 'Grow Smarter',
       description:
-        'CCI gets you. We shape your plan around your hustle—your vibe, your earnings. Smart, simple protection that’s all about you.',
+        'Tailored coverage based on your earnings and channel stability. Evolving app with stats from YouTube, TikTok, X, and Instagram—plus AI advice for better videos and sponsors.',
     },
   ];
 
@@ -58,16 +58,17 @@ const Services = () => {
                 <motion.div
                   initial={{ y: 100, opacity: 0 }}
                   whileInView={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.8, delay: 0 }}
+                  transition={{ duration: 0.8, delay: index * 0.2 }}
                   viewport={{ once: true }}
-                  className={`bg-white shadow-lg p-6 rounded-lg w-[calc(100%-6rem)] md:w-1/3 absolute border border-yellowGreen hover:shadow-xl transition-shadow duration-300 ${
+                  whileHover={{ scale: 1.02, boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
+                  className={`bg-white shadow-lg p-6 rounded-lg w-[calc(100%-6rem)] md:w-1/3 absolute border border-yellowGreen transition-all duration-300 ${
                     isLeft ? 'left-8 md:left-10 md:mr-auto' : 'left-8 md:right-10 md:ml-auto'
                   }`}
                   style={{ top: topPosition }}
                 >
                   <h3 className="text-sm font-semibold text-appleGreen">{service.category}</h3>
-                  <h4 className="text-lg font-semibold text-gray-800 mt-1">{service.title}</h4>
-                  <p className="text-sm text-gray-700 mt-2">{service.description}</p>
+                  <h4 className="text-base font-semibold text-gray-800 mt-1">{service.title}</h4>
+                  <p className="text-xs text-gray-700 mt-2 leading-relaxed">{service.description}</p>
                 </motion.div>
               </div>
             );

@@ -1,86 +1,92 @@
 import React, { useState } from 'react';
 import { FaChevronUp } from 'react-icons/fa';
 import Title from '../../Resources/Title';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const FAQs = () => {
-  const [activeQuestion, setActiveQuestion] = useState(1);
+  const [activeQuestion, setActiveQuestion] = useState(null);
   const questions = [
     {
       key: 1,
-      category: 'Coverage',
-      question: 'What messes does CCI save me from?',
+      category: 'Overview',
+      question: 'What is CCI?',
       answer:
-        'CCI’s got you covered when platforms throw curveballs—demonetization, suspensions, or bans on spots like YouTube, TikTok, or Insta. We swoop in with cash to keep your creative flow steady, no matter the hiccup.',
+        'CCI is a simple app-based insurance for Kenyan YouTube creators. It protects your income from sudden bans, demonetization, or suspensions using YouTube\'s API for real-time monitoring and quick issue detection.',
     },
     {
       key: 2,
-      category: 'Claims',
-      question: 'How fast does CCI come through?',
+      category: 'Coverage',
+      question: 'What does CCI cover?',
       answer:
-        'When disaster strikes, CCI’s on it—fast. We get cash in your hands quick after a claim, so you’re back to creating without missing a beat. Speed’s our thing!',
+        'We cover up to 70% of your average daily earnings (with a monthly cap) during disruptions, so you can keep going while resolving issues. Starts with YouTube, expanding to TikTok, X, and Instagram.',
     },
     {
       key: 3,
-      category: 'App Features',
-      question: 'How does CCI’s web-app make my life easier?',
+      category: 'Claims',
+      question: 'How do claims work?',
       answer:
-        'Our web-app’s your creative sidekick—apply, claim, and dodge risks right from your phone. It’s smooth, smart, and built for creators on the move, wherever you’re vibing.',
+        'Connect your account, report the issue—our app detects it instantly. We verify with YouTube data and experts, then pay out in 7-10 days. Includes tools to appeal or rebuild your channel.',
     },
     {
       key: 4,
-      category: 'Prevention',
-      question: 'Can CCI keep me out of trouble?',
+      category: 'Signup',
+      question: 'How do I sign up?',
       answer:
-        'Yep, CCI’s got tools to spot drama before it hits—content checks and platform know-how. Stay safe, keep posting, and maybe even snag a sweeter deal on your plan.',
+        'Download the app, link your YouTube account—we track earnings and risks with AI. Premiums are tailored to your income and channel stability; add optional pre-post content checks.',
     },
     {
       key: 5,
-      category: 'Eligibility',
-      question: 'What if my channel’s small—can I still join CCI?',
+      category: 'Future Features',
+      question: 'What else will CCI offer?',
       answer:
-        'Size doesn’t matter to us! Whether you’re just starting or already popping off, CCI’s here for every creator. We tailor your coverage to fit your hustle, big or small—join the squad!',
+        'Evolving into a full creator toolkit: real-time stats across platforms, AI tips for better videos, sponsor matching, and risk avoidance—all in one easy app.',
     },
     {
       key: 6,
-      category: 'Costs',
-      question: 'Will CCI cost me more if I mess up a lot?',
+      category: 'Eligibility',
+      question: 'Who can join CCI?',
       answer:
-        'No stress here—CCI keeps it fair. We look at your vibe, not just your slip-ups, to craft a plan that won’t break the bank. Plus, our tools help you dodge repeat chaos, keeping costs chill.',
+        'Any Kenyan YouTube creator earning $500+/month qualifies initially. We support full-time grinders with no backup—join to protect and grow your channel.',
     },
   ];
 
   return (
-    <section id="faqs" className="w-full py-12 bg-white text-gray-900">
-      <Title head="Got Questions?" subHead="CCI’s Answers for Creators" />
-      <div className="flex flex-col p-4 items-center">
+    <section id="faqs" className="w-full py-10 bg-white text-gray-900">
+      <Title head="Got Questions?" subHead="CCI Answers for Creators" />
+      <div className="flex flex-col p-4 items-center max-w-4xl mx-auto">
         {questions.map((qs) => (
           <motion.div
-            initial={{ y: 100, opacity: 0 }}
+            initial={{ y: 50, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0 }}
+            transition={{ duration: 0.6, delay: qs.key * 0.1 }}
             viewport={{ once: true }}
             key={qs.key}
-            onClick={() => setActiveQuestion(activeQuestion === qs.key ? 0 : qs.key)}
-            className="w-full md:w-3/4 my-2 border border-yellowGreen rounded-lg cursor-pointer"
+            onClick={() => setActiveQuestion(activeQuestion === qs.key ? null : qs.key)}
+            className="w-full my-3 border border-yellowGreen rounded-lg cursor-pointer hover:shadow-md transition-shadow"
             role="button"
             aria-expanded={activeQuestion === qs.key}
             tabIndex={0}
-            onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setActiveQuestion(activeQuestion === qs.key ? 0 : qs.key)}
+            onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setActiveQuestion(activeQuestion === qs.key ? null : qs.key)}
           >
             <div className="flex justify-between w-full p-4 items-center">
-              <h2 className="text-lg font-semibold text-appleGreen">{qs.question}</h2>
+              <h2 className="text-base font-semibold text-brown">{qs.question}</h2>
               <FaChevronUp
-                className={`text-appleGreen transition-all duration-200 ${activeQuestion === qs.key ? 'rotate-180' : ''}`}
+                className={`text-yellowGreen transition-all duration-300 ${activeQuestion === qs.key ? 'rotate-180' : ''}`}
               />
             </div>
-            <p
-              className={`text-gray-700 bg-fadeBrown text-sm font-semibold text-center transition-all duration-200 overflow-hidden ${
-                activeQuestion === qs.key ? 'max-h-full p-2' : 'max-h-0'
-              }`}
-            >
-              {qs.answer}
-            </p>
+            <AnimatePresence>
+              {activeQuestion === qs.key && (
+                <motion.p
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="text-gray-700 bg-fadeBrown text-xs px-4 pb-4 overflow-hidden"
+                >
+                  {qs.answer}
+                </motion.p>
+              )}
+            </AnimatePresence>
           </motion.div>
         ))}
       </div>
