@@ -28,7 +28,7 @@ const Services = () => {
   ];
 
   return (
-    <div id="services" className="w-full max-w-[100vw] min-h-[100vh] md:min-h-[160vh] h-fit py-10 bg-gray-50">
+    <div id="services" className="w-full max-w-[100vw] min-h-[130vh] md:min-h-[160vh] h-fit py-10 bg-gray-50">
       <Title head={'What CCI Brings You'} subHead={'Your Creative Superpowers'} />
       <div className="relative flex justify-center items-center mt-10">
         {/* Vertical Line */}

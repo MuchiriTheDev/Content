@@ -41,7 +41,7 @@ const Testimonials = () => {
 
   const slideForward = () => {
     if (tx > maxTx) {
-      const newTx = tx - 100;
+      const newTx = tx - 107;
       setTx(newTx);
       slider.current.style.transform = `translateX(${newTx}%)`;
     }
@@ -49,7 +49,7 @@ const Testimonials = () => {
 
   const slideBackward = () => {
     if (tx < 0) {
-      const newTx = tx + 100;
+      const newTx = tx + 107;
       setTx(newTx);
       slider.current.style.transform = `translateX(${newTx}%)`;
     }
@@ -59,14 +59,14 @@ const Testimonials = () => {
     <section className="testimonials mx-auto py-16 relative bg-fadeBrown" id="testimonials">
       <Title head="Creators Speak" subHead="Real Stories from Kenyan YouTubers" />
       <button
-        className="next-btn absolute top-1/2 right-4 transform -translate-y-1/2 text-2xl md:text-3xl text-appleGreen cursor-pointer z-10 hover:scale-110 transition-transform duration-300"
+        className="next-btn absolute top-2/3 right-4 transform -translate-y-1/2 text-2xl md:text-3xl text-appleGreen cursor-pointer z-10 hover:scale-110 transition-transform duration-300"
         onClick={slideForward}
         aria-label="Next testimonial"
       >
         <FaChevronRight />
       </button>
       <button
-        className="back-btn absolute top-1/2 left-4 transform -translate-y-1/2 text-2xl md:text-3xl text-appleGreen cursor-pointer z-10 hover:scale-110 transition-transform duration-300"
+        className="back-btn absolute top-2/3 left-4 transform -translate-y-1/2 text-2xl md:text-3xl text-appleGreen cursor-pointer z-10 hover:scale-110 transition-transform duration-300"
         onClick={slideBackward}
         aria-label="Previous testimonial"
       >
