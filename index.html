@@ -22,5 +22,10 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <script>
+    if (localStorage.getItem('cci-dark') === 'true') {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
   </body>
 </html>

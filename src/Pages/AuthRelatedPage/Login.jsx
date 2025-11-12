@@ -96,7 +96,7 @@ const Login = () => {
               initial={{ y: -30, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.6 }}
-              className="flex items-center gap-6 mb-2"
+              className="flex items-center gap-3 mb-2"
             >
               <Link to="/">
                 <motion.div
@@ -108,7 +108,7 @@ const Login = () => {
                 </motion.div>
               </Link>
               <div>
-                <h1 className="text-xl md:text-2xl font-bold text-brown">Login With Channels</h1>
+                <h1 className="text-2xl md:text-3xl font-bold text-brown">Login Your Channels</h1>
               </div>
             </motion.div>
 

@@ -14,6 +14,9 @@ import ResetEmail from './Pages/AuthRelatedPage/ResetEmail.jsx'
 import PasswordReset from './Pages/AuthRelatedPage/PasswordReset.jsx'
 import AddPlatform from './Pages/DashboardRelated/AddPlatform.jsx'
 import ErrorBoundary from './Resources/ErrorBoundary.jsx'
+import OnBoarding from './Pages/OnBoardingPage/OnBoarding.jsx'
+import TOS from './Pages/Conditions/TOS.jsx'
+import PP from './Pages/Conditions/PP.JSX'
 
 export const backendUrl = `${import.meta.env.VITE_BACKEND_URL}/api`
 console.log(backendUrl)
@@ -40,7 +43,10 @@ function App() {
           <Route path='/reset-email' element={<ResetEmail/>}/>
           <Route path='/reset-password/:token' element={<PasswordReset/>}/>
           <Route path='/dashboard/add-platform' element={<AddPlatform/>}/>
+          <Route path='/onboard' element={<OnBoarding/>}/>
           <Route path='*' element={<Inpage404/>}/>
+          <Route path='/terms' element={<TOS />} />
+          <Route path='/privacy' element={<PP />} />
         </Routes>
         <Toaster
           position="top-center"

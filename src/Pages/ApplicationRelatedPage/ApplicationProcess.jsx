@@ -1,44 +1,34 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
-import { FaArrowLeft, FaArrowRight, FaCheckCircle } from 'react-icons/fa';
+import { FaCheckCircle, FaExclamationTriangle, FaShieldAlt, FaTimesCircle, FaLock, FaLightbulb } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { GeneralContext } from '../../Context/GeneralContext';
 import { backendUrl } from '../../App';
 import Loading from '../../Resources/Loading';
-import PlatformInformation from '../../Component/ApplicationComponents/PlatformInformation';
-import FinancialInformation from '../../Component/ApplicationComponents/FinancialInformation';
-import InsuranceDetails from '../../Component/ApplicationComponents/InsuranceDetails';
-
-const steps = [
-  { id: 1, name: 'Platform Information', enumName: 'PlatformInfo', component: PlatformInformation },
-  { id: 2, name: 'Financial Information', enumName: 'FinancialInfo', component: FinancialInformation },
-  { id: 3, name: 'Insurance Details', enumName: 'Submitted', component: InsuranceDetails },
-];
 
 const ApplicationProcess = () => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const { loading, setLoading, profile } = useContext(GeneralContext);
+  const [loading, setLoading] = useState(true);
+  const [userData, setUserData] = useState(null);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const { setLoading: setGlobalLoading } = useContext(GeneralContext);
   const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors }, getValues, setValue, control, trigger } = useForm({
+  const { register, handleSubmit, formState: { errors }, watch } = useForm({
     defaultValues: {
-      platformData: [],
-      financialInfo: {
-        monthlyEarnings: 0,
-        currency: 'Ksh',
-        paymentMethod: { type: 'Mpesa', details: {} },
-      },
+      nationalId: '',
       coveragePeriod: '',
       accurateInfo: false,
       termsAgreed: false,
     },
   });
 
-  // Fetch existing insurance data on mount
+  const accurateInfo = watch('accurateInfo');
+  const termsAgreed = watch('termsAgreed');
+
   useEffect(() => {
-    const fetchInsuranceData = async () => {
+    const fetchUserData = async () => {
       const token = localStorage.getItem('token');
       if (!token) {
         toast.error('Please log in to continue.');
@@ -47,346 +37,381 @@ const ApplicationProcess = () => {
       }
 
       try {
-        setLoading(true);
+        setGlobalLoading(true);
         const response = await axios.get(`${backendUrl}/insurance/my-insurance`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+
         if (response.data.success) {
-          const { insuranceStatus, premium, applicationProgress, platformInfo, financialInfo } = response.data.data;
-          
-          // Check if user has already applied
-          if (insuranceStatus?.status === 'Pending' || insuranceStatus?.status === 'Approved') {
-            toast.error('You have already applied for insurance. You can edit application status ');
-            navigate('/aplication/edit');
+          const { insuranceStatus, platformInfo, financialInfo, applicationProgress } = response.data.data;
+
+          if (insuranceStatus?.status === 'Pending' || insuranceStatus?.status === 'Approved' || insuranceStatus?.status === 'Rejected') {
+            toast.info('Existing application found. Redirecting.');
+            navigate('/insurance/status');
             return;
           }
 
-          // Populate form data for users who haven't applied or can reapply
-          if (platformInfo?.platforms) {
-            setValue('platformData', platformInfo.platforms.map((p) => ({
-              name: p.name,
-              username: p.username,
-              accountLink: p.accountLink,
-              audienceSize: p.audienceSize || 0,
-              contentType: p.contentType || '',
-              riskHistory: p.riskHistory.map((r) => ({
-                violationType: r.violationType,
-                date: r.date ? new Date(r.date).toISOString().split('T')[0] : '',
-                description: r.description || '',
-              })) || [],
-            })));
+          if (applicationProgress?.step !== 'Onboarded') {
+            toast.error('Complete onboarding first.');
+            navigate('/onboard');
+            return;
           }
-          if (financialInfo) {
-            setValue('financialInfo', {
-              monthlyEarnings: financialInfo.monthlyEarnings || 0,
-              currency: financialInfo.currency || 'Ksh',
-              paymentMethod: financialInfo.paymentMethod || { type: 'Mpesa', details: {} },
-            });
-          }
-          if (insuranceStatus?.coveragePeriod) {
-            setValue('coveragePeriod', String(insuranceStatus.coveragePeriod));
-          }
-          if (insuranceStatus?.termsAndAccuracy) {
-            setValue('accurateInfo', insuranceStatus.termsAndAccuracy.hasProvidedAccurateInfo);
-            setValue('termsAgreed', insuranceStatus.termsAndAccuracy.hasAgreedToTerms);
-          }
-          const stepMap = {
-            PlatformInfo: 1,
-            FinancialInfo: 2,
-            Submitted: 3,
-            Completed: 3,
-          };
-          setCurrentStep(stepMap[applicationProgress?.step] || 1);
+
+          setUserData({
+            channelTitle: platformInfo?.youtube?.channel?.title || 'N/A',
+            subscriberCount: platformInfo?.youtube?.channel?.subscriberCount || 0,
+            monthlyEarnings: financialInfo?.monthlyEarnings || 0,
+            avgDailyRevenue: platformInfo?.youtube?.avgDailyRevenue90d || 0,
+            contentType: platformInfo?.youtube?.contentType || 'Unknown',
+          });
         }
       } catch (error) {
-        console.error('Fetch insurance data error:', error.response?.data || error.message);
-        if (error.response?.data?.error?.includes('Unauthorized')) {
+        console.error('Fetch error:', error.response?.data || error.message);
+        if (error.response?.status === 401) {
           localStorage.removeItem('token');
-          toast.error('Session expired. Please log in again.');
+          toast.error('Session expired. Log in again.');
           navigate('/login');
         } else {
-          toast.error('Failed to fetch insurance data. Please try again.');
+          toast.error('Failed to fetch data. Try again.');
         }
       } finally {
+        setGlobalLoading(false);
         setLoading(false);
       }
     };
-    fetchInsuranceData();
-  }, [navigate, setValue, setLoading]);
 
-  // Save progress to backend
-  const saveProgress = async (data, stepEnum) => {
-    setLoading(true);
-    const token = localStorage.getItem('token');
-    if (!token) {
-      setLoading(false);
-      toast.error('Session expired. Please log in again.');
-      navigate('/login');
-      return;
-    }
+    fetchUserData();
+  }, [navigate, setGlobalLoading]);
 
-    try {
-      console.log('Saving progress with payload:', JSON.stringify({ platformData: data.platformData, financialInfo: data.financialInfo, saveProgress: stepEnum }));
-      const response = await axios.post(
-        `${backendUrl}/insurance/apply`,
-        {
-          platformData: data.platformData,
-          financialInfo: data.financialInfo,
-          coveragePeriod: Number(data.coveragePeriod) || undefined,
-          accurateInfo: data.accurateInfo,
-          termsAgreed: data.termsAgreed,
-          saveProgress: stepEnum,
-          submit: false,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.data.success) {
-        toast.success(response.data.message);
-      }
-    } catch (error) {
-      console.error('Save progress error:', error.response?.data || error.message);
-      const errorMessage = error.response?.data?.error || 'Failed to save progress.';
-      toast.error(errorMessage);
-      if (errorMessage.includes('invalid signature') || errorMessage.includes('Unauthorized')) {
-        localStorage.removeItem('token');
-        navigate('/login');
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Submit application
-  const submitApplication = async (data) => {
-    setLoading(true);
-    const token = localStorage.getItem('token');
-    if (!token) {
-      setLoading(false);
-      toast.error('Session expired. Please log in again.');
-      navigate('/login');
-      return;
-    }
-
-    // Validate platformData and financialInfo
-    if (!data.platformData || data.platformData.length === 0) {
-      setLoading(false);
-      toast.error('Please provide at least one platform.');
-      return;
-    }
-    if (!data.financialInfo.monthlyEarnings || data.financialInfo.monthlyEarnings <= 0) {
-      setLoading(false);
-      toast.error('Please provide valid monthly earnings.');
-      return;
-    }
-
-    try {
-      console.log('Submitting application with payload:', JSON.stringify({
-        platformData: data.platformData,
-        financialInfo: data.financialInfo,
-        coveragePeriod: Number(data.coveragePeriod),
-        accurateInfo: data.accurateInfo,
-        termsAgreed: data.termsAgreed,
-        saveProgress: 'Submitted',
-        submit: true,
-      }));
-      const response = await axios.post(
-        `${backendUrl}/insurance/apply`,
-        {
-          platformData: data.platformData,
-          financialInfo: data.financialInfo,
-          coveragePeriod: Number(data.coveragePeriod),
-          accurateInfo: data.accurateInfo,
-          termsAgreed: data.termsAgreed,
-          saveProgress: 'Submitted',
-          submit: true,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.data.success) {
-        toast.success('Application submitted successfully! Await our team’s review.');
-        setCurrentStep(1);
-        setValue('platformData', []);
-        setValue('financialInfo', {
-          monthlyEarnings: 0,
-          currency: 'Ksh',
-          paymentMethod: { type: 'Mpesa', details: {} },
-        });
-        setValue('coveragePeriod', '');
-        setValue('accurateInfo', false);
-        setValue('termsAgreed', false);
-        navigate('/dashboard');
-      }
-    } catch (error) {
-      console.error('Submit application error:', error.response?.data || error.message);
-      const errorMessage = error.response?.data?.error || 'Failed to submit application.';
-      toast.error(errorMessage);
-      if (errorMessage.includes('invalid signature') || errorMessage.includes('Unauthorized')) {
-        localStorage.removeItem('token');
-        navigate('/login');
-      } else if (errorMessage.includes('Insurance already applied for or active')) {
-        toast.error('You have already applied for insurance. Check your application status in the dashboard.');
-        navigate('/dashboard');
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Handle form submission for each step
   const onSubmit = async (data) => {
-    if (currentStep < steps.length) {
-      await saveProgress(data, steps[currentStep - 1].enumName);
-      setCurrentStep(currentStep + 1);
-    } else {
-      const isValid = await trigger(['coveragePeriod', 'accurateInfo', 'termsAgreed']);
-      if (!isValid) {
-        toast.error('Please complete all required fields.');
-        return;
-      }
-      if (!data.accurateInfo || !data.termsAgreed) {
-        toast.error('You must agree to the terms and confirm accurate information.');
-        return;
-      }
-      if (![6, 12, 24].includes(Number(data.coveragePeriod))) {
-        toast.error('Please select a valid coverage period (6, 12, or 24 months).');
-        return;
-      }
+    setSubmitLoading(true);
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setSubmitLoading(false);
+      toast.error('Session expired. Log in again.');
+      navigate('/login');
+      return;
+    }
 
-      const confirmSubmission = window.confirm(
-        'Are you sure you want to submit your application? Please ensure all information is accurate.'
+    if (!data.nationalId || data.nationalId.trim().length !== 8 || !/^\d{8}$/.test(data.nationalId)) {
+      toast.error('Valid 8-digit Kenyan ID required.');
+      setSubmitLoading(false);
+      return;
+    }
+    if (!data.coveragePeriod || ![6, 12, 24].includes(Number(data.coveragePeriod))) {
+      toast.error('Select 6, 12, or 24 months.');
+      setSubmitLoading(false);
+      return;
+    }
+    if (!accurateInfo || !termsAgreed) {
+      toast.error('Confirm accuracy & terms.');
+      setSubmitLoading(false);
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `${backendUrl}/insurance/apply`,
+        {
+          nationalId: data.nationalId.trim(),
+          coveragePeriod: Number(data.coveragePeriod),
+          accurateInfo: true,
+          termsAgreed: true,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-      if (!confirmSubmission) {
-        return;
+
+      if (response.data.success) {
+        toast.success('Submitted! Check email. Redirecting.');
+        navigate('/dashboard');
       }
-
-      await submitApplication(data);
+    } catch (error) {
+      console.error('Submit error:', error.response?.data || error.message);
+      const errorMsg = error.response?.data?.error || 'Failed to submit.';
+      toast.error(errorMsg);
+      if (error.response?.status === 401) {
+        localStorage.removeItem('token');
+        navigate('/login');
+      } else if (errorMsg.includes('ineligible') || errorMsg.includes('earnings')) {
+        toast.error('Check eligibility (KSh 65K+/mo).');
+        navigate('/onboard');
+      }
+    } finally {
+      setSubmitLoading(false);
     }
   };
-
-  // Handle back navigation
-  const handleBack = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    } else {
-      navigate('/dashboard');
-    }
-  };
-
-  // Render the current step’s component
-  const CurrentStepComponent = steps[currentStep - 1].component;
 
   if (loading) return <Loading />;
+
+  if (!userData) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <FaExclamationTriangle className="text-red-500 text-2xl mx-auto mb-2" />
+          <p className="text-brown text-xs">Unable to load channel data. Connect YouTube.</p>
+          <button onClick={() => navigate('/onboard')} className="mt-2 px-3 py-1 bg-appleGreen text-white rounded text-xs">
+            Onboarding
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 1 }}
-      className="w-full min-h-screen bg-white text-brown flex flex-col items-center justify-start py-10 px-4 md:px-10 overflow-auto"
+      className="w-full min-h-screen bg-white text-brown py-4 px-3 md:px-6"
     >
-      {/* Header Section */}
-      <div className="w-full max-w-4xl mb-8">
-        <h2 className="text-3xl md:text-4xl font-bold text-brown text-center">
-          Insurance Application
-        </h2>
-        <p className="text-lg text-yellowGreen mt-3 text-center">
-          Complete the steps to apply for Content Creators Insurance.
-        </p>
-      </div>
+      {/* Header */}
+      <section className="mb-4">
+        <div className="max-w-5xl mx-auto">
+          <h1 className="text-xl md:text-2xl font-bold text-brown mb-1">Secure Your Income with CCI</h1>
+          <p className="text-sm md:text-base text-yellowGreen mb-1">
+            Safety net for Kenyan YouTubers.
+          </p>
+          <p className="text-xs md:text-sm text-gray-600">
+            Premiums at 2-5% earnings (KSh 1K-5K/mo). AI-powered.
+          </p>
+        </div>
+      </section>
 
-      {/* Progress Indicator */}
-      <div className="w-full max-w-4xl mb-12">
-        <div className="flex items-center justify-between">
-          {steps.map((step, index) => (
-            <React.Fragment key={step.id}>
-              <div className="flex flex-col items-center">
-                <motion.div
-                  className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center ${
-                    currentStep >= step.id
-                      ? 'bg-appleGreen text-white'
-                      : 'bg-fadeBrown text-brown'
-                  } z-10`}
-                  animate={{ scale: currentStep === step.id ? 1.2 : 1 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  {currentStep > step.id ? (
-                    <FaCheckCircle size={20} />
-                  ) : (
-                    <span className="text-lg font-bold">{step.id}</span>
-                  )}
-                </motion.div>
-                <p
-                  className={`mt-2 text-xs md:text-sm font-semibold text-center ${
-                    currentStep >= step.id ? 'text-brown' : 'text-gray-400'
-                  }`}
-                >
-                  {step.name}
-                </p>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 max-w-5xl mx-auto">
+        {/* Left: Snapshot & Form */}
+        <div className="space-y-4">
+          {/* Snapshot */}
+          <motion.div
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-lg shadow-md border border-appleGreen p-3 md:p-4"
+          >
+            <h3 className="font-semibold text-brown mb-2 text-center text-xs">
+              <FaShieldAlt className="text-appleGreen inline mr-1" />
+              Channel Snapshot
+            </h3>
+            <div className="space-y-1 text-xs">
+              <div className="flex justify-between">
+                <span>Channel:</span>
+                <span className="font-medium">{userData.channelTitle}</span>
               </div>
-              {index < steps.length - 1 && (
-                <div className="flex-1 h-1 mx-2">
-                  <div
-                    className={`w-full h-full ${
-                      currentStep > step.id ? 'bg-appleGreen' : 'bg-fadeBrown'
-                    }`}
-                  />
-                </div>
-              )}
-            </React.Fragment>
-          ))}
+              <div className="flex justify-between">
+                <span>Subs:</span>
+                <span>{userData.subscriberCount.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Niche:</span>
+                <span>{userData.contentType}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Monthly:</span>
+                <span className="font-medium text-appleGreen">KSh {userData.monthlyEarnings.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Daily Avg:</span>
+                <span>KSh {userData.avgDailyRevenue.toLocaleString()}</span>
+              </div>
+            </div>
+            <p className="text-xs text-gray-500 mt-2 text-center">
+              Eligible: Earnings greater than 65K/mo (YouTube API)
+            </p>
+          </motion.div>
+
+          {/* Form */}
+          <motion.div
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-lg shadow-md border border-appleGreen p-3 md:p-4"
+          >
+            <h3 className="font-semibold text-brown mb-2 text-left text-sm">Finalize</h3>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+              <div>
+                <label className="block text-xs font-medium text-brown mb-1">
+                  National ID (8 digits) <span className="text-red-500">*</span>
+                </label>
+                <p className="text-xs text-gray-500 mb-1">For verification & M-Pesa</p>
+                <input
+                  {...register('nationalId', {
+                    required: 'ID required',
+                    pattern: { value: /^\d{8}$/, message: '8 digits only' },
+                  })}
+                  type="text"
+                  className="w-full px-2 py-1.5 border border-gray-300 rounded text-xs focus:outline-none focus:ring-1 focus:ring-appleGreen"
+                  placeholder="12345678"
+                />
+                {errors.nationalId && <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><FaExclamationTriangle /> {errors.nationalId.message}</p>}
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-brown mb-1">
+                  Coverage <span className="text-red-500">*</span>
+                </label>
+                <p className="text-xs text-gray-500 mb-1">6, 12, or 24 months</p>
+                <select
+                  {...register('coveragePeriod', { required: 'Select coverage' })}
+                  className="w-full px-2 py-1.5 border border-gray-300 rounded text-xs focus:outline-none focus:ring-1 focus:ring-appleGreen"
+                >
+                  <option value="">Choose</option>
+                  <option value={6}>6 months</option>
+                  <option value={12}>12 months</option>
+                  <option value={24}>24 months</option>
+                </select>
+                {errors.coveragePeriod && <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><FaExclamationTriangle /> {errors.coveragePeriod.message}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <label className="flex items-start gap-2 text-xs">
+                  <input {...register('accurateInfo', { required: 'Confirm accuracy' })} type="checkbox" className="mt-0.5 rounded" />
+                  <span>Confirm data accurate (API/NDVS verified)</span>
+                </label>
+                <label className="flex items-start gap-2 text-xs">
+                  <input {...register('termsAgreed', { required: 'Agree to terms' })} type="checkbox" className="mt-0.5 rounded" />
+                  <span>Agree to <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-yellowGreen underline">Terms</a> (platform risks only)</span>
+                </label>
+                {(!accurateInfo || !termsAgreed) && <p className="text-red-500 text-xs flex items-center gap-1"><FaExclamationTriangle /> Confirm both</p>}
+              </div>
+
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                type="submit"
+                disabled={submitLoading || !accurateInfo || !termsAgreed}
+                className="w-full py-2 px-3 bg-gradient-to-r from-yellowGreen to-appleGreen text-white rounded text-xs font-medium shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1"
+              >
+                {submitLoading ? (
+                  <>
+                    <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
+                    Applying...
+                  </>
+                ) : (
+                  <>
+                    <FaCheckCircle className="text-xs" />
+                    Apply Now
+                  </>
+                )}
+              </motion.button>
+            </form>
+            <p className="text-xs text-gray-500 text-center mt-2">
+              Premium: 2-5% earnings (KSh 1K-5K/mo). Review: 24-48h
+            </p>
+          </motion.div>
+        </div>
+
+        {/* Right: Quick Facts */}
+        <div className="space-y-4">
+          {/* Problem */}
+          <motion.div
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-gradient-to-r from-red-50 to-orange-50 rounded-lg p-3 border border-red-200"
+          >
+            <h3 className="text-sm font-semibold text-red-700 mb-1 flex items-center gap-1">
+              <FaExclamationTriangle className="text-red-500" />
+              The Problem
+            </h3>
+            <p className="text-xs text-gray-700 mb-2">
+              Suspended channel || Banned Channel || Demonitized Channel = no income.
+            </p>
+            <div className="grid grid-cols-2 gap-1 text-xs text-center bg-white rounded p-1">
+              <div className="border-r">
+                <span className="font-bold text-red-600">KSh 100-200</span><br />
+                <span className="text-gray-600">/1K views</span>
+              </div>
+              <div>
+                <span className="font-bold text-red-600">+30%</span><br />
+                <span className="text-gray-600">YoY growth</span>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Solution */}
+          <motion.div
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-gradient-to-r from-appleGreen to-yellowGreen rounded-lg p-3 text-white"
+          >
+            <h3 className="text-sm font-semibold mb-1 flex items-center gap-1">
+              <FaCheckCircle className="text-yellow-200" />
+              How It Works
+            </h3>
+            <p className="text-xs mb-2 opacity-90">
+              Track earnings, AI risks, M-Pesa payout. Covers 70% disruptions.
+            </p>
+            <div className="space-y-1 text-xs">
+              <div className="flex items-center gap-1">
+                <FaLightbulb className="text-yellow-200" />
+                <span>Connect → Track</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <FaShieldAlt className="text-yellow-200" />
+                <span>Claim → Pay</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <FaLock className="text-yellow-200" />
+                <span>AI tips</span>
+              </div>
+            </div>
+            
+          </motion.div>
+
+          {/* Coverage */}
+          <motion.div
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-2"
+          >
+            <h3 className="text-sm font-semibold text-brown text-center mb-1 text-xs">Coverage</h3>
+            <div className="grid grid-cols-1 gap-2">
+              <div className="bg-appleGreen/10 p-2 rounded border border-appleGreen">
+                <h4 className="font-semibold text-brown mb-1 flex items-center gap-1 text-xs">
+                  <FaShieldAlt className="text-appleGreen" />
+                  Covered
+                </h4>
+                <ul className="text-xs text-gray-700 space-y-0.5">
+                  <li>• Demonetization</li>
+                  <li>• Temporary bans</li>
+                  <li>• Glitches</li>
+                  <li>• 70% daily, 7-10d</li>
+                </ul>
+              </div>
+              <div className="bg-red-50 p-2 rounded border border-red-200">
+                <h4 className="font-semibold text-brown mb-1 flex items-center gap-1 text-xs">
+                  <FaTimesCircle className="text-red-500" />
+                  Not Covered
+                </h4>
+                <ul className="text-xs text-gray-700 space-y-0.5">
+                  <li>• Copyright</li>
+                  <li>• Hate/violence</li>
+                  <li>• Intentional</li>
+                  <li>• Permanent bans</li>
+                </ul>
+              </div>
+            </div>
+            <div className="bg-yellow-50 p-2 rounded border border-yellow-200">
+              <h4 className="font-semibold text-brown mb-1 flex items-center gap-1 text-xs">
+                <FaLightbulb className="text-yellow-600" />
+                Claim Flow
+              </h4>
+              <ol className="list-decimal pl-3 text-xs text-gray-700 space-y-0.5">
+                <li>Spot drop → File</li>
+                <li>AI check</li>
+                <li>Payout</li>
+              </ol>
+              <p className="text-xs text-gray-600 mt-1">AI fraud scan</p>
+            </div>
+          </motion.div>
         </div>
       </div>
 
-      {/* Form Container */}
-      <motion.div
-        key={currentStep}
-        initial={{ x: 50, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-4xl bg-white rounded-2xl shadow-xl border border-appleGreen p-6 md:p-8"
-      >
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <CurrentStepComponent
-            register={register}
-            errors={errors}
-            getValues={getValues}
-            setValue={setValue}
-            control={control}
-            onBack={handleBack}
-            formData={getValues()}
-            onSubmit={onSubmit}
-          />
-
-          {/* Navigation Buttons */}
-          <div className="flex justify-between mt-8">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              type="button"
-              onClick={handleBack}
-              className="flex items-center gap-2 py-3 px-6 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg font-semibold text-brown shadow-md hover:shadow-lg transition-all duration-300"
-            >
-              <FaArrowLeft /> {currentStep === 1 ? 'Dashboard' : 'Back'}
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              type="submit"
-              className="flex items-center gap-2 py-3 px-6 bg-gradient-to-r from-yellowGreen to-appleGreen rounded-lg font-semibold text-brown shadow-md hover:shadow-yellowGreen/50 transition-all duration-300"
-            >
-              {currentStep === steps.length ? 'Submit Application' : 'Next'} <FaArrowRight />
-            </motion.button>
-          </div>
-        </form>
-      </motion.div>
+      <div className="mt-4 text-right max-w-5xl mx-auto">
+        <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          onClick={() => navigate('/dashboard')}
+          className="text-yellowGreen text-xs underline hover:no-underline"
+        >
+          Dashboard
+        </motion.button>
+      </div>
     </motion.div>
   );
 };

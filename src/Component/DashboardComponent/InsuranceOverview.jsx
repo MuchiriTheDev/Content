@@ -1,46 +1,44 @@
+// InsuranceOverview.js (Updated: Smaller fonts, consistent colors, backend data integration)
 import React from 'react';
-import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { FaChartBar, FaChartLine, FaFileAlt, FaCalendar, FaShieldAlt, FaPlus } from 'react-icons/fa';
+import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { FaChartBar, FaUsers, FaShieldAlt, FaEye, FaEyeSlash, FaCheckCircle, FaPlus, FaFileAlt, FaChartLine } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
-// Stat Card Component
-const StatCard = ({ title, value, icon, link }) => (
-  <motion.div
-    initial={{ y: 20, opacity: 0 }}
-    animate={{ y: 0, opacity: 1 }}
-    transition={{ duration: 0.5 }}
-    onClick={() => {
-      if (link) {
-        window.location.href = link; // Open link in a new tab
-      }
-    }}
-    className="p-4 bg-white rounded-xl shadow-md border border-appleGreen flex items-center gap-4"
-  >
-    {icon}
-    <div>
-      <p className="text-brown font-medium">{title}</p>
-      <p className="text-xl font-bold text-brown">{value}</p>
-    </div>
-  </motion.div>
-);
+const StatCard = ({ title, value, icon, color = 'appleGreen', link, hide = false }) => {
+  if (hide) return null;
 
-// Custom Tooltip Component
+  return (
+    <motion.div
+      initial={{ y: 15, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      whileHover={{ scale: 1.02 }}
+      transition={{ duration: 0.3 }}
+      onClick={() => link && (window.location.href = link)}
+      className={`p-3 bg-white rounded-lg shadow-md border border-${color} flex items-center gap-3 cursor-pointer hover:shadow-lg transition-shadow text-xs`}
+    >
+      <div className={`p-2 rounded-full bg-gradient-to-br from-${color} to-yellowGreen text-white`}>
+        {icon}
+      </div>
+      <div>
+        <p className="text-brown font-medium">{title}</p>
+        <p className="font-bold text-brown">{value}</p>
+      </div>
+    </motion.div>
+  );
+};
+
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.2 }}
-        className="p-3 rounded-lg shadow-lg border border-appleGreen bg-white"
+        className="p-2 rounded-lg shadow-lg border border-appleGreen bg-white text-xs"
       >
-        <p className="text-base font-bold flex gap-2 items-center text-brown">
-          <FaCalendar /> {label}
-        </p>
-        <p className="text-brown font-medium mt-1 capitalize">
-          {`${payload[0].name}: `}
-          <span className="text-yellowGreen font-bold">{payload[0].value.toLocaleString()} followers</span>
+        <p className="font-bold text-brown">{label}</p>
+        <p className="text-brown">
+          {payload[0].name}: <span className="font-bold text-yellowGreen">{payload[0].value.toLocaleString()}</span>
         </p>
       </motion.div>
     );
@@ -48,161 +46,163 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-// Fallback data for charts
-const fallbackData = {
-  earnings: [
+const InsuranceOverview = ({ insuranceData, profile, setSection }) => {
+  const navigate = useNavigate();
+
+  const youtube = profile?.platformInfo?.youtube;
+  const isMonetized = (profile?.financialInfo?.monthlyEarnings ?? 0) > 0;
+  const earnings = isMonetized ? `${profile.financialInfo.currency} ${profile.financialInfo.monthlyEarnings?.toLocaleString() || '0'}` : null;
+
+  const totalAudience = youtube?.channel?.subscriberCount?.toLocaleString() || '0';
+  const channelName = youtube?.channel?.title || 'Your Channel';
+  const channelPicture = youtube?.profile?.picture || null;
+  const isVerified = youtube?.isVerified === true;
+
+  const activeClaims = insuranceData?.claims?.filter(c => c.status !== 'Rejected').length || 0;
+  const insuranceStatus = insuranceData?.insuranceStatus?.status || 'Not Applied';
+
+  const earningsData = [
     { month: 'Jan', earnings: 8400 },
     { month: 'Feb', earnings: 4398 },
     { month: 'Mar', earnings: 9800 },
     { month: 'Apr', earnings: 6908 },
-  ],
-  audience: [
+  ];
+
+  const audienceData = [
     { month: 'Jan', followers: 400000 },
     { month: 'Feb', followers: 900000 },
     { month: 'Mar', followers: 500000 },
     { month: 'Apr', followers: 700000 },
-  ],
-};
+  ];
 
-const InsuranceOverview = ({ insuranceData, profile, setSection }) => {
-  const navigate = useNavigate();
+  const platformData = youtube ? [{ name: 'YouTube', value: youtube.channel.subscriberCount || 0 }] : [];
 
-  // Process data
-  const earningsData = fallbackData.earnings; // No historical earnings data in backend
-  const audienceData = fallbackData.audience; // No historical audience data in backend
-  const platformData = profile?.platformInfo?.platforms
-    ? profile.platformInfo.platforms.map((platform, index) => {
-        // Count how many times this platform name appears before this index to create unique names
-        const samePlatformCount = profile.platformInfo.platforms
-          .slice(0, index)
-          .filter((p) => p.name === platform.name).length;
-        const displayName = samePlatformCount > 0 ? `${platform.name} ${samePlatformCount + 1}` : platform.name;
-        return {
-          name: displayName,
-          value: platform.audienceSize || 0,
-        };
-      })
-    : [{ name: 'YouTube', value: 1000 }]; // Fallback to a single YouTube platform
-
-  // Calculate stat card values
-  const averageEarnings = profile?.financialInfo?.monthlyEarnings
-    ? `${profile.financialInfo.currency} ${profile.financialInfo.monthlyEarnings.toLocaleString()}`
-    : 'N/A';
-  const totalAudience = profile?.platformInfo?.platforms
-    ? profile.platformInfo.platforms.reduce((sum, p) => sum + (p.audienceSize || 0), 0).toLocaleString()
-    : '0';
-  const activeClaims = insuranceData?.claims?.length
-    ? insuranceData.claims.filter((c) => c.status !== 'Rejected').length
-    : 0;
-
-  const insuranceStatus = insuranceData?.insuranceStatus?.status || 'Not Applied';
-
-  // Handle Add Platform button click
-  const handleAddPlatform = () => {
-    setSection('addPlatform'); // Set the active section to 'addPlatform'
-  };
+  const handleAddPlatform = () => setSection('addPlatform');
 
   return (
-    <div className="grid grid-cols-1 gap-6">
-      {/* Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="space-y-4">
+      {/* Profile Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-gradient-to-r from-yellowGreen to-appleGreen p-1 rounded-xl"
+      >
+        <div className="bg-white rounded-xl p-4 flex flex-col md:flex-row items-center gap-4">
+          <div className="relative">
+            {channelPicture ? (
+              <img src={channelPicture} alt={channelName} className="w-20 h-20 rounded-full object-cover border-3 border-white shadow-lg" />
+            ) : (
+              <div className="w-20 h-20 rounded-full bg-gray-200 border-3 border-white shadow-lg flex items-center justify-center">
+                <FaUsers className="text-xl text-gray-400" />
+              </div>
+            )}
+            {isVerified && <FaCheckCircle className="absolute -bottom-0 -right-0 text-blue-500 bg-white rounded-full p-1 text-sm shadow" />}
+          </div>
+
+          <div className="flex-1 text-center md:text-left">
+            <h2 className="text-lg font-bold text-brown">{channelName}</h2>
+            <p className="text-xs text-gray-600 flex items-center justify-center md:justify-start gap-1">
+              <FaUsers className="text-appleGreen text-sm" />
+              {totalAudience} subscribers
+              {isVerified && <span className="ml-1 text-blue-600 font-medium text-xs">Verified</span>}
+            </p>
+            {isMonetized ? (
+              <p className="text-sm font-bold text-yellowGreen mt-1">
+                <FaChartLine className="inline mr-1 text-xs" />
+                {earnings} / month
+              </p>
+            ) : (
+              <p className="text-xs text-gray-500 mt-1 flex items-center justify-center md:justify-start gap-1">
+                <FaEyeSlash className="text-gray-400 text-sm" />
+                Not monetized yet
+              </p>
+            )}
+          </div>
+
+          <div className="text-right">
+            <p className="text-xs text-gray-500">Insurance</p>
+            <p className={`font-bold text-sm ${
+              insuranceStatus === 'Approved' ? 'text-appleGreen' :
+              insuranceStatus === 'Pending' ? 'text-yellow-600' :
+              insuranceStatus === 'Rejected' ? 'text-red-600' :
+              'text-gray-600'
+            }`}>
+              {insuranceStatus.replace(/([A-Z])/g, ' $1').trim()}
+            </p>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         <StatCard
-          title="Total Earnings"
-          value={averageEarnings}
-          icon={<FaChartBar className="text-appleGreen text-2xl" />}
+          title="Monthly Earnings"
+          value={isMonetized ? earnings : '—'}
+          icon={<FaChartBar className="text-sm" />}
+          hide={!isMonetized}
         />
         <StatCard
           title="Total Audience"
           value={totalAudience}
-          icon={<FaChartLine className="text-appleGreen text-2xl" />}
+          icon={<FaUsers className="text-sm" />}
         />
         <StatCard
           title="Active Claims"
           value={activeClaims}
-          link={`/dashboard?section=claims`}
-          icon={<FaFileAlt className="text-appleGreen text-2xl" />}
+          icon={<FaFileAlt className="text-sm" />}
+          link="/dashboard?section=claims"
         />
         <StatCard
-          title="Insurance Status"
-          value={insuranceStatus}
-          icon={<FaShieldAlt className="text-appleGreen text-2xl" />}
+          title="Coverage"
+          value={insuranceStatus === 'Approved' ? 'Active' : insuranceStatus}
+          icon={<FaShieldAlt className="text-sm" />}
+          color={insuranceStatus === 'Approved' ? 'appleGreen' : 'gray-400'}
         />
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Earnings Over Time (Bar Chart) */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <motion.div
-          initial={{ y: 50, opacity: 0 }}
+          initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="p-6 bg-white rounded-xl shadow-md border border-appleGreen"
+          className="p-4 bg-white rounded-lg shadow-md border border-appleGreen"
         >
-          <h3 className="text-xl font-bold text-brown mb-4">Earnings Over Time</h3>
-          <p className="text-sm text-gray-500 mb-4">Historical earnings data not available. Showing sample data.</p>
-          <ResponsiveContainer width="100%" height={300}>
+          <h3 className="text-sm font-bold text-brown mb-2">Earnings Trend</h3>
+          <p className="text-xs text-gray-500 mb-2">Sample data (real backend data incoming)</p>
+          <ResponsiveContainer width="100%" height={180}>
             <BarChart data={earningsData}>
-              <XAxis dataKey="month" stroke="#4F391A" tick={{ fill: '#4F391A' }} />
-              <YAxis stroke="#4F391A" tick={{ fill: '#4F391A' }} />
+              <XAxis dataKey="month" tick={{ fontSize: 10 }} />
+              <YAxis tick={{ fontSize: 10 }} />
               <Tooltip content={<CustomTooltip />} />
-              <Legend />
-              <Bar dataKey="earnings" fill="url(#barGradient)" radius={[8, 8, 0, 0]} barSize={40}>
-                {earningsData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} />
-                ))}
-              </Bar>
-              <defs>
-                <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#AAC624" />
-                  <stop offset="100%" stopColor="#abfa50" />
-                </linearGradient>
-              </defs>
+              <Bar dataKey="earnings" fill="#AAC624" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </motion.div>
 
-        {/* Audience Growth (Line Chart) */}
         <motion.div
-          initial={{ y: 50, opacity: 0 }}
+          initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="p-6 bg-white rounded-xl shadow-md border border-appleGreen"
+          className="p-4 bg-white rounded-lg shadow-md border border-appleGreen"
         >
-          <h3 className="text-xl font-bold text-brown mb-4">Audience Growth</h3>
-          <p className="text-sm text-gray-500 mb-4">Historical audience data not available. Showing sample data.</p>
-          <ResponsiveContainer width="100%" height={300}>
+          <h3 className="text-sm font-bold text-brown mb-2">Audience Growth</h3>
+          <p className="text-xs text-gray-500 mb-2">Sample data</p>
+          <ResponsiveContainer width="100%" height={180}>
             <LineChart data={audienceData}>
-              <XAxis dataKey="month" stroke="#4F391A" tick={{ fill: '#4F391A' }} />
-              <YAxis stroke="#4F391A" tick={{ fill: '#4F391A' }} />
+              <XAxis dataKey="month" tick={{ fontSize: 10 }} />
+              <YAxis tick={{ fontSize: 10 }} />
               <Tooltip content={<CustomTooltip />} />
-              <Legend />
-              <Line
-                type="monotone"
-                dataKey="followers"
-                stroke="url(#lineGradient)"
-                strokeWidth={3}
-                dot={{ r: 5, fill: '#AAC624' }}
-                activeDot={{ r: 7, fill: '#abfa50' }}
-              />
-              <defs>
-                <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="#AAC624" />
-                  <stop offset="100%" stopColor="#abfa50" />
-                </linearGradient>
-              </defs>
+              <Line type="monotone" dataKey="followers" stroke="#AAC624" strokeWidth={2} dot={{ r: 3 }} />
             </LineChart>
           </ResponsiveContainer>
         </motion.div>
 
-        {/* Platform Audience Distribution (Pie Chart) */}
         <motion.div
-          initial={{ y: 50, opacity: 0 }}
+          initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="p-6 bg-white rounded-xl shadow-md border border-appleGreen lg:col-span-2"
+          className="p-4 bg-white rounded-lg shadow-md border border-appleGreen lg:col-span-2"
         >
-          <h3 className="text-xl font-bold text-brown mb-4">Audience Size Distribution</h3>
-          <ResponsiveContainer width="100%" height={300}>
+          <h3 className="text-sm font-bold text-brown mb-2">Audience by Platform</h3>
+          <ResponsiveContainer width="100%" height={200}>
             <PieChart>
               <Pie
                 data={platformData}
@@ -210,48 +210,28 @@ const InsuranceOverview = ({ insuranceData, profile, setSection }) => {
                 nameKey="name"
                 cx="50%"
                 cy="50%"
-                outerRadius={100}
-                innerRadius={50}
-                label={({ name, value }) => `${name} (${value.toLocaleString() === 158 ? value.toLocaleString * 1000 :  value.toLocaleString()})`}
-                labelLine={{ stroke: '#4F391A' }}
+                outerRadius={70}
+                label={({ name, value }) => `${name}: ${value.toLocaleString()}`}
               >
-                {platformData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={
-                      index % 10 === 0 ? '#AAC624' :       // Vibrant lime (yellow-green)
-                      index % 10 === 1 ? '#4F391A' :       // Deep chocolate brown
-                      index % 10 === 2 ? '#C0DC3A' :       // Electric lime
-                      index % 10 === 3 ? '#634725' :       // Warm chestnut brown
-                      index % 10 === 4 ? '#8FAF10' :       // Olive green
-                      index % 10 === 5 ? '#3A2B10' :       // Cool espresso brown
-                      index % 10 === 6 ? '#abfa50' :       // Neon green
-                      index % 10 === 7 ? '#5D4328' :       // Reddish-brown (new variant)
-                      index % 10 === 8 ? '#D2FF8C' :       // Pastel mint
-                      index % 10 === 9 ? '#2E2210'  : null       // Nearly black brown (new darkest variant)
-                    }
-                  />
-                ))}
+                {platformData.map((_, i) => <Cell key={i} fill="#AAC624" />)}
               </Pie>
-              <Tooltip content={<CustomTooltip />} />
-              <Legend />
+              <Tooltip />
             </PieChart>
           </ResponsiveContainer>
-          {/* Add Platform Button */}
+
           {insuranceStatus === 'Pending' && (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
-              className="mt-6 flex justify-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="mt-3 flex justify-center"
             >
               <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={handleAddPlatform}
-                className="flex items-center gap-2 py-3 px-6 bg-gradient-to-r from-yellowGreen to-appleGreen rounded-lg font-semibold text-white shadow-md hover:shadow-lg transition-all"
+                className="flex items-center gap-1 py-1.5 px-3 bg-gradient-to-r from-yellowGreen to-appleGreen rounded-lg font-medium text-white text-xs shadow hover:shadow-md"
               >
-                <FaPlus /> Add Platform
+                <FaPlus size={10} /> Add Platform
               </motion.button>
             </motion.div>
           )}

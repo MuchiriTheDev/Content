@@ -28,7 +28,7 @@ class ErrorBoundary extends Component {
     if (this.state.hasError) {
       return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white to-fadeBrown p-4">
-          <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8 text-center transform transition-all duration-300 hover:scale-105">
+          <div className="max-w-3xl w-full bg-white rounded-2xl shadow-2xl p-8 text-center transform transition-all duration-300 hover:scale-105">
             {/* Error Icon */}
             <div className="mx-auto mb-6 w-16 h-16 bg-brown rounded-full flex items-center justify-center">
               <svg
