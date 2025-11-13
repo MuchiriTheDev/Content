@@ -16,7 +16,15 @@ const Footer = () => {
             </a>
 
             <span className="block text-xs text-center text-gray-500 mb-3">
-                © 2025 Content Creator Insurance™. All Rights Reserved. Built By{' '}
+                © 2025 Content Creator Insurance™. All Rights Reserved. 
+                <a href="/privacy" className="text-appleGreen font-semibold hover:underline mx-1">
+                    Privacy Policy
+                </a>
+                |
+                <a href="/terms" className="text-appleGreen font-semibold hover:underline mx-1">
+                    Terms of Service
+                </a>
+                . Built By{' '}
                 <a
                     href="https://muchiri-the-dev.vercel.app/"
                     className="text-appleGreen font-semibold hover:underline"
