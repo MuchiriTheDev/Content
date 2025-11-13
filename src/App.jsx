@@ -16,7 +16,7 @@ import AddPlatform from './Pages/DashboardRelated/AddPlatform.jsx'
 import ErrorBoundary from './Resources/ErrorBoundary.jsx'
 import OnBoarding from './Pages/OnBoardingPage/OnBoarding.jsx'
 import TOS from './Pages/Conditions/TOS.jsx'
-import PP from './Pages/Conditions/PP.JSX'
+import PP from './Pages/Conditions/PP.jsx'
 
 export const backendUrl = `${import.meta.env.VITE_BACKEND_URL}/api`
 console.log(backendUrl)
