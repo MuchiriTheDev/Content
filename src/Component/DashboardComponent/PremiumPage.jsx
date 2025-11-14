@@ -7,44 +7,73 @@ import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import moment from 'moment';
 import { backendUrl } from '../../App'; // Adjust path as needed
+import { AiFillCalculator } from 'react-icons/ai';
 
 const PremiumPage = ({ financialData }) => {
   const [premiumData, setPremiumData] = useState(null);
+  const [estimatedPremium, setEstimatedPremium] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showPaymentHistory, setShowPaymentHistory] = useState(false);
   const [paymentModal, setPaymentModal] = useState({ open: false });
 
-  // Fetch premium data
+  // Fetch premium or estimate data
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${backendUrl}/premiums/my-premium`, {
+        // First, try to fetch existing premium
+        const premiumResponse = await axios.get(`${backendUrl}/premiums/my-premium`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
-        setPremiumData(response.data.premium);
+        setPremiumData(premiumResponse.data.premium);
         setLoading(false);
-      } catch (err) {
-        setError(err.response?.data?.error || 'Failed to fetch premium data');
-        setLoading(false);
-        toast.error('Failed to fetch premium data.', {
-          style: { background: '#FECACA', color: '#7F1D1D' },
-        });
+      } catch (premiumErr) {
+        if (premiumErr.response?.status === 404) {
+          // No premium exists, fetch estimate
+          try {
+            const estimateResponse = await axios.post(
+              `${backendUrl}/premiums/estimate`,
+              {}, // Empty body for self-estimate
+              { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+            );
+            setEstimatedPremium(estimateResponse.data.estimation);
+            setLoading(false);
+          } catch (estimateErr) {
+            setError(estimateErr.response?.data?.error || 'Failed to fetch estimate');
+            setLoading(false);
+            toast.error('Failed to fetch premium estimate.', {
+              style: { background: '#FECACA', color: '#7F1D1D' },
+            });
+          }
+        } else {
+          setError(premiumErr.response?.data?.error || 'Failed to fetch premium data');
+          console.log(error)
+          setLoading(false);
+          toast.error('Failed to fetch premium data.', {
+            style: { background: '#FECACA', color: '#7F1D1D' },
+          });
+        }
       }
     };
 
     fetchData();
   }, []);
 
-  // Handle pay premium
+  // Handle pay premium (only if premium exists)
   const handlePayPremium = async () => {
+    if (!premiumData) {
+      toast.error('No active premium to pay. Please apply for insurance first.', {
+        style: { background: '#FECACA', color: '#7F1D1D' },
+      });
+      return;
+    }
     try {
       const response = await axios.post(
         `${backendUrl}/premiums/pay`,
         {
-          paymentMethod: financialData?.type,
-          paymentDetails: JSON.stringify({ mobileNumber: financialData?.details?.mobileNumber }),
+          paymentMethod: 'M-Pesa',
+          paymentDetails: JSON.stringify({ mobileNumber: financialData?.details?.mobileNumber || '' }),
         },
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );
@@ -75,7 +104,7 @@ const PremiumPage = ({ financialData }) => {
     };
     return (
       <span
-        className={`inline-flex items-center px-3 py-1 rounded-full text-xs md:text-sm font-semibold ${
+        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${
           statusStyles[status] || 'bg-gray-200 text-gray-900'
         } transition-all duration-300`}
       >
@@ -92,7 +121,7 @@ const PremiumPage = ({ financialData }) => {
     };
     return (
       <span
-        className={`inline-flex items-center px-3 py-1 rounded-full text-xs md:text-sm font-semibold ${
+        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${
           statusStyles[status] || 'bg-gray-200 text-gray-900'
         } transition-all duration-300`}
       >
@@ -101,29 +130,34 @@ const PremiumPage = ({ financialData }) => {
     );
   };
 
+  // Current data: premium if exists, else estimate
+  const currentData = premiumData || estimatedPremium;
+  const isEstimate = !premiumData;
+  const showPaymentButton = premiumData && ['Pending', 'Overdue', 'Failed'].includes(premiumData.paymentStatus?.status);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
-      className="p-6 md:p-10 bg-gradient-to-br from-gray-50 to-white rounded-2xl shadow-2xl border border-appleGreen mx-auto my-8 max-w-6xl"
+      className="p-4 bg-gradient-to-br from-gray-50 to-white rounded-xl shadow-xl border border-appleGreen  my-6 w-full"
     >
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
         <div>
-          <h1 className="text-3xl md:text-4xl font-bold text-brown tracking-tight">
+          <h1 className="text-2xl md:text-3xl font-bold text-brown tracking-tight">
             Premium Payments
           </h1>
-          <p className="text-xs md:text-sm lg:text-base text-gray-600 mt-2">
-            View and manage your premium payment details.
+          <p className="text-xs md:text-sm text-gray-600 mt-1">
+            {isEstimate ? 'Estimate your potential premium.' : 'View and manage your premium payment details.'}
           </p>
         </div>
-        {premiumData && (
+        {showPaymentButton && (
           <button
             onClick={() => setPaymentModal({ open: true })}
-            className="mt-4 md:mt-0 inline-flex items-center px-6 py-3 bg-gradient-to-r from-brown to-fadeBrown rounded-lg font-semibold text-white shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300"
+            className="mt-3 md:mt-0 inline-flex items-center px-4 py-2 bg-gradient-to-r from-brown to-fadeBrown rounded-lg font-semibold text-white shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 text-sm"
           >
-            <FaMoneyBillWave className="mr-2" />
+            <FaMoneyBillWave className="mr-1 text-sm" />
             Pay Premium
           </button>
         )}
@@ -131,13 +165,13 @@ const PremiumPage = ({ financialData }) => {
 
       {/* Loading State */}
       {loading && (
-        <div className="text-center py-20">
+        <div className="text-center py-12">
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-            className="inline-block h-12 w-12 border-4 border-appleGreen border-t-transparent rounded-full"
+            className="inline-block h-8 w-8 border-4 border-appleGreen border-t-transparent rounded-full"
           ></motion.div>
-          <p className="text-brown mt-4 text-lg font-medium">Loading payment details...</p>
+          <p className="text-brown mt-3 text-sm font-medium">Loading payment details...</p>
         </div>
       )}
 
@@ -146,154 +180,170 @@ const PremiumPage = ({ financialData }) => {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="bg-red-100 text-red-900 p-5 rounded-lg mb-6 flex items-center"
+          className="bg-red-100 text-red-900 p-4 rounded-lg mb-4 flex items-center text-sm"
         >
-          <FiAlertCircle className="mr-3 text-xl" />
+          <FiAlertCircle className="mr-2 text-lg" />
           {error}
         </motion.div>
       )}
 
-      {/* No Premium State */}
-      {!loading && !error && !premiumData && (
+      {/* No Data State (shouldn't happen with estimate fallback) */}
+      {!loading && !error && !currentData && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-center py-20"
+          className="text-center py-12"
         >
-          <FiDollarSign className="mx-auto text-5xl text-brown mb-4" />
-          <p className="text-brown text-lg font-medium">
-            No payment data found. Please check back later.
+          <AiFillCalculator className="mx-auto text-4xl text-brown mb-3" />
+          <p className="text-brown text-sm font-medium">
+            No payment data available. Contact support.
           </p>
         </motion.div>
       )}
 
       {/* Main Content */}
-      {!loading && !error && premiumData && (
-        <div className="space-y-10">
-          {/* Payment Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Premium Amount Card */}
+      {!loading && !error && currentData && (
+        <div className="space-y-6">
+          {/* Overview Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Amount Card */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
-              className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-appleGreen"
+              className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 border border-appleGreen"
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs md:text-sm text-gray-500 flex items-center">
-                    <FiDollarSign className="mr-1" /> Current Premium
+                  <p className="text-xs text-gray-500 flex items-center">
+                    <FiDollarSign className="mr-1" /> {isEstimate ? 'Estimated Premium' : 'Current Premium'}
                   </p>
-                  <p className="text-2xl md:text-3xl font-bold text-brown mt-2">
-                    KES {premiumData?.premiumDetails?.finalAmount.toFixed(2)}
+                  <p className="text-xl md:text-2xl font-bold text-brown mt-1">
+                    KSh {currentData.estimatedAmount || currentData.premiumDetails?.finalAmount?.toFixed(2)}
                   </p>
-                  <p className="text-xs md:text-sm text-gray-600 mt-1">
-                    {premiumData?.premiumDetails?.finalPercentage.toFixed(2)}% of earnings
+                  <p className="text-xs text-gray-600 mt-1">
+                    {isEstimate ? `${currentData.estimatedPercentage}% of earnings` : `${currentData.premiumDetails?.finalPercentage?.toFixed(2)}% of earnings`}
                   </p>
                 </div>
-                <FiDollarSign className="text-5xl text-yellowGreen opacity-80" />
+                <FiDollarSign className="text-3xl text-yellowGreen opacity-80" />
               </div>
             </motion.div>
 
-            {/* Payment Status Card */}
+            {/* Status Card */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.1 }}
-              className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-appleGreen"
+              className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 border border-appleGreen"
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs md:text-sm text-gray-500 flex items-center">
-                    <FiClock className="mr-1" /> Payment Status
+                  <p className="text-xs text-gray-500 flex items-center">
+                    <FiClock className="mr-1" /> {isEstimate ? 'Status' : 'Payment Status'}
                   </p>
-                  <div className="mt-2">
-                    {getPaymentStatusBadge(premiumData?.paymentStatus?.status || 'Pending')}
+                  <div className="mt-1">
+                    {isEstimate ? (
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-blue-200 text-blue-900">
+                        Estimate
+                      </span>
+                    ) : (
+                      getPaymentStatusBadge(premiumData?.paymentStatus?.status || 'Pending')
+                    )}
                   </div>
-                  <p className="text-xs md:text-sm text-gray-600 mt-1">
-                    Due: {moment(premiumData?.paymentStatus?.dueDate).format('MMM D, YYYY')}
-                  </p>
+                  {!isEstimate && (
+                    <p className="text-xs text-gray-600 mt-1">
+                      Due: {moment(premiumData?.paymentStatus?.dueDate).format('MMM D, YYYY')}
+                    </p>
+                  )}
                 </div>
-                <FiClock className="text-5xl text-yellowGreen opacity-80" />
+                <FiClock className="text-3xl text-yellowGreen opacity-80" />
               </div>
             </motion.div>
 
-            {/* Last Payment Card */}
+            {/* Last Payment / Next Action Card */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.2 }}
-              className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-appleGreen"
+              className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 border border-appleGreen"
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs md:text-sm text-gray-500 flex items-center">
-                    <FiCreditCard className="mr-1" /> Last Payment
+                  <p className="text-xs text-gray-500 flex items-center">
+                    <FiCreditCard className="mr-1" /> {isEstimate ? 'Next Step' : 'Last Payment'}
                   </p>
-                  <p className="text-lg md:text-xl font-semibold text-brown mt-2">
-                    {premiumData?.paymentStatus?.paymentDate
+                  <p className="text-sm md:text-base font-semibold text-brown mt-1">
+                    {isEstimate
+                      ? 'Apply for Insurance'
+                      : premiumData?.paymentStatus?.paymentDate
                       ? moment(premiumData.paymentStatus.paymentDate).format('MMM D, YYYY')
                       : 'Not Paid'}
                   </p>
-                  {premiumData?.paymentStatus?.paymentDate && (
-                    <p className="text-xs md:text-sm text-gray-600 mt-1">
+                  {isEstimate ? (
+                    <p className="text-xs text-gray-600 mt-1">Based on current earnings</p>
+                  ) : premiumData?.paymentStatus?.paymentDate ? (
+                    <p className="text-xs text-gray-600 mt-1">
                       Via {premiumData?.paymentStatus?.paymentMethod?.type}
                     </p>
-                  )}
+                  ) : null}
                 </div>
-                <FiCreditCard className="text-5xl text-yellowGreen opacity-80" />
+                <FiCreditCard className="text-3xl text-yellowGreen opacity-80" />
               </div>
             </motion.div>
           </div>
 
-          {/* Payment Details */}
+          {/* Details */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.3 }}
-            className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-appleGreen"
+            className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 border border-appleGreen"
           >
-            <h2 className="text-xl font-semibold text-brown mb-4 flex items-center">
-              <FiCreditCard className="mr-2" /> Payment Details
+            <h2 className="text-lg font-semibold text-brown mb-3 flex items-center">
+              <FiCreditCard className="mr-1" /> {isEstimate ? 'Estimate Details' : 'Payment Details'}
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div>
-                <p className="text-xs md:text-sm text-gray-500">Billing Cycle</p>
-                <p className="text-brown font-medium">{premiumData?.billingCycle}</p>
+                <p className="text-xs text-gray-500">Billing Cycle</p>
+                <p className="text-brown font-medium">{isEstimate ? 'Monthly' : premiumData?.billingCycle}</p>
               </div>
               <div>
-                <p className="text-xs md:text-sm text-gray-500">Currency</p>
-                <p className="text-brown font-medium">{premiumData?.premiumDetails?.currency}</p>
+                <p className="text-xs text-gray-500">Currency</p>
+                <p className="text-brown font-medium">{isEstimate ? 'KSh' : premiumData?.premiumDetails?.currency}</p>
               </div>
-              <div>
-                <p className="text-xs md:text-sm text-gray-500">Next Calculation Date</p>
-                <p className="text-brown font-medium">
-                  {moment(premiumData?.nextCalculationDate).format('MMM D, YYYY')}
-                </p>
-              </div>
-              {premiumData?.paymentStatus?.transactionId && (
-                <div>
-                  <p className="text-xs md:text-sm text-gray-500">Transaction ID</p>
-                  <p className="text-brown font-medium">{premiumData?.paymentStatus?.transactionId}</p>
-                </div>
+              {!isEstimate && (
+                <>
+                  <div>
+                    <p className="text-xs text-gray-500">Next Calculation Date</p>
+                    <p className="text-brown font-medium">
+                      {moment(premiumData?.nextCalculationDate).format('MMM D, YYYY')}
+                    </p>
+                  </div>
+                  {premiumData?.paymentStatus?.transactionId && (
+                    <div>
+                      <p className="text-xs text-gray-500">Transaction ID</p>
+                      <p className="text-brown font-medium">{premiumData?.paymentStatus?.transactionId}</p>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </motion.div>
 
-          {/* Payment Attempts History */}
+          {/* Payment Attempts History (only for actual premium) */}
           {premiumData?.paymentStatus?.attempts?.length > 0 && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.4 }}
-              className="bg-white rounded-xl overflow-hidden shadow-md p-6 border border-appleGreen"
+              className="bg-white rounded-lg overflow-hidden shadow-md p-4 border border-appleGreen"
             >
               <button
                 onClick={() => setShowPaymentHistory(!showPaymentHistory)}
-                className="flex items-center justify-between w-full text-xl font-semibold text-brown mb-6"
+                className="flex items-center justify-between w-full text-lg font-semibold text-brown mb-4"
               >
                 <span className="flex items-center">
-                  <RiFileHistoryFill className="mr-2" />
+                  <RiFileHistoryFill className="mr-1" />
                   Payment Attempts History
                 </span>
                 {showPaymentHistory ? <FiChevronUp /> : <FiChevronDown />}
@@ -309,20 +359,20 @@ const PremiumPage = ({ financialData }) => {
                   >
                     {/* Scrollable Table Container */}
                     <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-appleGreen/50 scrollbar-track-gray-100">
-                      <table className="w-full min-w-[800px] text-left table-auto">
+                      <table className="w-full min-w-[600px] text-left table-auto text-sm">
                         <thead>
-                          <tr className="text-xs md:text-sm text-gray-500 bg-gray-50 sticky top-0 z-10">
-                            <th className="p-4 font-medium">
+                          <tr className="text-xs text-gray-500 bg-gray-50 sticky top-0 z-10">
+                            <th className="p-3 font-medium">
                               <FiClock className="inline mr-1" /> Date
                             </th>
-                            <th className="p-4 font-medium">
+                            <th className="p-3 font-medium">
                               <FiCreditCard className="inline mr-1" /> Status
                             </th>
-                            <th className="p-4 font-medium">
+                            <th className="p-3 font-medium">
                               <FiInfo className="inline mr-1" /> Details
                             </th>
-                            <th className="p-4 font-medium">
-                              <FiDollarSign className="inline mr-1" /> Amount (KES)
+                            <th className="p-3 font-medium">
+                              <FiDollarSign className="inline mr-1" /> Amount (KSh)
                             </th>
                           </tr>
                         </thead>
@@ -335,18 +385,18 @@ const PremiumPage = ({ financialData }) => {
                               transition={{ duration: 0.2, delay: index * 0.1 }}
                               className="border-t border-gray-100 hover:bg-appleGreen/10 transition-all duration-200"
                             >
-                              <td className="p-4 text-xs md:text-sm text-brown">
+                              <td className="p-3 text-brown">
                                 {moment(attempt.date).format('MMM D, YYYY, h:mm A')}
                               </td>
-                              <td className="p-4 text-xs md:text-sm text-brown">
+                              <td className="p-3 text-brown">
                                 {getAttemptStatusBadge(attempt.status)}
                               </td>
-                              <td className="p-4 text-xs md:text-sm text-brown">
+                              <td className="p-3 text-brown">
                                 {attempt.status === 'Success'
                                   ? `Paid via ${premiumData?.paymentStatus?.paymentMethod?.type}`
                                   : attempt.errorMessage || 'No details available'}
                               </td>
-                              <td className="p-4 text-xs md:text-sm text-brown">
+                              <td className="p-3 text-brown">
                                 {attempt.status === 'Success'
                                   ? premiumData?.premiumDetails?.finalAmount.toFixed(2)
                                   : 'N/A'}
@@ -356,7 +406,7 @@ const PremiumPage = ({ financialData }) => {
                         </tbody>
                       </table>
                     </div>
-                    <div className="text-center text-xs text-gray-500 mt-2">
+                    <div className="text-center text-xs text-gray-500 mt-1">
                       Scroll left or right to view more
                     </div>
                   </motion.div>
@@ -367,9 +417,9 @@ const PremiumPage = ({ financialData }) => {
         </div>
       )}
 
-      {/* Payment Confirmation Modal */}
+      {/* Payment Confirmation Modal (only for actual premium) */}
       <AnimatePresence>
-        {paymentModal.open && (
+        {paymentModal.open && premiumData && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -381,22 +431,22 @@ const PremiumPage = ({ financialData }) => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl border border-appleGreen"
+              className="bg-white rounded-xl p-6 max-w-sm w-full shadow-2xl border border-appleGreen"
             >
-              <h4 className="text-xl font-bold text-brown mb-4">Confirm Payment</h4>
-              <p className="text-brown mb-6">
-                Pay KES {premiumData?.premiumDetails?.finalAmount.toFixed(2)} using Mpesa? This action will process your premium payment.
+              <h4 className="text-lg font-bold text-brown mb-3">Confirm Payment</h4>
+              <p className="text-brown mb-4 text-sm">
+                Pay KSh {premiumData?.premiumDetails?.finalAmount.toFixed(2)} using M-Pesa? This action will process your premium payment.
               </p>
-              <div className="flex justify-end space-x-4">
+              <div className="flex justify-end space-x-3">
                 <button
                   onClick={() => setPaymentModal({ open: false })}
-                  className="px-5 py-2 bg-gray-200 text-brown rounded-lg font-semibold hover:bg-gray-300 transition-colors duration-300"
+                  className="px-4 py-2 bg-gray-200 text-brown rounded-lg font-semibold hover:bg-gray-300 transition-colors duration-300 text-sm"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handlePayPremium}
-                  className="px-5 py-2 bg-gradient-to-r from-brown to-fadeBrown text-white rounded-lg font-semibold hover:bg-brown transition-colors duration-300"
+                  className="px-4 py-2 bg-gradient-to-r from-brown to-fadeBrown text-white rounded-lg font-semibold hover:bg-brown transition-colors duration-300 text-sm"
                 >
                   Confirm Payment
                 </button>

@@ -49,6 +49,25 @@ const VideoViewer = ({ video, aiAnalysis, onClose }) => {
     return null;
   };
 
+  const getNicheFitBadge = (nicheFit) => {
+    const colors = {
+      Strong: 'bg-appleGreen/40 border-appleGreen text-appleGreen',
+      Weak: 'bg-yellow-200 border-yellow-300 text-yellow-800',
+      None: 'bg-gray-200 border-gray-300 text-gray-700'
+    };
+    return <span className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium ${colors[nicheFit] || colors.None}`}>
+      {nicheFit}
+    </span>;
+  };
+
+  // Fallback AI analysis if none provided (for 0 comments)
+  const fallbackAnalysis = video.comments?.length > 0 ? null : {
+    summary: { positive: 0, negative: 0, neutral: video.commentCount || 0, total: video.commentCount || 0, nicheAlignment: 50 },
+    comments: video.comments?.map(() => ({ sentiment: 'Neutral', nicheFit: 'None', reason: 'No detailed analysis available' })) || []
+  };
+
+  const effectiveAnalysis = aiAnalysis || fallbackAnalysis;
+
   return (
     <motion.div
       initial={{ scale: 0.9, opacity: 0 }}
@@ -101,46 +120,50 @@ const VideoViewer = ({ video, aiAnalysis, onClose }) => {
         {/* AI Analysis & Comments */}
         <div className="space-y-4">
           {/* Sentiment Summary */}
-          {aiAnalysis?.summary ? (
+          {effectiveAnalysis?.summary ? (
             <div className="bg-appleGreen/10 p-3 rounded-lg border border-appleGreen">
               <h4 className="font-semibold text-brown mb-2 text-xs flex items-center gap-1">Sentiment Overview</h4>
               <div className="grid grid-cols-3 gap-2 text-center">
                 <div className="p-2 bg-appleGreen/20 rounded">
-                  <p className="font-bold text-appleGreen text-xs">{aiAnalysis.summary.positive || 0}</p>
+                  <p className="font-bold text-appleGreen text-xs">{effectiveAnalysis.summary.positive || 0}</p>
                   <p className="text-xs text-brown">Positive</p>
                 </div>
                 <div className="p-2 bg-gray-100 rounded">
-                  <p className="font-bold text-gray-700 text-xs">{aiAnalysis.summary.neutral || 0}</p>
+                  <p className="font-bold text-gray-700 text-xs">{effectiveAnalysis.summary.neutral || 0}</p>
                   <p className="text-xs text-brown">Neutral</p>
                 </div>
                 <div className="p-2 bg-red-100 rounded">
-                  <p className="font-bold text-red-800 text-xs">{aiAnalysis.summary.negative || 0}</p>
+                  <p className="font-bold text-red-800 text-xs">{effectiveAnalysis.summary.negative || 0}</p>
                   <p className="text-xs text-brown">Negative</p>
                 </div>
               </div>
-              {aiAnalysis.summary.nicheAlignment && (
-                <p className="mt-2 text-xs text-brown">Niche Alignment: {aiAnalysis.summary.nicheAlignment}/100</p>
+              {effectiveAnalysis.summary.nicheAlignment && (
+                <p className="mt-2 text-xs text-brown">Niche Alignment: {effectiveAnalysis.summary.nicheAlignment}/100</p>
               )}
             </div>
           ) : (
-            <div className="p-3 bg-gray-50 rounded-lg text-center text-xs text-gray-500 italic">No AI sentiment analysis available</div>
+            <div className="p-3 bg-gray-50 rounded-lg text-center text-xs text-gray-500 italic">No AI sentiment analysis available (0 comments)</div>
           )}
 
-          {/* Improvement Suggestions (from aiAnalysis if available, or fallback) */}
+          {/* Niche Fit Insights (from per-comment analysis) */}
           <div className="space-y-2">
-            <h4 className="font-semibold text-brown text-xs">AI Suggestions</h4>
+            <h4 className="font-semibold text-brown text-xs">Niche Fit Insights</h4>
             <ul className="space-y-1 text-xs text-gray-600">
-              {aiAnalysis?.improvement?.length > 0 ? (
-                aiAnalysis.improvement.slice(0, 3).map((suggestion, i) => (
-                  <li key={i} className="flex items-start gap-1">
-                    <span className="text-appleGreen mt-0.5">•</span>
-                    {suggestion}
+              {effectiveAnalysis?.comments?.length > 0 ? (
+                effectiveAnalysis.comments.slice(0, 3).map((analysis, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <span className="text-appleGreen mt-0.5 flex-shrink-0">•</span>
+                    <div className="flex-1">
+                      <p className="font-medium text-gray-700">{analysis.nicheFit || 'None'}</p>
+                      <p className="text-gray-500">{analysis.reason || 'No reason provided'}</p>
+                    </div>
+                    {getNicheFitBadge(analysis.nicheFit)}
                   </li>
                 ))
               ) : (
                 <li className="flex items-start gap-1">
                   <span className="text-appleGreen mt-0.5">•</span>
-                  Engage more with comments to boost positivity
+                  No niche insights available (add more content aligned to your niche for better analysis)
                 </li>
               )}
             </ul>
@@ -159,21 +182,24 @@ const VideoViewer = ({ video, aiAnalysis, onClose }) => {
             </h4>
             <div className={`max-h-48 overflow-y-auto space-y-2 ${isExpandedComments ? 'max-h-96' : ''}`}>
               {video.comments?.length > 0 ? (
-                video.comments.slice(0, isExpandedComments ? 50 : 10).map((comment, i) => {
-                  const analysis = aiAnalysis?.comments?.[i];
-                  const sentiment = analysis?.sentiment || 'Neutral';
+                video.comments.map((comment, i) => {
+                  const analysis = effectiveAnalysis?.comments?.[i] || { sentiment: 'Neutral', nicheFit: 'None', reason: 'No detailed analysis available' };
+                  const sentiment = analysis.sentiment || 'Neutral';
                   return (
                     <div key={i} className={`p-3 rounded-lg border ${getSentimentColor(sentiment)}`}>
                       <p className="text-gray-700 text-xs mb-1 line-clamp-2">{comment}</p>
                       <div className="flex items-center justify-between text-xs">
-                        <span className="text-gray-500">AI: {analysis?.reason || 'No reason provided'}</span>
-                        {getSentimentBadge(sentiment)}
+                        <span className="text-gray-500 flex-1">{analysis.reason}</span>
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          {getSentimentBadge(sentiment)}
+                          {getNicheFitBadge(analysis.nicheFit)}
+                        </div>
                       </div>
                     </div>
                   );
                 })
               ) : (
-                <p className="text-xs text-gray-500 italic text-center py-4">No comments available</p>
+                <p className="text-xs text-gray-500 italic text-center py-4">No comments available for analysis</p>
               )}
             </div>
           </div>

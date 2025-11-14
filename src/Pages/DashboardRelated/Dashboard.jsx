@@ -24,6 +24,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import Loading from '../../Resources/Loading';
 import { backendUrl } from '../../App';
+import { FaRobot } from 'react-icons/fa6';
 
 const Dashboard = () => {
   const [searchParams] = useSearchParams();
@@ -198,9 +199,9 @@ const Dashboard = () => {
               {[
                 { id: 'overview', label: 'Overview', icon: <FaHome size={14} /> },
                 { id: 'analytics', label: 'Analytics', icon: <FaChartLine size={14} /> },
-                { id: 'addPlatform', label: 'Add Platform', icon: <FaPlusCircle size={14} /> },
+                // { id: 'addPlatform', label: 'Add Platform', icon: <FaPlusCircle size={14} /> },
                 { id: 'premiums', label: 'Premiums', icon: <FaCreditCard size={14} /> },
-                { id: 'contentReviewing', label: 'Content Review', icon: <FaSearch size={14} /> },
+                { id: 'contentReviewing', label: 'CICI AI', icon: <FaRobot size={14} /> },
                 { id: 'claims', label: 'Claims', icon: <FaFileInvoice size={14} /> },
               ].map((item) => (
                 <li key={item.id}>
