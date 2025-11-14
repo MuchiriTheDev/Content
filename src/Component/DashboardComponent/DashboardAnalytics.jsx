@@ -105,7 +105,7 @@ const DashboardAnalytics = () => {
     return (
       <div className="space-y-3 p-3">
         <div className="h-8 bg-gray-200 rounded-lg animate-pulse" />
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 gap-2">
           {[...Array(4)].map((_, i) => <div key={i} className="h-16 bg-gray-200 rounded-lg animate-pulse" />)}
         </div>
         <div className="h-32 bg-gray-200 rounded-lg animate-pulse" />
@@ -140,10 +140,10 @@ const DashboardAnalytics = () => {
         </div>
       )}
 
-      <div ref={printRef} className="space-y-4 p-3 bg-gray-50">
+      <div ref={printRef} className="space-y-4 p-2 sm:p-3 bg-gray-50">
         {/* Header */}
-        <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="bg-white rounded-lg shadow-lg p-3 border border-appleGreen/20">
-          <div className="flex items-center justify-between">
+        <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="bg-white rounded-lg shadow-lg p-2 sm:p-3 border border-appleGreen/20">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
             <div className="flex items-center gap-2">
               <span className="text-xs font-medium text-brown">Platform:</span>
               <div className="flex gap-1">
@@ -169,7 +169,7 @@ const DashboardAnalytics = () => {
         {/* Metrics Grid */}
         <div className="grid grid-cols-2 gap-3">
           {[
-            { label: 'Total Views', value: Number(totalViews).toLocaleString(), change: viewsGrowth != null ? `${viewsGrowth > 0 ? '+' : ''}${viewsGrowth.toFixed(0)}%` : 'N/A' },
+            { label: 'Total Views', value: Number(totalViews).toLocaleString(), change: '' },
             { label: 'Revenue (KSh)', value: Number(estimatedRevenueKSh).toLocaleString(), change: '' },
             { label: 'Engagement', value: `${Number(engagementRate).toFixed(1)}%`, change: '' },
             { label: 'Subs Gained', value: `+${Number(subscribersGained).toLocaleString()}`, change: subGrowthRate ? `+${subGrowthRate.toFixed(1)}%` : '' },
@@ -195,8 +195,8 @@ const DashboardAnalytics = () => {
 
         {/* Comment Sentiment */}
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-lg shadow-lg p-3 border border-appleGreen/20">
-          <h3 className="text-sm font-semibold text-brown mb-2 text-xs">AI Comment Insights</h3>
-          <div className="grid grid-cols-3 gap-2 text-center mb-2">
+          <h3 className="text-sm font-semibold text-brown mb-2 ">AI Comment Insights</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-center mb-2">
             <div className="p-2 bg-appleGreen/20 rounded-lg"><p className="font-bold text-appleGreen text-xs">{commentAnalysis.positive || 0}</p><p className="text-xs text-brown">Positive</p></div>
             <div className="p-2 bg-yellow-100 rounded-lg"><p className="font-bold text-yellow-800 text-xs">{commentAnalysis.neutral || 0}</p><p className="text-xs text-brown">Neutral</p></div>
             <div className="p-2 bg-red-100 rounded-lg"><p className="font-bold text-red-800 text-xs">{commentAnalysis.negative || 0}</p><p className="text-xs text-brown">Negative</p></div>
@@ -217,13 +217,13 @@ const DashboardAnalytics = () => {
 
         {/* AI Coach Tips */}
         <div className="space-y-3">
-          <h3 className="text-sm font-semibold text-brown text-xs">AI Coach Tips ({contentTips.length})</h3>
+          <h3 className="text-sm font-semibold text-brown">AI Coach Tips ({contentTips.length})</h3>
           <div className="space-y-2">
             {contentTips.map((tip, i) => (
               <motion.div key={i} initial={{ x: -15, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: i * 0.08 }} className="bg-white border rounded-lg shadow-lg p-3 flex flex-col gap-2 border-appleGreen/20 text-xs">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                   <h4 className="font-semibold text-brown">{tip.tip}</h4>
-                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-full font-medium bg-appleGreen/40 border border-brown text-brown text-xs">{tip.nicheFit || 'All'}</span>
+                  <span className="inline-flex items-start px-2 py-0.5 rounded-md font-medium bg-appleGreen/40 border border-brown text-brown text-xs">{tip.nicheFit || 'All'}</span>
                 </div>
                 <div className="flex items-start gap-1"><FiInfo className="text-appleGreen text-xs mt-0.5" /><p className="text-gray-600">{tip.action}</p></div>
                 <p className="italic text-brown font-medium text-xs">Benefit: {tip.benefit}</p>
@@ -268,7 +268,7 @@ const DashboardAnalytics = () => {
 
         {/* Recent Videos */}
         <div className="space-y-3">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <h3 className="text-sm font-semibold text-brown text-xs">Recent Videos</h3>
             <span className="text-xs text-gray-600">{videos.length} total</span>
           </div>
@@ -280,21 +280,21 @@ const DashboardAnalytics = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
                 onClick={() => openVideoPopup(v.id)}
-                className="bg-white rounded-lg shadow-lg p-3 flex items-center gap-3 border border-appleGreen/20 hover:shadow-xl transition-all cursor-pointer text-xs"
+                className="bg-white rounded-lg shadow-lg p-2 sm:p-3 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 border border-appleGreen/20 hover:shadow-xl transition-all cursor-pointer text-xs"
               >
-                <img src={v.thumbnail} alt="" className="w-16 h-12 object-cover rounded-md" />
-                <div className="flex-1 min-w-0">
+                <img src={v.thumbnail} alt="" className="w-20 h-14 sm:w-16 sm:h-12 object-cover rounded-md flex-shrink-0" />
+                <div className="flex-1 min-w-0 w-full">
                   <p className="font-medium text-brown truncate">{v.title}</p>
-                  <div className="flex items-center gap-2 mt-1 text-gray-600">
-                    <span><FaEye className="inline mr-1 text-xs" />{Number(v.views).toLocaleString()}</span>
+                  <div className="flex flex-wrap items-center gap-2 mt-1 text-gray-600">
+                    <span className="flex items-center"><FaEye className="inline mr-1 text-xs" />{Number(v.views).toLocaleString()}</span>
                     <span>•</span>
-                    <span><FaCalendar className="inline mr-1 text-xs" />{new Date(v.publishedAt).toLocaleDateString('en-GB')}</span>
+                    <span className="flex items-center"><FaCalendar className="inline mr-1 text-xs" />{new Date(v.publishedAt).toLocaleDateString('en-GB')}</span>
                   </div>
                 </div>
                 {v.commentReality?.isReal === false && v.commentReality?.reportedCount > 0 && (
-                  <FaExclamationTriangle className="text-red-600 text-xs" title="Fake comments detected" />
+                  <FaExclamationTriangle className="text-red-600 text-xs flex-shrink-0" title="Fake comments detected" />
                 )}
-                <div className="text-xs text-brown">Watch & Analyze</div>
+                <div className="text-xs text-brown sm:ml-auto">Watch & Analyze</div>
               </motion.div>
             ))}
           </div>

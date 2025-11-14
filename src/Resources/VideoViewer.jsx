@@ -73,11 +73,11 @@ const VideoViewer = ({ video, aiAnalysis, onClose }) => {
       initial={{ scale: 0.9, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       exit={{ scale: 0.9, opacity: 0 }}
-      className="bg-white rounded-lg shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-4 border border-appleGreen text-xs"
+      className="bg-white rounded-lg shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-2 sm:p-4 border border-appleGreen text-xs"
     >
       {/* Header */}
-      <div className="flex justify-between items-start mb-4 sticky top-0 bg-white z-10 pb-2 border-b border-gray-200">
-        <h2 className="font-bold text-brown text-sm flex items-center gap-2">
+      <div className="flex flex-col sm:flex-row justify-between items-start mb-4 sticky top-0 bg-white z-10 pb-2 border-b border-gray-200">
+        <h2 className="font-bold text-brown text-sm flex items-center gap-2 mb-2 sm:mb-0">
           <FiInfo className="text-appleGreen" />
           AI Video Analysis: {video.title}
         </h2>
@@ -88,7 +88,7 @@ const VideoViewer = ({ video, aiAnalysis, onClose }) => {
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Video Player & Metadata */}
         <div className="space-y-4">
           {/* YouTube Embed */}
@@ -123,7 +123,7 @@ const VideoViewer = ({ video, aiAnalysis, onClose }) => {
           {effectiveAnalysis?.summary ? (
             <div className="bg-appleGreen/10 p-3 rounded-lg border border-appleGreen">
               <h4 className="font-semibold text-brown mb-2 text-xs flex items-center gap-1">Sentiment Overview</h4>
-              <div className="grid grid-cols-3 gap-2 text-center">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-center">
                 <div className="p-2 bg-appleGreen/20 rounded">
                   <p className="font-bold text-appleGreen text-xs">{effectiveAnalysis.summary.positive || 0}</p>
                   <p className="text-xs text-brown">Positive</p>
@@ -171,7 +171,7 @@ const VideoViewer = ({ video, aiAnalysis, onClose }) => {
 
           {/* Comments Section */}
           <div className="space-y-2">
-            <h4 className="font-semibold text-brown text-xs flex items-center justify-between">
+            <h4 className="font-semibold text-brown text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
               Comments ({video.comments?.length || 0})
               <button
                 onClick={() => setIsExpandedComments(!isExpandedComments)}
@@ -188,7 +188,7 @@ const VideoViewer = ({ video, aiAnalysis, onClose }) => {
                   return (
                     <div key={i} className={`p-3 rounded-lg border ${getSentimentColor(sentiment)}`}>
                       <p className="text-gray-700 text-xs mb-1 line-clamp-2">{comment}</p>
-                      <div className="flex items-center justify-between text-xs">
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs">
                         <span className="text-gray-500 flex-1">{analysis.reason}</span>
                         <div className="flex items-center gap-2 flex-shrink-0">
                           {getSentimentBadge(sentiment)}

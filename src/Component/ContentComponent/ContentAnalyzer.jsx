@@ -192,7 +192,7 @@ Respond ONLY with a valid JSON object, no markdown, no extra text, no code block
           animate={{ opacity: 1, y: 0 }}
           className="bg-white p-4 rounded-xl shadow-md border border-brown/10"
         >
-          <label className="block text-sm font-medium text-brown/70 mb-2 flex items-center">
+          <label className="text-sm font-medium text-brown/70 mb-2 flex items-center">
             <FiInfo className="mr-1 text-xs" /> Text or Script
           </label>
           <textarea
@@ -310,7 +310,7 @@ Respond ONLY with a valid JSON object, no markdown, no extra text, no code block
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 flex items-center justify-center z-1050 py-10 mt-10 p-4"
+            className="fixed inset-0 bg-black/60 flex items-center justify-center z-[9999] p-4"
             onClick={() => setShowReviewPopup(false)}
           >
             <motion.div
@@ -318,7 +318,7 @@ Respond ONLY with a valid JSON object, no markdown, no extra text, no code block
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
               transition={{ duration: 0.3, ease: 'easeOut' }}
-              className="bg-white rounded-2xl shadow-2xl max-w-4xl mt-10 w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 border border-appleGreen/10"
+              className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 border border-appleGreen/10"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Modal Header */}
